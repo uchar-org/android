@@ -80,7 +80,7 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 fun HomeTopBar(
     selectedNavigationItem: HomeNavigationBarItem,
-    currentUserAndNeighbors: ImmutableList<MatrixUser>,
+//    currentUserAndNeighbors: ImmutableList<MatrixUser>,
     showAvatarIndicator: Boolean,
     areSearchResultsDisplayed: Boolean,
     onToggleSearch: () -> Unit,
@@ -123,14 +123,14 @@ fun HomeTopBar(
                     text = displayTitle,
                 )
             },
-            navigationIcon = {
-                NavigationIcon(
-                    currentUserAndNeighbors = currentUserAndNeighbors,
-                    showAvatarIndicator = showAvatarIndicator,
-                    onAccountSwitch = onAccountSwitch,
-                    onClick = onOpenSettings,
-                )
-            },
+//            navigationIcon = {
+//                NavigationIcon(
+//                    currentUserAndNeighbors = currentUserAndNeighbors,
+//                    showAvatarIndicator = showAvatarIndicator,
+//                    onAccountSwitch = onAccountSwitch,
+//                    onClick = onOpenSettings,
+//                )
+//            },
             actions = {
                 if (selectedNavigationItem == HomeNavigationBarItem.Chats) {
                     RoomListMenuItems(
@@ -264,12 +264,12 @@ private fun NavigationIcon(
     onClick: () -> Unit,
 ) {
     if (currentUserAndNeighbors.size == 1) {
-        AccountIcon(
-            matrixUser = currentUserAndNeighbors.single(),
-            isCurrentAccount = true,
-            showAvatarIndicator = showAvatarIndicator,
-            onClick = onClick,
-        )
+//        AccountIcon(
+//            matrixUser = currentUserAndNeighbors.single(),
+//            isCurrentAccount = true,
+//            showAvatarIndicator = showAvatarIndicator,
+//            onClick = onClick,
+//        )
     } else {
         // Render a vertical pager
         val pagerState = rememberPagerState(initialPage = 1) { currentUserAndNeighbors.size }
@@ -284,52 +284,52 @@ private fun NavigationIcon(
             state = pagerState,
             modifier = Modifier.height(48.dp),
         ) { page ->
-            AccountIcon(
-                matrixUser = currentUserAndNeighbors[page],
-                isCurrentAccount = page == 1,
-                showAvatarIndicator = page == 1 && showAvatarIndicator,
-                onClick = if (page == 1) {
-                    onClick
-                } else {
-                    {}
-                },
-            )
+//            AccountIcon(
+//                matrixUser = currentUserAndNeighbors[page],
+//                isCurrentAccount = page == 1,
+//                showAvatarIndicator = page == 1 && showAvatarIndicator,
+//                onClick = if (page == 1) {
+//                    onClick
+//                } else {
+//                    {}
+//                },
+//            )
         }
     }
 }
 
-@Composable
-private fun AccountIcon(
-    matrixUser: MatrixUser,
-    isCurrentAccount: Boolean,
-    showAvatarIndicator: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val testTag = if (isCurrentAccount) Modifier.testTag(TestTags.homeScreenSettings) else Modifier
-    IconButton(
-        modifier = modifier.then(testTag),
-        onClick = onClick,
-    ) {
-        Box {
-            val avatarData by remember(matrixUser) {
-                derivedStateOf {
-                    matrixUser.getAvatarData(size = AvatarSize.CurrentUserTopBar)
-                }
-            }
-            Avatar(
-                avatarData = avatarData,
-                avatarType = AvatarType.User,
-                contentDescription = if (isCurrentAccount) stringResource(CommonStrings.common_settings) else null,
-            )
-            if (showAvatarIndicator) {
-                RedIndicatorAtom(
-                    modifier = Modifier.align(Alignment.TopEnd)
-                )
-            }
-        }
-    }
-}
+//@Composable
+//private fun AccountIcon(
+//    matrixUser: MatrixUser,
+//    isCurrentAccount: Boolean,
+//    showAvatarIndicator: Boolean,
+//    onClick: () -> Unit,
+//    modifier: Modifier = Modifier,
+//) {
+//    val testTag = if (isCurrentAccount) Modifier.testTag(TestTags.homeScreenSettings) else Modifier
+//    IconButton(
+//        modifier = modifier.then(testTag),
+//        onClick = onClick,
+//    ) {
+//        Box {
+//            val avatarData by remember(matrixUser) {
+//                derivedStateOf {
+//                    matrixUser.getAvatarData(size = AvatarSize.CurrentUserTopBar)
+//                }
+//            }
+//            Avatar(
+//                avatarData = avatarData,
+//                avatarType = AvatarType.User,
+//                contentDescription = if (isCurrentAccount) stringResource(CommonStrings.common_settings) else null,
+//            )
+//            if (showAvatarIndicator) {
+//                RedIndicatorAtom(
+//                    modifier = Modifier.align(Alignment.TopEnd)
+//                )
+//            }
+//        }
+//    }
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @PreviewsDayNight
@@ -337,7 +337,7 @@ private fun AccountIcon(
 internal fun HomeTopBarPreview() = ElementPreview {
     HomeTopBar(
         selectedNavigationItem = HomeNavigationBarItem.Chats,
-        currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
+//        currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
         showAvatarIndicator = false,
         areSearchResultsDisplayed = false,
         scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
@@ -358,7 +358,7 @@ internal fun HomeTopBarPreview() = ElementPreview {
 internal fun HomeTopBarSpaceFiltersSelectedPreview() = ElementPreview {
     HomeTopBar(
         selectedNavigationItem = HomeNavigationBarItem.Chats,
-        currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
+//        currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
         showAvatarIndicator = false,
         areSearchResultsDisplayed = false,
         scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
@@ -379,7 +379,7 @@ internal fun HomeTopBarSpaceFiltersSelectedPreview() = ElementPreview {
 internal fun HomeTopBarSpacesPreview() = ElementPreview {
     HomeTopBar(
         selectedNavigationItem = HomeNavigationBarItem.Spaces,
-        currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
+//        currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
         showAvatarIndicator = false,
         areSearchResultsDisplayed = false,
         scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
@@ -400,7 +400,7 @@ internal fun HomeTopBarSpacesPreview() = ElementPreview {
 internal fun HomeTopBarWithIndicatorPreview() = ElementPreview {
     HomeTopBar(
         selectedNavigationItem = HomeNavigationBarItem.Chats,
-        currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
+//        currentUserAndNeighbors = persistentListOf(MatrixUser(UserId("@id:domain"), "Alice")),
         showAvatarIndicator = true,
         areSearchResultsDisplayed = false,
         scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
@@ -421,7 +421,7 @@ internal fun HomeTopBarWithIndicatorPreview() = ElementPreview {
 internal fun HomeTopBarMultiAccountPreview() = ElementPreview {
     HomeTopBar(
         selectedNavigationItem = HomeNavigationBarItem.Chats,
-        currentUserAndNeighbors = aMatrixUserList().take(3).toImmutableList(),
+//        currentUserAndNeighbors = aMatrixUserList().take(3).toImmutableList(),
         showAvatarIndicator = false,
         areSearchResultsDisplayed = false,
         scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),

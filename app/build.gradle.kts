@@ -26,6 +26,7 @@ import extension.locales
 import extension.setupDependencyInjection
 import extension.setupKover
 import extension.testCommonDependencies
+import groovy.lang.ExpandoMetaClassCreationHandle.enable
 import java.util.Locale
 
 plugins {
@@ -37,7 +38,7 @@ plugins {
     alias(libs.plugins.licensee)
     alias(libs.plugins.kotlin.serialization)
     // To be able to update the firebase.xml files, uncomment and build the project
-    // alias(libs.plugins.gms.google.services)
+//    alias(libs.plugins.gms.google.services)
 }
 
 setupKover()
@@ -60,6 +61,7 @@ android {
         splits {
             // Configures multiple APKs based on ABI.
             abi {
+                //noinspection WrongGradleMethod
                 val buildingAppBundle = gradle.startParameter.taskNames.any { it.contains("bundle") }
 
                 // Enables building multiple APKs per ABI. This should be disabled when building an AAB.
@@ -129,25 +131,25 @@ android {
             signingConfig = signingConfigs.getByName("debug")
 
             optimization {
-                enable = true
+//                enable = true
                 keepRules {
-                    files.add(File(projectDir, "common-proguard-rules.pro"))
-                    files.add(getDefaultProguardFile("proguard-android-optimize.txt"))
+//                    files.add(File(projectDir, "common-proguard-rules.pro"))
+//                    files.add(getDefaultProguardFile("proguard-android-optimize.txt"))
 
                     // Depending on whether the app flavor is enterprise or not we want to use different proguard rules.
                     val flavorProguardFile = if (isEnterpriseBuild) {
                         // Custom rules for enterprise builds
-                        File(projectDir, "enterprise-proguard-rules.pro")
+//                        File(projectDir, "enterprise-proguard-rules.pro")
                     } else {
                         // These default rules prevent the OSS app from being obfuscated
-                        File(projectDir, "default-proguard-rules.pro")
+//                        File(projectDir, "default-proguard-rules.pro")
                     }
 
-                    if (flavorProguardFile.exists()) {
-                        files.add(flavorProguardFile)
-                    } else {
-                        logger.warn("Proguard file ${flavorProguardFile.absolutePath} does not exist")
-                    }
+//                    if (flavorProguardFile.exists()) {
+//                        files.add(flavorProguardFile)
+//                    } else {
+//                        logger.warn("Proguard file ${flavorProguardFile.absolutePath} does not exist")
+//                    }
                 }
             }
         }

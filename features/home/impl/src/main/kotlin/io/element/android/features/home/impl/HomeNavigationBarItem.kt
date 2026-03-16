@@ -8,6 +8,7 @@
 
 package io.element.android.features.home.impl
 
+import android.R.attr.entries
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import io.element.android.compound.tokens.generated.CompoundIcons
@@ -22,6 +23,7 @@ enum class HomeNavigationBarItem(
     Spaces(
         labelRes = R.string.screen_home_tab_spaces
     );
+
 
     @Composable
     fun icon(
