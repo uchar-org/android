@@ -16,16 +16,27 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -36,6 +47,7 @@ import io.element.android.features.home.impl.R
 import io.element.android.features.home.impl.contentType
 import io.element.android.features.home.impl.filters.RoomListFilter
 import io.element.android.features.home.impl.filters.RoomListFiltersEmptyStateResources
+import io.element.android.features.home.impl.filters.RoomListFiltersEvent
 import io.element.android.features.home.impl.filters.RoomListFiltersState
 import io.element.android.features.home.impl.filters.aRoomListFiltersState
 import io.element.android.features.home.impl.filters.selection.FilterSelectionState
@@ -47,6 +59,7 @@ import io.element.android.features.home.impl.roomlist.RoomListEvent
 import io.element.android.features.home.impl.roomlist.SecurityBannerState
 import io.element.android.features.home.impl.spacefilters.SpaceFiltersState
 import io.element.android.features.home.impl.spacefilters.anUnselectedSpaceFiltersState
+import io.element.android.libraries.core.coroutine.suspendLazy
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Button
@@ -56,6 +69,8 @@ import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.utils.OnVisibleRangeChangeEffect
 import io.element.android.libraries.ui.strings.CommonStrings
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 @Composable
 fun RoomListContentView(
@@ -72,6 +87,11 @@ fun RoomListContentView(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
+
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(pageCount = { HomeTabs.entries.size })
+    val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
+
     when (contentState) {
         is RoomListContentState.Skeleton -> {
             SkeletonView(
@@ -91,19 +111,128 @@ fun RoomListContentView(
             )
         }
         is RoomListContentState.Rooms -> {
-            RoomsView(
-                modifier = modifier,
-                state = contentState,
-                hideInvitesAvatars = hideInvitesAvatars,
-                filtersState = filtersState,
-                spaceFiltersState = spaceFiltersState,
-                eventSink = eventSink,
-                onSetUpRecoveryClick = onSetUpRecoveryClick,
-                onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-                onRoomClick = onRoomClick,
-                lazyListState = lazyListState,
-                contentPadding = contentPadding,
-            )
+
+            Column {
+                Box(modifier = Modifier.size(size = 100.dp)) {}
+                SecondaryTabRow(
+                    selectedTabIndex = selectedTabIndex.value,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(shape = RoundedCornerShape(16.dp)),
+                ) {
+                    HomeTabs.entries.forEachIndexed { index, currentTab ->
+                        Tab(
+                            selected = selectedTabIndex.value == index,
+                            selectedContentColor = MaterialTheme.colorScheme.primary,
+                            onClick = {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(currentTab.ordinal)
+                                }
+                            },
+                            text = { androidx.compose.material3.Text(text = currentTab.text) },
+                        )
+                    }
+                }
+
+                HorizontalPager(
+                    state = pagerState, modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+
+                        if (HomeTabs.entries[selectedTabIndex.value].text == "All") {
+
+                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+
+
+                            RoomsView(
+                                modifier = modifier,
+                                state = contentState,
+                                hideInvitesAvatars = hideInvitesAvatars,
+                                filtersState = filtersState,
+                                spaceFiltersState = spaceFiltersState,
+                                eventSink = eventSink,
+                                onSetUpRecoveryClick = onSetUpRecoveryClick,
+                                onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
+                                onRoomClick = onRoomClick,
+                                lazyListState = lazyListState,
+                                contentPadding = contentPadding,
+                            )
+                        } else if (HomeTabs.entries[selectedTabIndex.value].text == "Unread") {
+                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+
+                                filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Unread))
+
+
+                            RoomsView(
+                                modifier = modifier,
+                                state = contentState,
+                                hideInvitesAvatars = hideInvitesAvatars,
+                                filtersState = filtersState,
+                                spaceFiltersState = spaceFiltersState,
+                                eventSink = eventSink,
+                                onSetUpRecoveryClick = onSetUpRecoveryClick,
+                                onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
+                                onRoomClick = onRoomClick,
+                                lazyListState = lazyListState,
+                                contentPadding = contentPadding,
+                            )
+                        } else if (HomeTabs.entries[selectedTabIndex.value].text == "Rooms") {
+                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+
+                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
+                            RoomsView(
+                                modifier = modifier,
+                                state = contentState,
+                                hideInvitesAvatars = hideInvitesAvatars,
+                                filtersState = filtersState,
+                                spaceFiltersState = spaceFiltersState,
+                                eventSink = eventSink,
+                                onSetUpRecoveryClick = onSetUpRecoveryClick,
+                                onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
+                                onRoomClick = onRoomClick,
+                                lazyListState = lazyListState,
+                                contentPadding = contentPadding,
+                            )
+                        } else {
+                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+
+                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Invites))
+                            RoomsView(
+                                modifier = modifier,
+                                state = contentState,
+                                hideInvitesAvatars = hideInvitesAvatars,
+                                filtersState = filtersState,
+                                spaceFiltersState = spaceFiltersState,
+                                eventSink = eventSink,
+                                onSetUpRecoveryClick = onSetUpRecoveryClick,
+                                onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
+                                onRoomClick = onRoomClick,
+                                lazyListState = lazyListState,
+                                contentPadding = contentPadding,
+                            )
+                        }
+                    }
+                }
+
+//                RoomsView(
+//                    modifier = modifier,
+//                    state = contentState,
+//                    hideInvitesAvatars = hideInvitesAvatars,
+//                    filtersState = filtersState,
+//                    spaceFiltersState = spaceFiltersState,
+//                    eventSink = eventSink,
+//                    onSetUpRecoveryClick = onSetUpRecoveryClick,
+//                    onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
+//                    onRoomClick = onRoomClick,
+//                    lazyListState = lazyListState,
+//                    contentPadding = contentPadding,
+//                )
+            }
         }
     }
 }
@@ -189,9 +318,7 @@ private fun RoomsView(
     val hasAnyFilterSelected = filtersState.hasAnyFilterSelected || isSpaceFilterSelected
     if (state.summaries.isEmpty() && hasAnyFilterSelected) {
         EmptyViewForFilterStates(
-            selectedFilters = filtersState.selectedFilters(),
-            isSpaceFilterSelected = isSpaceFilterSelected,
-            modifier = modifier.fillMaxSize()
+            selectedFilters = filtersState.selectedFilters(), isSpaceFilterSelected = isSpaceFilterSelected, modifier = modifier.fillMaxSize()
         )
     } else {
         RoomsViewList(
@@ -271,8 +398,7 @@ private fun RoomsViewList(
             RoomSummaryRow(
                 room = room,
                 hideInviteAvatars = hideInvitesAvatars,
-                isInviteSeen = room.displayType == RoomSummaryDisplayType.INVITE &&
-                    state.seenRoomInvites.contains(room.roomId),
+                isInviteSeen = room.displayType == RoomSummaryDisplayType.INVITE && state.seenRoomInvites.contains(room.roomId),
                 onClick = onRoomClick,
                 eventSink = eventSink,
             )
@@ -305,9 +431,7 @@ private fun EmptyScaffold(
     action: @Composable (ColumnScope.() -> Unit)? = null,
 ) {
     Column(
-        modifier = modifier.padding(horizontal = 60.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = modifier.padding(horizontal = 60.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = stringResource(title),
@@ -335,11 +459,9 @@ internal fun RoomListContentViewPreview(@PreviewParameter(RoomListContentStatePr
         filtersState = aRoomListFiltersState(
             filterSelectionStates = RoomListFilter.entries.map {
                 FilterSelectionState(
-                    filter = it,
-                    isSelected = true
+                    filter = it, isSelected = true
                 )
-            }
-        ),
+            }),
         spaceFiltersState = anUnselectedSpaceFiltersState(),
         hideInvitesAvatars = false,
         eventSink = {},
@@ -349,5 +471,22 @@ internal fun RoomListContentViewPreview(@PreviewParameter(RoomListContentStatePr
         onCreateRoomClick = {},
         lazyListState = rememberLazyListState(),
         contentPadding = PaddingValues(0.dp),
+    )
+}
+
+enum class HomeTabs(
+    val text: String
+) {
+    All(
+        text = "All"
+    ),
+    Unread(
+        text = "Unread"
+    ),
+    Groups(
+        text = "Rooms"
+    ),
+    Messages(
+        text = "Invites"
     )
 }

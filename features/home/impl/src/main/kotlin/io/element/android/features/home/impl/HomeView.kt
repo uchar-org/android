@@ -85,7 +85,6 @@ import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
 import io.element.android.libraries.designsystem.utils.snackbar.rememberSnackbarHostState
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.SessionId
-import io.element.android.libraries.matrix.api.core.UserId
 import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.ui.model.getAvatarData
 import io.element.android.libraries.testtags.TestTags
@@ -181,6 +180,8 @@ private fun HomeScaffold(
     val snackbarHostState = rememberSnackbarHostState(snackbarMessage = state.snackbarMessage)
     val roomListState: RoomListState = state.roomListState
 
+
+
     BackHandler(enabled = state.isBackHandlerEnabled) {
         if (state.currentHomeNavigationBarItem != HomeNavigationBarItem.Chats) {
             state.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Chats))
@@ -201,7 +202,6 @@ private fun HomeScaffold(
         topBar = {
             HomeTopBar(
                 selectedNavigationItem = state.currentHomeNavigationBarItem,
-//                currentUserAndNeighbors = state.currentUserAndNeighbors,
                 showAvatarIndicator = state.showAvatarIndicator,
                 areSearchResultsDisplayed = roomListState.searchState.isSearchActive,
                 onToggleSearch = { roomListState.eventSink(RoomListEvent.ToggleSearchResults) },
@@ -298,6 +298,7 @@ private fun HomeScaffold(
             )
             when (state.currentHomeNavigationBarItem) {
                 HomeNavigationBarItem.Chats -> {
+
                     RoomListContentView(
                         contentState = roomListState.contentState,
                         filtersState = roomListState.filtersState,
@@ -321,7 +322,7 @@ private fun HomeScaffold(
                                 )
                             )
                             .consumeWindowInsets(padding)
-                            .hazeSource(state = hazeState)
+                            .hazeSource(state = hazeState),
                     )
                     SpaceFiltersView(roomListState.spaceFiltersState)
                 }
@@ -510,3 +511,4 @@ internal fun HomeViewA11yPreview() = ElementPreview {
         leaveRoomView = {}
     )
 }
+
