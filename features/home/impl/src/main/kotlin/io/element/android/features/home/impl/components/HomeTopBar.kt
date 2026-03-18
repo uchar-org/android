@@ -153,7 +153,7 @@ fun HomeTopBar(
                     selectedContentColor = MaterialTheme.colorScheme.primary,
                     onClick = {
                         scope.launch {
-                            pagerState.animateScrollToPage(currentTab.ordinal)
+                            pagerState.scrollToPage(currentTab.ordinal)
                         }
 //                        if (HomeTabs.entries[selectedTabIndex.value].text == "All") {
 //                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)

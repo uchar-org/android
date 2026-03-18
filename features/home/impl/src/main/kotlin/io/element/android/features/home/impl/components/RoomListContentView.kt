@@ -27,6 +27,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -102,74 +103,96 @@ fun RoomListContentView(
 //                .fillMaxWidth()
 
             ) { page ->
-
+                var list: List<RoomListRoomSummary> = contentState.summaries
                 if (HomeTabs.entries[selectedTabIndex.value].text == "All") {
+                     list = contentState.summaries
 //                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-                    RoomsView(
-                        modifier = modifier,
-                        state = contentState,
-                        hideInvitesAvatars = hideInvitesAvatars,
-                        filtersState = filtersState,
-                        spaceFiltersState = spaceFiltersState,
-                        eventSink = eventSink,
-                        onSetUpRecoveryClick = onSetUpRecoveryClick,
-                        onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-                        onRoomClick = onRoomClick,
-                        lazyListState = lazyListState,
-                        contentPadding = contentPadding,
-                    )
+//                    RoomsView(
+//                        modifier = modifier,
+//                        state = contentState,
+//                        hideInvitesAvatars = hideInvitesAvatars,
+//                        filtersState = filtersState,
+//                        spaceFiltersState = spaceFiltersState,
+//                        eventSink = eventSink,
+//                        onSetUpRecoveryClick = onSetUpRecoveryClick,
+//                        onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
+//                        onRoomClick = onRoomClick,
+//                        lazyListState = lazyListState,
+//                        contentPadding = contentPadding,
+//                        list=list
+//                    )
                 } else
                     if (HomeTabs.entries[selectedTabIndex.value].text == "Unread") {
+                        list = contentState.summaries.fastFilter { it.isMarkedUnread }
+
 //                        filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
 //                        filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Unread))
-                        RoomsViewUnread(
-                            modifier = modifier,
-                            state = contentState,
-                            hideInvitesAvatars = hideInvitesAvatars,
-                            filtersState = filtersState,
-                            spaceFiltersState = spaceFiltersState,
-                            eventSink = eventSink,
-                            onSetUpRecoveryClick = onSetUpRecoveryClick,
-                            onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-                            onRoomClick = onRoomClick,
-                            lazyListState = lazyListState,
-                            contentPadding = contentPadding,
-                        )
+//                        RoomsViewUnread(
+//                            modifier = modifier,
+//                            state = contentState,
+//                            hideInvitesAvatars = hideInvitesAvatars,
+//                            filtersState = filtersState,
+//                            spaceFiltersState = spaceFiltersState,
+//                            eventSink = eventSink,
+//                            onSetUpRecoveryClick = onSetUpRecoveryClick,
+//                            onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
+//                            onRoomClick = onRoomClick,
+//                            lazyListState = lazyListState,
+//                            contentPadding = contentPadding,
+//                        )
                     } else
                         if (HomeTabs.entries[selectedTabIndex.value].text == "People") {
+                            list = contentState.summaries.fastFilter { it.isDirect }
+
 //                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
 //                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
-                            RoomsViewGroups(
-                                modifier = modifier,
-                                state = contentState,
-                                hideInvitesAvatars = hideInvitesAvatars,
-                                filtersState = filtersState,
-                                spaceFiltersState = spaceFiltersState,
-                                eventSink = eventSink,
-                                onSetUpRecoveryClick = onSetUpRecoveryClick,
-                                onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-                                onRoomClick = onRoomClick,
-                                lazyListState = lazyListState,
-                                contentPadding = contentPadding,
-                            )
+//                            RoomsViewGroups(
+//                                modifier = modifier,
+//                                state = contentState,
+//                                hideInvitesAvatars = hideInvitesAvatars,
+//                                filtersState = filtersState,
+//                                spaceFiltersState = spaceFiltersState,
+//                                eventSink = eventSink,
+//                                onSetUpRecoveryClick = onSetUpRecoveryClick,
+//                                onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
+//                                onRoomClick = onRoomClick,
+//                                lazyListState = lazyListState,
+//                                contentPadding = contentPadding,
+//                            )
                         } else if (HomeTabs.entries[selectedTabIndex.value].text == "Favourites") {
+                            list = contentState.summaries.fastFilter { it.isFavorite }
+
 //                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
 //                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Favourites))
-                            RoomsViewFavourites(
-                                modifier = modifier,
-                                state = contentState,
-                                hideInvitesAvatars = hideInvitesAvatars,
-                                filtersState = filtersState,
-                                spaceFiltersState = spaceFiltersState,
-                                eventSink = eventSink,
-                                onSetUpRecoveryClick = onSetUpRecoveryClick,
-                                onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-                                onRoomClick = onRoomClick,
-                                lazyListState = lazyListState,
-                                contentPadding = contentPadding,
-                            )
+//                            RoomsViewFavourites(
+//                                modifier = modifier,
+//                                state = contentState,
+//                                hideInvitesAvatars = hideInvitesAvatars,
+//                                filtersState = filtersState,
+//                                spaceFiltersState = spaceFiltersState,
+//                                eventSink = eventSink,
+//                                onSetUpRecoveryClick = onSetUpRecoveryClick,
+//                                onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
+//                                onRoomClick = onRoomClick,
+//                                lazyListState = lazyListState,
+//                                contentPadding = contentPadding,
+//                            )
                         }
 
+                RoomsView(
+                    modifier = modifier,
+                    state = contentState,
+                    hideInvitesAvatars = hideInvitesAvatars,
+                    filtersState = filtersState,
+                    spaceFiltersState = spaceFiltersState,
+                    eventSink = eventSink,
+                    onSetUpRecoveryClick = onSetUpRecoveryClick,
+                    onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
+                    onRoomClick = onRoomClick,
+                    lazyListState = lazyListState,
+                    contentPadding = contentPadding,
+                    list=list
+                )
 //                RoomsView(
 //                    modifier = modifier,
 //                    state = contentState,
@@ -265,6 +288,7 @@ private fun RoomsView(
     contentPadding: PaddingValues,
     lazyListState: LazyListState,
     modifier: Modifier = Modifier,
+    list: List<RoomListRoomSummary>
 ) {
     val isSpaceFilterSelected = spaceFiltersState is SpaceFiltersState.Selected
     val hasAnyFilterSelected = filtersState.hasAnyFilterSelected || isSpaceFilterSelected
@@ -283,8 +307,8 @@ private fun RoomsView(
             contentPadding = contentPadding,
             lazyListState = lazyListState,
             modifier = modifier.fillMaxSize(),
-
-            )
+            list = list
+        )
     }
 }
 
@@ -376,7 +400,9 @@ private fun RoomsViewUnread(
 ) {
     val isSpaceFilterSelected = spaceFiltersState is SpaceFiltersState.Selected
     val hasAnyFilterSelected = filtersState.hasAnyFilterSelected || isSpaceFilterSelected
-    if (state.summaries.isEmpty() && hasAnyFilterSelected) {
+    var list = state.summaries.fastFilter { it.isMarkedUnread }
+//    if (state.summaries.isEmpty() && hasAnyFilterSelected) {
+    if (list.isEmpty()) {
         EmptyViewForFilterStates(
             selectedFilters = filtersState.selectedFilters(), isSpaceFilterSelected = isSpaceFilterSelected, modifier = modifier.fillMaxSize()
         )
@@ -407,8 +433,8 @@ private fun RoomsViewList(
     contentPadding: PaddingValues,
     lazyListState: LazyListState,
     modifier: Modifier = Modifier,
-
-    ) {
+    list: List<RoomListRoomSummary>
+) {
 //    OnVisibleRangeChangeEffect(lazyListState) { visibleRange ->
 //        eventSink(RoomListEvent.UpdateVisibleRange(visibleRange))
 //    }
@@ -454,7 +480,8 @@ private fun RoomsViewList(
         }
 
         itemsIndexed(
-            items = state.summaries,
+//            items = state.summaries,
+            items =list,
             contentType = { _, room -> room.contentType() },
         ) { index, room ->
             RoomSummaryRow(
@@ -604,7 +631,6 @@ private fun RoomsViewListFavourites(
                 }
             }
         }
-
 
         var favorite =
             state.summaries.fastFilter { it.isFavorite }
