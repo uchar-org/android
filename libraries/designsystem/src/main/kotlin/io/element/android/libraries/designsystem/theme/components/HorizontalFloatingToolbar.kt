@@ -61,7 +61,6 @@ import kotlinx.collections.immutable.ImmutableList
 @OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HorizontalFloatingToolbar(
-//    currentUserAndNeighbors: ImmutableList<MatrixUser>,
     modifier: Modifier = Modifier,
     expanded: Boolean = true,
     floatingActionButton: (@Composable () -> Unit)? = null,
@@ -182,39 +181,6 @@ fun HorizontalFloatingToolbarSeparator(modifier: Modifier = Modifier) {
     Spacer(modifier = modifier.width(16.dp))
 }
 
-//@Composable
-//private fun AccountIcon(
-//    matrixUser: MatrixUser,
-//    isCurrentAccount: Boolean,
-//    showAvatarIndicator: Boolean,
-//    onClick: () -> Unit,
-//    modifier: Modifier = Modifier,
-//) {
-//    val testTag = if (isCurrentAccount) Modifier.testTag(TestTags.homeScreenSettings) else Modifier
-//    IconButton(
-//        modifier = modifier.then(testTag),
-//        onClick = onClick,
-//    ) {
-//        Box {
-//            val avatarData by remember(matrixUser) {
-//                derivedStateOf {
-//                    matrixUser.getAvatarData(size = AvatarSize.CurrentUserTopBar)
-//                }
-//            }
-//            Avatar(
-//                avatarData = avatarData,
-//                avatarType = AvatarType.User,
-//                contentDescription = if (isCurrentAccount) stringResource(CommonStrings.common_settings) else null,
-//            )
-//            if (showAvatarIndicator) {
-//                RedIndicatorAtom(
-//                    modifier = Modifier.align(Alignment.TopEnd)
-//                )
-//            }
-//        }
-//    }
-//}
-
 @PreviewsDayNight
 @Composable
 internal fun HorizontalFloatingToolbarPreview() = ElementPreview {
@@ -246,7 +212,6 @@ private fun ContentToPreview(
     floatingActionButton: (@Composable () -> Unit)?,
 ) {
     HorizontalFloatingToolbar(
-//        currentUserAndNeighbors: ImmutableList<MatrixUser>,
         modifier = Modifier.padding(28.dp),
         floatingActionButton = floatingActionButton,
     ) {

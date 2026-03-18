@@ -54,6 +54,7 @@ import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.chrisbanes.haze.rememberHazeState
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.features.home.impl.components.HomeTabs
 import io.element.android.features.home.impl.components.HomeTopBar
 import io.element.android.features.home.impl.components.RoomListContentView
 import io.element.android.features.home.impl.components.RoomListMenuAction
@@ -197,8 +198,13 @@ private fun HomeScaffold(
     val roomsLazyListState = rememberLazyListState()
     val spacesLazyListState = rememberLazyListState()
 
+
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(pageCount = { HomeTabs.entries.size })
+    val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
+            //.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             HomeTopBar(
                 selectedNavigationItem = state.currentHomeNavigationBarItem,
@@ -218,7 +224,10 @@ private fun HomeScaffold(
                 modifier = Modifier.hazeEffect(
                     state = hazeState,
                     style = HazeMaterials.thick(),
-                )
+                ),
+                selectedTabIndex = selectedTabIndex,
+                scope = scope,
+                pagerState = pagerState
             )
         },
         floatingActionButton = {
@@ -294,7 +303,7 @@ private fun HomeScaffold(
         floatingActionButtonPosition = if (state.showNavigationBar) FabPosition.Center else FabPosition.End,
         content = { padding ->
             val contentPadding = PaddingValues(
-                bottom = 96.dp,
+                bottom = 196.dp,
             )
             when (state.currentHomeNavigationBarItem) {
                 HomeNavigationBarItem.Chats -> {
@@ -317,12 +326,14 @@ private fun HomeScaffold(
                                     start = padding.calculateStartPadding(LocalLayoutDirection.current),
                                     end = padding.calculateEndPadding(LocalLayoutDirection.current),
                                     // Remove these two lines once https://issuetracker.google.com/issues/436432313 has been fixed
-                                    bottom = padding.calculateBottomPadding(),
-                                    top = padding.calculateTopPadding()
+//                                    bottom = padding.calculateBottomPadding(),
+                                    //top = padding.calculateTopPadding()
                                 )
                             )
                             .consumeWindowInsets(padding)
                             .hazeSource(state = hazeState),
+                        pagerState = pagerState,
+                        selectedTabIndex = selectedTabIndex
                     )
                     SpaceFiltersView(roomListState.spaceFiltersState)
                 }

@@ -11,18 +11,30 @@ package io.element.android.features.home.impl.components
 //import io.element.android.features.home.impl.filters.RoomListFiltersView
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
@@ -33,12 +45,16 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.home.impl.HomeNavigationBarItem
 import io.element.android.features.home.impl.R
+import io.element.android.features.home.impl.filters.RoomListFilter
+import io.element.android.features.home.impl.filters.RoomListFiltersEvent
 import io.element.android.features.home.impl.filters.RoomListFiltersState
+import io.element.android.features.home.impl.filters.RoomListFiltersView
 import io.element.android.features.home.impl.filters.aRoomListFiltersState
 import io.element.android.features.home.impl.spacefilters.SpaceFiltersEvent
 import io.element.android.features.home.impl.spacefilters.SpaceFiltersState
 import io.element.android.features.home.impl.spacefilters.aSelectedSpaceFiltersState
 import io.element.android.features.home.impl.spacefilters.anUnselectedSpaceFiltersState
+import io.element.android.libraries.designsystem.components.TopAppBarScrollBehaviorLayout
 import io.element.android.libraries.designsystem.modifiers.backgroundVerticalGradient
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
@@ -51,6 +67,10 @@ import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.ui.strings.CommonStrings
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.time.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +89,9 @@ fun HomeTopBar(
     filtersState: RoomListFiltersState,
     spaceFiltersState: SpaceFiltersState,
     modifier: Modifier = Modifier,
+    selectedTabIndex: State<Int>,
+    scope: CoroutineScope,
+    pagerState: PagerState
 ) {
     Column(modifier) {
         TopAppBar(
@@ -99,14 +122,6 @@ fun HomeTopBar(
                     text = displayTitle,
                 )
             },
-//            navigationIcon = {
-//                NavigationIcon(
-//                    currentUserAndNeighbors = currentUserAndNeighbors,
-//                    showAvatarIndicator = showAvatarIndicator,
-//                    onAccountSwitch = onAccountSwitch,
-//                    onClick = onOpenSettings,
-//                )
-//            },
             actions = {
                 if (selectedNavigationItem == HomeNavigationBarItem.Chats) {
                     RoomListMenuItems(
@@ -123,6 +138,42 @@ fun HomeTopBar(
             // 4dp extra padding using left insets
             windowInsets = WindowInsets(left = 4.dp),
         )
+
+
+        PrimaryTabRow(
+            selectedTabIndex = selectedTabIndex.value,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .clip(shape = RoundedCornerShape(16.dp)),
+        ) {
+            HomeTabs.entries.forEachIndexed { index, currentTab ->
+                Tab(
+                    selected = selectedTabIndex.value == index,
+                    selectedContentColor = MaterialTheme.colorScheme.primary,
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(currentTab.ordinal)
+                        }
+//                        if (HomeTabs.entries[selectedTabIndex.value].text == "All") {
+//                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+//                        } else
+//                            if (HomeTabs.entries[selectedTabIndex.value].text == "Unread") {
+//                                filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+//                                filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Unread))
+//                            } else
+//                                if (HomeTabs.entries[selectedTabIndex.value].text == "Rooms") {
+//                                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+//                                    filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
+//                                } else {
+//                                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+//                                    filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Favourites))
+//                                }
+                    },
+                    text = { androidx.compose.material3.Text(text = currentTab.text) },
+                )
+            }
+        }
 //        if (displayFilters) {
 //            TopAppBarScrollBehaviorLayout(scrollBehavior = scrollBehavior) {
 //                RoomListFiltersView(
@@ -213,6 +264,7 @@ private fun SpaceFilterButton(
             else -> Unit
         }
     }
+
     val isSelected = spaceFiltersState is SpaceFiltersState.Selected
     IconButton(
         onClick = ::onClick,
@@ -232,103 +284,102 @@ private fun SpaceFilterButton(
     }
 }
 
+//@OptIn(ExperimentalMaterial3Api::class)
+//@PreviewsDayNight
+//@Composable
+//internal fun HomeTopBarPreview() = ElementPreview {
+//    HomeTopBar(
+//        selectedNavigationItem = HomeNavigationBarItem.Chats,
+//        showAvatarIndicator = false,
+//        areSearchResultsDisplayed = false,
+//        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
+//        onOpenSettings = {},
+//        onAccountSwitch = {},
+//        onToggleSearch = {},
+//        canReportBug = true,
+//        displayFilters = true,
+//        filtersState = aRoomListFiltersState(),
+//        spaceFiltersState = anUnselectedSpaceFiltersState(),
+//        onMenuActionClick = {},
+//    )
+//}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@PreviewsDayNight
-@Composable
-internal fun HomeTopBarPreview() = ElementPreview {
-    HomeTopBar(
-        selectedNavigationItem = HomeNavigationBarItem.Chats,
-        showAvatarIndicator = false,
-        areSearchResultsDisplayed = false,
-        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
-        onOpenSettings = {},
-        onAccountSwitch = {},
-        onToggleSearch = {},
-        canReportBug = true,
-        displayFilters = true,
-        filtersState = aRoomListFiltersState(),
-        spaceFiltersState = anUnselectedSpaceFiltersState(),
-        onMenuActionClick = {},
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@PreviewsDayNight
-@Composable
-internal fun HomeTopBarSpaceFiltersSelectedPreview() = ElementPreview {
-    HomeTopBar(
-        selectedNavigationItem = HomeNavigationBarItem.Chats,
-        showAvatarIndicator = false,
-        areSearchResultsDisplayed = false,
-        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
-        onOpenSettings = {},
-        onAccountSwitch = {},
-        onToggleSearch = {},
-        canReportBug = true,
-        displayFilters = true,
-        filtersState = aRoomListFiltersState(),
-        spaceFiltersState = aSelectedSpaceFiltersState(),
-        onMenuActionClick = {},
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@PreviewsDayNight
-@Composable
-internal fun HomeTopBarSpacesPreview() = ElementPreview {
-    HomeTopBar(
-        selectedNavigationItem = HomeNavigationBarItem.Spaces,
-        showAvatarIndicator = false,
-        areSearchResultsDisplayed = false,
-        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
-        onOpenSettings = {},
-        onAccountSwitch = {},
-        onToggleSearch = {},
-        canReportBug = true,
-        displayFilters = false,
-        filtersState = aRoomListFiltersState(),
-        spaceFiltersState = anUnselectedSpaceFiltersState(),
-        onMenuActionClick = {},
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@PreviewsDayNight
-@Composable
-internal fun HomeTopBarWithIndicatorPreview() = ElementPreview {
-    HomeTopBar(
-        selectedNavigationItem = HomeNavigationBarItem.Chats,
-        showAvatarIndicator = true,
-        areSearchResultsDisplayed = false,
-        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
-        onOpenSettings = {},
-        onAccountSwitch = {},
-        onToggleSearch = {},
-        canReportBug = true,
-        displayFilters = true,
-        filtersState = aRoomListFiltersState(),
-        spaceFiltersState = anUnselectedSpaceFiltersState(),
-        onMenuActionClick = {},
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@PreviewsDayNight
-@Composable
-internal fun HomeTopBarMultiAccountPreview() = ElementPreview {
-    HomeTopBar(
-        selectedNavigationItem = HomeNavigationBarItem.Chats,
-        showAvatarIndicator = false,
-        areSearchResultsDisplayed = false,
-        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
-        onOpenSettings = {},
-        onAccountSwitch = {},
-        onToggleSearch = {},
-        canReportBug = true,
-        displayFilters = true,
-        filtersState = aRoomListFiltersState(),
-        spaceFiltersState = anUnselectedSpaceFiltersState(),
-        onMenuActionClick = {},
-    )
-}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@PreviewsDayNight
+//@Composable
+//internal fun HomeTopBarSpaceFiltersSelectedPreview() = ElementPreview {
+//    HomeTopBar(
+//        selectedNavigationItem = HomeNavigationBarItem.Chats,
+//        showAvatarIndicator = false,
+//        areSearchResultsDisplayed = false,
+//        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
+//        onOpenSettings = {},
+//        onAccountSwitch = {},
+//        onToggleSearch = {},
+//        canReportBug = true,
+//        displayFilters = true,
+//        filtersState = aRoomListFiltersState(),
+//        spaceFiltersState = aSelectedSpaceFiltersState(),
+//        onMenuActionClick = {},
+//    )
+//}
+//
+//@OptIn(ExperimentalMaterial3Api::class)
+//@PreviewsDayNight
+//@Composable
+//internal fun HomeTopBarSpacesPreview() = ElementPreview {
+//    HomeTopBar(
+//        selectedNavigationItem = HomeNavigationBarItem.Spaces,
+//        showAvatarIndicator = false,
+//        areSearchResultsDisplayed = false,
+//        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
+//        onOpenSettings = {},
+//        onAccountSwitch = {},
+//        onToggleSearch = {},
+//        canReportBug = true,
+//        displayFilters = false,
+//        filtersState = aRoomListFiltersState(),
+//        spaceFiltersState = anUnselectedSpaceFiltersState(),
+//        onMenuActionClick = {},
+//    )
+//}
+//
+//@OptIn(ExperimentalMaterial3Api::class)
+//@PreviewsDayNight
+//@Composable
+//internal fun HomeTopBarWithIndicatorPreview() = ElementPreview {
+//    HomeTopBar(
+//        selectedNavigationItem = HomeNavigationBarItem.Chats,
+//        showAvatarIndicator = true,
+//        areSearchResultsDisplayed = false,
+//        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
+//        onOpenSettings = {},
+//        onAccountSwitch = {},
+//        onToggleSearch = {},
+//        canReportBug = true,
+//        displayFilters = true,
+//        filtersState = aRoomListFiltersState(),
+//        spaceFiltersState = anUnselectedSpaceFiltersState(),
+//        onMenuActionClick = {},
+//    )
+//}
+//
+//@OptIn(ExperimentalMaterial3Api::class)
+//@PreviewsDayNight
+//@Composable
+//internal fun HomeTopBarMultiAccountPreview() = ElementPreview {
+//    HomeTopBar(
+//        selectedNavigationItem = HomeNavigationBarItem.Chats,
+//        showAvatarIndicator = false,
+//        areSearchResultsDisplayed = false,
+//        scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
+//        onOpenSettings = {},
+//        onAccountSwitch = {},
+//        onToggleSearch = {},
+//        canReportBug = true,
+//        displayFilters = true,
+//        filtersState = aRoomListFiltersState(),
+//        spaceFiltersState = anUnselectedSpaceFiltersState(),
+//        onMenuActionClick = {},
+//    )
+//}
