@@ -86,6 +86,10 @@ class HomePresenter(
                     if (event.item == HomeNavigationBarItem.Spaces) {
                         announcementService.showAnnouncement(Announcement.Space)
                     }
+//                    else  if (event.item == HomeNavigationBarItem.Chats){
+//                        announcementService.showAnnouncement(Announcement.NewNotificationSound)
+//
+//                    }
                     currentHomeNavigationBarItemOrdinal = event.item.ordinal
                 }
                 is HomeEvent.SwitchToAccount -> coroutineState.launch {

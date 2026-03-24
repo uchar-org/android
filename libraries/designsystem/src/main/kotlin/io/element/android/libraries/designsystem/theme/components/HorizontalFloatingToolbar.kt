@@ -173,6 +173,7 @@ fun HorizontalFloatingToolbarItem(
                 )
             }
         }
+
     }
 }
 
@@ -223,6 +224,7 @@ private fun ContentToPreview(
                 HorizontalFloatingToolbarSeparator()
             }
             HorizontalFloatingToolbarItem(
+
                 icon = icon,
                 tooltipLabel = "Label",
                 isSelected = index == 0,
