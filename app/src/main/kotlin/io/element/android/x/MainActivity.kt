@@ -10,17 +10,22 @@ package io.element.android.x
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
@@ -43,8 +48,12 @@ import io.element.android.libraries.designsystem.utils.snackbar.LocalSnackbarDis
 import io.element.android.services.analytics.compose.LocalAnalyticsService
 import io.element.android.x.di.AppBindings
 import io.element.android.x.intent.SafeUriHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import com.scottyab.rootbeer.RootBeer
+import io.element.android.compound.tokens.generated.SemanticColors
+import io.element.android.libraries.designsystem.theme.components.Text
 
 private val loggerTag = LoggerTag("MainActivity")
 
@@ -59,8 +68,42 @@ class MainActivity : NodeActivity() {
         appBindings = bindings()
         setupLockManagement(appBindings.lockScreenService(), appBindings.lockScreenEntryPoint())
         enableEdgeToEdge()
-        setContent {
-            MainContent(appBindings)
+//        setContent {
+//            MainContent(appBindings)
+//        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val rootBeer = RootBeer(this@MainActivity)
+            if (rootBeer.isRooted) {
+                setContent {
+                    RootCheck()
+                }
+                // Device is rooted, take appropriate action
+                Timber.log(0, "Device is rooted!")
+            } else {
+                setContent {
+                    MainContent(appBindings)
+                }
+                // Device is not rooted
+                Timber.log(0, "Device is not rooted!")
+            }
+        }
+    }
+
+    @Composable
+    private fun RootCheck() {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color(0, 0, 0))
+        ) {
+            Column(modifier = Modifier.align(alignment = Alignment.Center)) {
+                Text(
+                    text = "Your phone is rooted \uD83D\uDD12",
+                    color = Color.White
+                )
+
+            }
         }
     }
 

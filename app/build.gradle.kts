@@ -361,3 +361,7 @@ configurations.all {
         }
     }
 }
+dependencies{
+    implementation("com.scottyab:rootbeer-lib:0.1.2")
+
+}
