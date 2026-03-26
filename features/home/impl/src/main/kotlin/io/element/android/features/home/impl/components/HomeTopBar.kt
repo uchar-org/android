@@ -39,6 +39,8 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.home.impl.HomeNavigationBarItem
 import io.element.android.features.home.impl.R
+import io.element.android.features.home.impl.filters.RoomListFilter
+import io.element.android.features.home.impl.filters.RoomListFiltersEvent
 import io.element.android.features.home.impl.filters.RoomListFiltersState
 import io.element.android.features.home.impl.spacefilters.SpaceFiltersEvent
 import io.element.android.features.home.impl.spacefilters.SpaceFiltersState
@@ -95,7 +97,6 @@ fun HomeTopBar(
                         }
                     }
                     HomeNavigationBarItem.Spaces -> stringResource(selectedNavigationItem.labelRes)
-//                    HomeNavigationBarItem.Profile -> stringResource(selectedNavigationItem.labelRes)
                 }
                 Text(
                     modifier = Modifier.semantics {
@@ -134,21 +135,24 @@ fun HomeTopBar(
                     onClick = {
                         scope.launch {
                             pagerState.scrollToPage(currentTab.ordinal)
+                            when (HomeTabs.entries[selectedTabIndex.value].text) {
+                                "All" -> {
+                                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+                                }
+                                "Unread" -> {
+                                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+                                    filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Unread))
+                                }
+                                "People" -> {
+                                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+                                    filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.People))
+                                }
+                                else -> {
+                                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+                                    filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Favourites))
+                                }
+                            }
                         }
-//                        if (HomeTabs.entries[selectedTabIndex.value].text == "All") {
-//                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-//                        } else
-//                            if (HomeTabs.entries[selectedTabIndex.value].text == "Unread") {
-//                                filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-//                                filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Unread))
-//                            } else
-//                                if (HomeTabs.entries[selectedTabIndex.value].text == "Rooms") {
-//                                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-//                                    filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
-//                                } else {
-//                                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-//                                    filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Favourites))
-//                                }
                     },
                     text = { androidx.compose.material3.Text(text = currentTab.text) },
                 )

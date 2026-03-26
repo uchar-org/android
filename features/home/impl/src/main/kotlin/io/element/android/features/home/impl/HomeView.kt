@@ -5,21 +5,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
-
 @file:OptIn(ExperimentalHazeMaterialsApi::class)
 
 package io.element.android.features.home.impl
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.unveilIn
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -41,7 +42,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -82,7 +82,6 @@ import io.element.android.libraries.designsystem.theme.components.HorizontalFloa
 import io.element.android.libraries.designsystem.theme.components.HorizontalFloatingToolbarSeparator
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconButton
-import io.element.android.libraries.designsystem.theme.components.NavigationBarItem
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
 import io.element.android.libraries.designsystem.utils.snackbar.rememberSnackbarHostState
@@ -199,14 +198,12 @@ private fun HomeScaffold(
     val hazeState = rememberHazeState()
     val roomsLazyListState = rememberLazyListState()
     val spacesLazyListState = rememberLazyListState()
-    val profileLazyListState = rememberLazyListState()
 
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { HomeTabs.entries.size })
     val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
     Scaffold(
         modifier = modifier,
-        //.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             HomeTopBar(
                 selectedNavigationItem = state.currentHomeNavigationBarItem,
@@ -232,24 +229,31 @@ private fun HomeScaffold(
                 pagerState = pagerState
             )
         },
-        floatingActionButton = {
-            if (state.showNavigationBar) {
-                val coroutineScope = rememberCoroutineScope()
-                Row(
-                    modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
+        bottomBar = {
+            val coroutineScope = rememberCoroutineScope()
+
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+
+                    modifier = Modifier
+                        .padding(bottom = 24.dp)
+                        .align(Alignment.BottomCenter),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
                 ) {
                     HomeBottomBar(
                         onOpenSettings = onOpenSettings,
                         state = state,
                         currentHomeNavigationBarItem = state.currentHomeNavigationBarItem,
                         onItemClick = { item ->
+
                             // scroll to top if selecting the same item
                             if (item == state.currentHomeNavigationBarItem) {
                                 val lazyListStateTarget = when (item) {
                                     HomeNavigationBarItem.Chats -> roomsLazyListState
                                     HomeNavigationBarItem.Spaces -> spacesLazyListState
-//                                    HomeNavigationBarItem.Profile -> profileLazyListState
                                 }
                                 coroutineScope.launch {
                                     if (lazyListStateTarget.firstVisibleItemIndex > 10) {
@@ -266,57 +270,35 @@ private fun HomeScaffold(
                         floatingActionButton = when (state.currentHomeNavigationBarItem) {
                             HomeNavigationBarItem.Chats -> {
                                 {
-
                                     HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
-
                                 }
                             }
                             HomeNavigationBarItem.Spaces -> if (state.homeSpacesState.canCreateSpaces) {
                                 {
                                     HomeFloatingActionButton(onCreateSpaceClick, CommonStrings.action_create_space)
-
                                 }
                             } else {
-                                // No FAB for spaces if we cannot create spaces
                                 null
                             }
-//                            HomeNavigationBarItem.Profile -> {
-//                                {
-//                                    state.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Profile))
-//
-////                                    onOpenSettings
-////                                    HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
-//
-//                                }
-//                            }
-
                         },
                     )
-//                    NavigationIcon(
-//                        currentUserAndNeighbors = state.currentUserAndNeighbors,
-//                        showAvatarIndicator = state.showAvatarIndicator,
-//                        onAccountSwitch = {
-//                            state.eventSink(HomeEvent.SwitchToAccount(it))
-//                        },
-//                        onClick = onOpenSettings,
-//                    )
+                }
+            }
+        },
+        floatingActionButton = {
+            if (state.showNavigationBar) {
+                if (state.currentHomeNavigationBarItem == HomeNavigationBarItem.Chats) {
+                    HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
+                } else if (state.currentHomeNavigationBarItem == HomeNavigationBarItem.Spaces) {
+                    HomeFloatingActionButton(onCreateSpaceClick, CommonStrings.action_create_space)
                 }
             } else {
                 Row {
                     HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
-//                    NavigationIcon(
-//                        currentUserAndNeighbors = state.currentUserAndNeighbors,
-//                        showAvatarIndicator = state.showAvatarIndicator,
-//                        onAccountSwitch = {
-//                            state.eventSink(HomeEvent.SwitchToAccount(it))
-//                        },
-//                        onClick = onOpenSettings,
-//                    )
                 }
             }
-
         },
-        floatingActionButtonPosition = if (state.showNavigationBar) FabPosition.Center else FabPosition.End,
+        floatingActionButtonPosition = FabPosition.End,
         content = { padding ->
             val contentPadding = PaddingValues(
                 bottom = 196.dp,
@@ -341,9 +323,6 @@ private fun HomeScaffold(
                                 PaddingValues(
                                     start = padding.calculateStartPadding(LocalLayoutDirection.current),
                                     end = padding.calculateEndPadding(LocalLayoutDirection.current),
-                                    // Remove these two lines once https://issuetracker.google.com/issues/436432313 has been fixed
-//                                    bottom = padding.calculateBottomPadding(),
-                                    //top = padding.calculateTopPadding()
                                 )
                             )
                             .consumeWindowInsets(padding)
@@ -367,14 +346,9 @@ private fun HomeScaffold(
                             onRoomClick(spaceId)
                         },
                         onCreateSpaceClick = onCreateSpaceClick,
-                        // TODO use actual callbacks for this
                         onExploreClick = {},
                     )
                 }
-//                HomeNavigationBarItem.Profile -> {
-//
-//                }
-
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -406,7 +380,7 @@ private fun HomeBottomBar(
     floatingActionButton: (@Composable () -> Unit)?,
 ) {
     HorizontalFloatingToolbar(
-        floatingActionButton = floatingActionButton,
+        //            floatingActionButton = floatingActionButton,
         modifier = modifier
             .zIndex(1f),
     ) {
@@ -421,7 +395,7 @@ private fun HomeBottomBar(
                 isSelected = isSelected,
                 onClick = { onItemClick(item) },
             )
-          if(index>0)  NavigationIcon(
+            if (index > 0) NavigationIcon(
                 currentUserAndNeighbors = state.currentUserAndNeighbors,
                 showAvatarIndicator = state.showAvatarIndicator,
                 onAccountSwitch = {
@@ -431,14 +405,6 @@ private fun HomeBottomBar(
             )
         }
     }
-//    NavigationIcon(
-//        currentUserAndNeighbors = state.currentUserAndNeighbors,
-//        showAvatarIndicator = state.showAvatarIndicator,
-//        onAccountSwitch = {
-//            state.eventSink(HomeEvent.SwitchToAccount(it))
-//        },
-//        onClick = onOpenSettings,
-//    )
 }
 
 @Composable

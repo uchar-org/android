@@ -103,81 +103,32 @@ fun RoomListContentView(
 //                .fillMaxWidth()
 
             ) { page ->
-                var list: List<RoomListRoomSummary> = contentState.summaries
-                if (HomeTabs.entries[selectedTabIndex.value].text == "All") {
-                     list = contentState.summaries
-//                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-//                    RoomsView(
-//                        modifier = modifier,
-//                        state = contentState,
-//                        hideInvitesAvatars = hideInvitesAvatars,
-//                        filtersState = filtersState,
-//                        spaceFiltersState = spaceFiltersState,
-//                        eventSink = eventSink,
-//                        onSetUpRecoveryClick = onSetUpRecoveryClick,
-//                        onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-//                        onRoomClick = onRoomClick,
-//                        lazyListState = lazyListState,
-//                        contentPadding = contentPadding,
-//                        list=list
-//                    )
-                } else
-                    if (HomeTabs.entries[selectedTabIndex.value].text == "Unread") {
-                        list = contentState.summaries.fastFilter { it.isMarkedUnread }
+//                var list: List<RoomListRoomSummary> = contentState.summaries
+//                if (HomeTabs.entries[selectedTabIndex.value].text == "All") {
+//                     list = contentState.summaries
+////                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
 
-//                        filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-//                        filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Unread))
-//                        RoomsViewUnread(
-//                            modifier = modifier,
-//                            state = contentState,
-//                            hideInvitesAvatars = hideInvitesAvatars,
-//                            filtersState = filtersState,
-//                            spaceFiltersState = spaceFiltersState,
-//                            eventSink = eventSink,
-//                            onSetUpRecoveryClick = onSetUpRecoveryClick,
-//                            onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-//                            onRoomClick = onRoomClick,
-//                            lazyListState = lazyListState,
-//                            contentPadding = contentPadding,
-//                        )
-                    } else
-                        if (HomeTabs.entries[selectedTabIndex.value].text == "People") {
-                            list = contentState.summaries.fastFilter { it.isDirect }
+//                } else
+//                    if (HomeTabs.entries[selectedTabIndex.value].text == "Unread") {
+//                        list = contentState.summaries.fastFilter { it.isMarkedUnread }
+//
+////                        filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+////                        filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Unread))
 
-//                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-//                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
-//                            RoomsViewGroups(
-//                                modifier = modifier,
-//                                state = contentState,
-//                                hideInvitesAvatars = hideInvitesAvatars,
-//                                filtersState = filtersState,
-//                                spaceFiltersState = spaceFiltersState,
-//                                eventSink = eventSink,
-//                                onSetUpRecoveryClick = onSetUpRecoveryClick,
-//                                onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-//                                onRoomClick = onRoomClick,
-//                                lazyListState = lazyListState,
-//                                contentPadding = contentPadding,
-//                            )
-                        } else if (HomeTabs.entries[selectedTabIndex.value].text == "Favourites") {
-                            list = contentState.summaries.fastFilter { it.isFavorite }
+//                    } else
+//                        if (HomeTabs.entries[selectedTabIndex.value].text == "People") {
+//                            list = contentState.summaries.fastFilter { it.isDirect }
+//
+////                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+////                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
 
-//                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-//                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Favourites))
-//                            RoomsViewFavourites(
-//                                modifier = modifier,
-//                                state = contentState,
-//                                hideInvitesAvatars = hideInvitesAvatars,
-//                                filtersState = filtersState,
-//                                spaceFiltersState = spaceFiltersState,
-//                                eventSink = eventSink,
-//                                onSetUpRecoveryClick = onSetUpRecoveryClick,
-//                                onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-//                                onRoomClick = onRoomClick,
-//                                lazyListState = lazyListState,
-//                                contentPadding = contentPadding,
-//                            )
-                        }
+//                        } else
+//                            if (HomeTabs.entries[selectedTabIndex.value].text == "Favourites") {
+//                            list = contentState.summaries.fastFilter { it.isFavorite }
+//
+////                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+////                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Favourites))
+//                        }
 
                 RoomsView(
                     modifier = modifier,
@@ -191,22 +142,10 @@ fun RoomListContentView(
                     onRoomClick = onRoomClick,
                     lazyListState = lazyListState,
                     contentPadding = contentPadding,
-                    list=list
+                    list=contentState.summaries
+//                    list=list
                 )
-//                RoomsView(
-//                    modifier = modifier,
-//                    state = contentState,
-//                    hideInvitesAvatars = hideInvitesAvatars,
-//                    filtersState = filtersState,
-//                    spaceFiltersState = spaceFiltersState,
-//                    eventSink = eventSink,
-//                    onSetUpRecoveryClick = onSetUpRecoveryClick,
-//                    onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-//                    onRoomClick = onRoomClick,
-//                    lazyListState = lazyListState,
-//                    contentPadding = contentPadding,
-//                    type = HomeTabs.All
-//                )
+
             }
         }
     }
@@ -313,116 +252,6 @@ private fun RoomsView(
 }
 
 @Composable
-private fun RoomsViewFavourites(
-    state: RoomListContentState.Rooms,
-    hideInvitesAvatars: Boolean,
-    filtersState: RoomListFiltersState,
-    spaceFiltersState: SpaceFiltersState,
-    eventSink: (RoomListEvent) -> Unit,
-    onSetUpRecoveryClick: () -> Unit,
-    onConfirmRecoveryKeyClick: () -> Unit,
-    onRoomClick: (RoomListRoomSummary) -> Unit,
-    contentPadding: PaddingValues,
-    lazyListState: LazyListState,
-    modifier: Modifier = Modifier,
-) {
-    val isSpaceFilterSelected = spaceFiltersState is SpaceFiltersState.Selected
-    val hasAnyFilterSelected = filtersState.hasAnyFilterSelected || isSpaceFilterSelected
-    if (state.summaries.isEmpty() && hasAnyFilterSelected) {
-        EmptyViewForFilterStates(
-            selectedFilters = filtersState.selectedFilters(), isSpaceFilterSelected = isSpaceFilterSelected, modifier = modifier.fillMaxSize()
-        )
-    } else {
-        RoomsViewListFavourites(
-            state = state,
-            hideInvitesAvatars = hideInvitesAvatars,
-            eventSink = eventSink,
-            onSetUpRecoveryClick = onSetUpRecoveryClick,
-            onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-            onRoomClick = onRoomClick,
-            contentPadding = contentPadding,
-            lazyListState = lazyListState,
-            modifier = modifier.fillMaxSize(),
-
-            )
-    }
-}
-
-@Composable
-private fun RoomsViewGroups(
-    state: RoomListContentState.Rooms,
-    hideInvitesAvatars: Boolean,
-    filtersState: RoomListFiltersState,
-    spaceFiltersState: SpaceFiltersState,
-    eventSink: (RoomListEvent) -> Unit,
-    onSetUpRecoveryClick: () -> Unit,
-    onConfirmRecoveryKeyClick: () -> Unit,
-    onRoomClick: (RoomListRoomSummary) -> Unit,
-    contentPadding: PaddingValues,
-    lazyListState: LazyListState,
-    modifier: Modifier = Modifier,
-) {
-    val isSpaceFilterSelected = spaceFiltersState is SpaceFiltersState.Selected
-    val hasAnyFilterSelected = filtersState.hasAnyFilterSelected || isSpaceFilterSelected
-    if (state.summaries.isEmpty() && hasAnyFilterSelected) {
-        EmptyViewForFilterStates(
-            selectedFilters = filtersState.selectedFilters(), isSpaceFilterSelected = isSpaceFilterSelected, modifier = modifier.fillMaxSize()
-        )
-    } else {
-        RoomsViewListGroups(
-            state = state,
-            hideInvitesAvatars = hideInvitesAvatars,
-            eventSink = eventSink,
-            onSetUpRecoveryClick = onSetUpRecoveryClick,
-            onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-            onRoomClick = onRoomClick,
-            contentPadding = contentPadding,
-            lazyListState = lazyListState,
-            modifier = modifier.fillMaxSize(),
-
-            )
-    }
-}
-
-@Composable
-private fun RoomsViewUnread(
-    state: RoomListContentState.Rooms,
-    hideInvitesAvatars: Boolean,
-    filtersState: RoomListFiltersState,
-    spaceFiltersState: SpaceFiltersState,
-    eventSink: (RoomListEvent) -> Unit,
-    onSetUpRecoveryClick: () -> Unit,
-    onConfirmRecoveryKeyClick: () -> Unit,
-    onRoomClick: (RoomListRoomSummary) -> Unit,
-    contentPadding: PaddingValues,
-    lazyListState: LazyListState,
-    modifier: Modifier = Modifier,
-) {
-    val isSpaceFilterSelected = spaceFiltersState is SpaceFiltersState.Selected
-    val hasAnyFilterSelected = filtersState.hasAnyFilterSelected || isSpaceFilterSelected
-    var list = state.summaries.fastFilter { it.isMarkedUnread }
-//    if (state.summaries.isEmpty() && hasAnyFilterSelected) {
-    if (list.isEmpty()) {
-        EmptyViewForFilterStates(
-            selectedFilters = filtersState.selectedFilters(), isSpaceFilterSelected = isSpaceFilterSelected, modifier = modifier.fillMaxSize()
-        )
-    } else {
-        RoomsViewListUnread(
-            state = state,
-            hideInvitesAvatars = hideInvitesAvatars,
-            eventSink = eventSink,
-            onSetUpRecoveryClick = onSetUpRecoveryClick,
-            onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
-            onRoomClick = onRoomClick,
-            contentPadding = contentPadding,
-            lazyListState = lazyListState,
-            modifier = modifier.fillMaxSize(),
-
-            )
-    }
-}
-
-@Composable
 private fun RoomsViewList(
     state: RoomListContentState.Rooms,
     hideInvitesAvatars: Boolean,
@@ -482,238 +311,6 @@ private fun RoomsViewList(
         itemsIndexed(
 //            items = state.summaries,
             items =list,
-            contentType = { _, room -> room.contentType() },
-        ) { index, room ->
-            RoomSummaryRow(
-                room = room,
-                hideInviteAvatars = hideInvitesAvatars,
-                isInviteSeen = room.displayType == RoomSummaryDisplayType.INVITE && state.seenRoomInvites.contains(room.roomId),
-                onClick = onRoomClick,
-                eventSink = eventSink,
-            )
-            if (index != state.summaries.lastIndex) {
-                HorizontalDivider()
-            }
-        }
-    }
-}
-
-@Composable
-private fun RoomsViewListGroups(
-    state: RoomListContentState.Rooms,
-    hideInvitesAvatars: Boolean,
-    eventSink: (RoomListEvent) -> Unit,
-    onSetUpRecoveryClick: () -> Unit,
-    onConfirmRecoveryKeyClick: () -> Unit,
-    onRoomClick: (RoomListRoomSummary) -> Unit,
-    contentPadding: PaddingValues,
-    lazyListState: LazyListState,
-    modifier: Modifier = Modifier,
-
-    ) {
-//    OnVisibleRangeChangeEffect(lazyListState) { visibleRange ->
-//        eventSink(RoomListEvent.UpdateVisibleRange(visibleRange))
-//    }
-    LazyColumn(
-//        state = lazyListState,
-        state = rememberLazyListState(),
-
-        modifier = modifier,
-        contentPadding = contentPadding,
-    ) {
-        when (state.securityBannerState) {
-            SecurityBannerState.SetUpRecovery -> {
-                item {
-                    SetUpRecoveryKeyBanner(
-                        onContinueClick = onSetUpRecoveryClick,
-                        onDismissClick = { eventSink(RoomListEvent.DismissBanner) },
-                    )
-                }
-            }
-            SecurityBannerState.RecoveryKeyConfirmation -> {
-                item {
-                    ConfirmRecoveryKeyBanner(
-                        onContinueClick = onConfirmRecoveryKeyClick,
-                        onDismissClick = { eventSink(RoomListEvent.DismissBanner) },
-                    )
-                }
-            }
-            SecurityBannerState.None -> if (state.fullScreenIntentPermissionsState.shouldDisplayBanner) {
-                item {
-                    FullScreenIntentPermissionBanner(state = state.fullScreenIntentPermissionsState)
-                }
-            } else if (state.batteryOptimizationState.shouldDisplayBanner) {
-                item {
-                    BatteryOptimizationBanner(state = state.batteryOptimizationState)
-                }
-            } else if (state.showNewNotificationSoundBanner) {
-                item {
-                    NewNotificationSoundBanner(
-                        onDismissClick = { eventSink(RoomListEvent.DismissNewNotificationSoundBanner) },
-                    )
-                }
-            }
-        }
-
-        var favorite =
-            state.summaries.fastFilter { it.isDirect }
-
-        itemsIndexed(
-            items = favorite,
-            contentType = { _, room -> room.contentType() },
-        ) { index, room ->
-            RoomSummaryRow(
-                room = room,
-                hideInviteAvatars = hideInvitesAvatars,
-                isInviteSeen = room.displayType == RoomSummaryDisplayType.INVITE && state.seenRoomInvites.contains(room.roomId),
-                onClick = onRoomClick,
-                eventSink = eventSink,
-            )
-            if (index != state.summaries.lastIndex) {
-                HorizontalDivider()
-            }
-        }
-    }
-}
-
-@Composable
-private fun RoomsViewListFavourites(
-    state: RoomListContentState.Rooms,
-    hideInvitesAvatars: Boolean,
-    eventSink: (RoomListEvent) -> Unit,
-    onSetUpRecoveryClick: () -> Unit,
-    onConfirmRecoveryKeyClick: () -> Unit,
-    onRoomClick: (RoomListRoomSummary) -> Unit,
-    contentPadding: PaddingValues,
-    lazyListState: LazyListState,
-    modifier: Modifier = Modifier,
-
-    ) {
-//    OnVisibleRangeChangeEffect(lazyListState) { visibleRange ->
-//        eventSink(RoomListEvent.UpdateVisibleRange(visibleRange))
-//    }
-    LazyColumn(
-//        state = lazyListState,
-        state = rememberLazyListState(),
-        modifier = modifier,
-        contentPadding = contentPadding,
-    ) {
-        when (state.securityBannerState) {
-            SecurityBannerState.SetUpRecovery -> {
-                item {
-                    SetUpRecoveryKeyBanner(
-                        onContinueClick = onSetUpRecoveryClick,
-                        onDismissClick = { eventSink(RoomListEvent.DismissBanner) },
-                    )
-                }
-            }
-            SecurityBannerState.RecoveryKeyConfirmation -> {
-                item {
-                    ConfirmRecoveryKeyBanner(
-                        onContinueClick = onConfirmRecoveryKeyClick,
-                        onDismissClick = { eventSink(RoomListEvent.DismissBanner) },
-                    )
-                }
-            }
-            SecurityBannerState.None -> if (state.fullScreenIntentPermissionsState.shouldDisplayBanner) {
-                item {
-                    FullScreenIntentPermissionBanner(state = state.fullScreenIntentPermissionsState)
-                }
-            } else if (state.batteryOptimizationState.shouldDisplayBanner) {
-                item {
-                    BatteryOptimizationBanner(state = state.batteryOptimizationState)
-                }
-            } else if (state.showNewNotificationSoundBanner) {
-                item {
-                    NewNotificationSoundBanner(
-                        onDismissClick = { eventSink(RoomListEvent.DismissNewNotificationSoundBanner) },
-                    )
-                }
-            }
-        }
-
-        var favorite =
-            state.summaries.fastFilter { it.isFavorite }
-
-        itemsIndexed(
-            items = favorite,
-            contentType = { _, room -> room.contentType() },
-        ) { index, room ->
-            RoomSummaryRow(
-                room = room,
-                hideInviteAvatars = hideInvitesAvatars,
-                isInviteSeen = room.displayType == RoomSummaryDisplayType.INVITE && state.seenRoomInvites.contains(room.roomId),
-                onClick = onRoomClick,
-                eventSink = eventSink,
-            )
-            if (index != state.summaries.lastIndex) {
-                HorizontalDivider()
-            }
-        }
-    }
-}
-
-@Composable
-private fun RoomsViewListUnread(
-    state: RoomListContentState.Rooms,
-    hideInvitesAvatars: Boolean,
-    eventSink: (RoomListEvent) -> Unit,
-    onSetUpRecoveryClick: () -> Unit,
-    onConfirmRecoveryKeyClick: () -> Unit,
-    onRoomClick: (RoomListRoomSummary) -> Unit,
-    contentPadding: PaddingValues,
-    lazyListState: LazyListState,
-    modifier: Modifier = Modifier,
-
-    ) {
-//    OnVisibleRangeChangeEffect(lazyListState) { visibleRange ->
-//        eventSink(RoomListEvent.UpdateVisibleRange(visibleRange))
-//    }
-    LazyColumn(
-//        state = lazyListState,
-        state = rememberLazyListState(),
-        modifier = modifier,
-        contentPadding = contentPadding,
-    ) {
-        when (state.securityBannerState) {
-            SecurityBannerState.SetUpRecovery -> {
-                item {
-                    SetUpRecoveryKeyBanner(
-                        onContinueClick = onSetUpRecoveryClick,
-                        onDismissClick = { eventSink(RoomListEvent.DismissBanner) },
-                    )
-                }
-            }
-            SecurityBannerState.RecoveryKeyConfirmation -> {
-                item {
-                    ConfirmRecoveryKeyBanner(
-                        onContinueClick = onConfirmRecoveryKeyClick,
-                        onDismissClick = { eventSink(RoomListEvent.DismissBanner) },
-                    )
-                }
-            }
-            SecurityBannerState.None -> if (state.fullScreenIntentPermissionsState.shouldDisplayBanner) {
-                item {
-                    FullScreenIntentPermissionBanner(state = state.fullScreenIntentPermissionsState)
-                }
-            } else if (state.batteryOptimizationState.shouldDisplayBanner) {
-                item {
-                    BatteryOptimizationBanner(state = state.batteryOptimizationState)
-                }
-            } else if (state.showNewNotificationSoundBanner) {
-                item {
-                    NewNotificationSoundBanner(
-                        onDismissClick = { eventSink(RoomListEvent.DismissNewNotificationSoundBanner) },
-                    )
-                }
-            }
-        }
-
-        var favorite =
-            state.summaries.fastFilter { it.isMarkedUnread }
-
-        itemsIndexed(
-            items = favorite,
             contentType = { _, room -> room.contentType() },
         ) { index, room ->
             RoomSummaryRow(
