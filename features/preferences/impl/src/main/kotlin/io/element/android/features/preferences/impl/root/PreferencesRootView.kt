@@ -12,10 +12,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -46,6 +48,7 @@ import io.element.android.libraries.matrix.ui.components.MatrixUserProvider
 import io.element.android.libraries.matrix.ui.components.MatrixUserRow
 import io.element.android.libraries.matrix.ui.components.aMatrixUserList
 import io.element.android.libraries.ui.strings.CommonStrings
+import java.util.Locale
 
 @Composable
 fun PreferencesRootView(
@@ -170,6 +173,21 @@ private fun ColumnScope.ManageAppSection(
     onOpenLockScreenSettings: () -> Unit,
     onSecureBackupClick: () -> Unit,
 ) {
+    val context = LocalContext.current
+
+//    Button(onClick = {
+//        localeSelection(context = context, localeTag = Locale("ta").toLanguageTag())
+//    }) {
+//        Text(text = "Tamil")
+//    }
+//    ListItem(
+////        headlineContent = { Text(stringResource(id = R.string.screen_notification_settings_title)) },
+//        headlineContent = { Text(stringResource(id = context.)) },
+//        leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Notifications())),
+//        onClick = {
+//            setLocaleLang
+//        },
+//    )
     ListItem(
         headlineContent = { Text(stringResource(id = R.string.screen_notification_settings_title)) },
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Notifications())),

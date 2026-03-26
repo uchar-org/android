@@ -8,11 +8,13 @@
 
 package io.element.android.x
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -54,6 +58,8 @@ import timber.log.Timber
 import com.scottyab.rootbeer.RootBeer
 import io.element.android.compound.tokens.generated.SemanticColors
 import io.element.android.libraries.designsystem.theme.components.Text
+import java.util.Locale
+import androidx.core.content.edit
 
 private val loggerTag = LoggerTag("MainActivity")
 
@@ -106,9 +112,23 @@ class MainActivity : NodeActivity() {
             }
         }
     }
+    fun setLocaleLang(lang: String, context: Context) {
+        val locale = Locale(lang)
+        Locale.setDefault(locale)
+        val resources = context.resources
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
 
+        context.getSharedPreferences("Settings", Context.MODE_PRIVATE).edit {
+            putString("My_Lang", lang)
+        }
+    }
     @Composable
     private fun MainContent(appBindings: AppBindings) {
+        val context = LocalContext.current
+//        context.getSharedPreferences.getString("Settings","My_Lang")
+        setLocaleLang("zh",context)
         val migrationState = appBindings.migrationEntryPoint().present()
         val colors by remember {
             appBindings.enterpriseService().semanticColorsFlow(sessionId = null)
