@@ -369,6 +369,7 @@ private fun HomeFloatingActionButton(
     }
 }
 
+@Suppress("ParamsComparedByRef")
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun HomeBottomBar(

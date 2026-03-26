@@ -7,16 +7,24 @@
  */
 
 package io.element.android.features.home.impl.components
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TopAppBarDefaults
@@ -29,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
@@ -119,45 +128,74 @@ fun HomeTopBar(
             windowInsets = WindowInsets(left = 4.dp),
         )
 
+        val scrollState = rememberScrollState()
 
-     if(displayFilters)
-         PrimaryTabRow(
-            selectedTabIndex = selectedTabIndex.value,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .clip(shape = RoundedCornerShape(16.dp)),
-        ) {
-            HomeTabs.entries.forEachIndexed { index, currentTab ->
-                Tab(
-                    selected = selectedTabIndex.value == index,
-                    selectedContentColor = MaterialTheme.colorScheme.primary,
-                    onClick = {
-                        scope.launch {
-                            pagerState.scrollToPage(currentTab.ordinal)
-                            when (HomeTabs.entries[selectedTabIndex.value].text) {
-                                "All" -> {
-                                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+        if (displayFilters)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) {
+                PrimaryScrollableTabRow(
+                    containerColor = Color.Gray.copy(alpha = 0.3f),
+                    edgePadding = 10.dp,
+                    scrollState = scrollState,
+                    selectedTabIndex = selectedTabIndex.value,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .padding(vertical = 4.dp, horizontal = 0.dp)
+                        .clip(shape = RoundedCornerShape(50))
+                    //                indicator = {}
+                ) {
+                    HomeTabs.entries.forEachIndexed { index, currentTab ->
+                        Tab(
+                            modifier = if (selectedTabIndex.value == index) Modifier
+                                .clip(RoundedCornerShape(50))
+                                .height(36.dp)
+                            else Modifier
+                                .clip(RoundedCornerShape(50))
+                                .height(50.dp),
+                            //                            .background(
+                            //                                Color.White
+                            //                            )
+
+                            //                            .background(
+                            //                                Color(
+                            //                                    0xff1E76DA
+                            //                                )
+                            //                            )
+                            selected = selectedTabIndex.value == index,
+                            selectedContentColor = MaterialTheme.colorScheme.primary,
+                            onClick = {
+                                scope.launch {
+                                    pagerState.scrollToPage(currentTab.ordinal)
+                                    when (HomeTabs.entries[selectedTabIndex.value]) {
+                                        HomeTabs.All -> {
+                                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+                                        }
+                                        HomeTabs.Unread -> {
+                                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+                                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Unread))
+                                        }
+                                        HomeTabs.People -> {
+                                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+                                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.People))
+                                        }
+                                        else -> {
+                                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
+                                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Favourites))
+                                        }
+                                    }
                                 }
-                                "Unread" -> {
-                                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-                                    filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Unread))
-                                }
-                                "People" -> {
-                                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-                                    filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.People))
-                                }
-                                else -> {
-                                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-                                    filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Favourites))
-                                }
-                            }
-                        }
-                    },
-                    text = { androidx.compose.material3.Text(text = currentTab.text) },
-                )
+                            },
+                            text = {
+                                androidx.compose.material3.Text(text = stringResource(currentTab.text))
+                            },
+                        )
+                    }
+                }
             }
-        }
 //        if (displayFilters) {
 //            TopAppBarScrollBehaviorLayout(scrollBehavior = scrollBehavior) {
 //                RoomListFiltersView(
