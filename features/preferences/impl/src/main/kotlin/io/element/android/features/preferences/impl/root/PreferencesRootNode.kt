@@ -44,6 +44,7 @@ class PreferencesRootNode(
         fun navigateToSecureBackup()
         fun navigateToAnalyticsSettings()
         fun navigateToAbout()
+        fun navigateToLocalization()
         fun navigateToDeveloperSettings()
         fun navigateToNotificationSettings()
         fun navigateToLockScreenSettings()
@@ -104,6 +105,7 @@ class PreferencesRootNode(
                 }
             },
             onDeactivateClick = callback::startAccountDeactivationFlow,
+            onOpenLocalization=callback::navigateToLocalization
 
 
         )

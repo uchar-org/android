@@ -76,6 +76,7 @@ fun PreferencesRootView(
     onOpenBlockedUsers: () -> Unit,
     onSignOutClick: () -> Unit,
     onDeactivateClick: () -> Unit,
+    onOpenLocalization: () -> Unit,
     modifier: Modifier = Modifier,
 
     ) {
@@ -127,7 +128,7 @@ fun PreferencesRootView(
             onOpenLabs = onOpenLabs,
             onSignOutClick = onSignOutClick,
             onDeactivateClick = onDeactivateClick,
-
+            onOpenLocalization=onOpenLocalization
             )
 
         Footer(
@@ -252,6 +253,7 @@ private fun ColumnScope.ManageAccountSection(
 private fun ColumnScope.GeneralSection(
     state: PreferencesRootState,
     onOpenAbout: () -> Unit,
+    onOpenLocalization: () -> Unit,
     onOpenAnalytics: () -> Unit,
     onOpenRageShake: () -> Unit,
     onOpenAdvancedSettings: () -> Unit,
@@ -267,13 +269,11 @@ private fun ColumnScope.GeneralSection(
     val context1 = LocalContext.current
     val shared = context1.getSharedPreferences("Settings", Context.MODE_PRIVATE)
     val lang = shared.getString("lang", "uz")
-//    ListItem(
-//        headlineContent = { Text(lang ?: "uz") },
-//        leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Language())),
-//        onClick = {
-//            menuExpanded = true
-//        },
-//    )
+    ListItem(
+        headlineContent = { Text(lang ?: "uz") },
+        leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Language())),
+        onClick = onOpenLocalization,
+    )
 //
 //    val context = LocalContext.current
 //    DropdownMenu(
@@ -426,8 +426,10 @@ private fun ContentToPreview(matrixUser: MatrixUser) {
         onOpenBlockedUsers = {},
         onSignOutClick = {},
         onDeactivateClick = {},
+        onOpenLocalization={}
 
         )
+
 }
 
 @PreviewsDayNight
