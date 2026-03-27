@@ -8,6 +8,10 @@
 
 package io.element.android.features.preferences.impl.root
 
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -18,6 +22,8 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.core.content.edit
+import androidx.core.os.LocaleListCompat
 import dev.zacsweers.metro.Inject
 import io.element.android.features.logout.api.direct.DirectLogoutState
 import io.element.android.features.preferences.impl.utils.ShowDeveloperSettingsProvider
@@ -38,10 +44,14 @@ import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Locale
 
 @Inject
 class PreferencesRootPresenter(
@@ -56,9 +66,41 @@ class PreferencesRootPresenter(
     private val rageshakeFeatureAvailability: RageshakeFeatureAvailability,
     private val featureFlagService: FeatureFlagService,
     private val sessionStore: SessionStore,
+
 ) : Presenter<PreferencesRootState> {
+
+
+    suspend fun setLocaleLang(lang: String, context: Context) {
+
+//        withContext(Dispatchers.Main) {
+//            val list = LocaleListCompat.forLanguageTags("ru")
+//            AppCompatDelegate.setApplicationLocales(list)
+//        }
+//        Handler(Looper.getMainLooper()).post {
+//            val list = LocaleListCompat.forLanguageTags(lang)
+//            AppCompatDelegate.setApplicationLocales(list)
+//        }
+
+
+
+
+        val locale = Locale.forLanguageTag(/* languageTag = */ lang)
+        Locale.setDefault(locale)
+        val resources = context.resources
+
+        val configuration = resources.configuration
+        configuration.setLocale(locale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+
+        context.getSharedPreferences("Settings", Context.MODE_PRIVATE).edit {
+            putString("lang", lang)
+        }
+    }
+
+
     @Composable
     override fun present(): PreferencesRootState {
+
         val coroutineScope = rememberCoroutineScope()
         val matrixUser = matrixClient.userProfile.collectAsState()
         LaunchedEffect(Unit) {
@@ -134,6 +176,11 @@ class PreferencesRootPresenter(
                 is PreferencesRootEvents.SwitchToSession -> coroutineScope.launch {
                     sessionStore.setLatestSession(event.sessionId.value)
                 }
+                is PreferencesRootEvents.SwitchLanguage -> coroutineScope.launch {
+                    coroutineScope{
+                        setLocaleLang(event.lang,event.context)
+                    }
+                }
             }
         }
 
@@ -157,6 +204,7 @@ class PreferencesRootPresenter(
             directLogoutState = directLogoutState,
             snackbarMessage = snackbarMessage,
             eventSink = ::handleEvent,
+            lang = ""
         )
     }
 

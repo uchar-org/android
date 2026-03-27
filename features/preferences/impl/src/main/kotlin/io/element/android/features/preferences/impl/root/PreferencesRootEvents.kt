@@ -8,9 +8,11 @@
 
 package io.element.android.features.preferences.impl.root
 
+import android.content.Context
 import io.element.android.libraries.matrix.api.core.SessionId
 
 sealed interface PreferencesRootEvents {
     data object OnVersionInfoClick : PreferencesRootEvents
     data class SwitchToSession(val sessionId: SessionId) : PreferencesRootEvents
+    data class SwitchLanguage(val lang: String,val context: Context) : PreferencesRootEvents
 }

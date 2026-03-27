@@ -394,6 +394,9 @@ object CompoundIcons {
     @Composable fun Notifications(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_notifications)
     }
+      @Composable fun Language(): ImageVector {
+            return ImageVector.vectorResource(R.drawable.ic_compound_public)
+        }
     @Composable fun NotificationsOff(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_notifications_off)
     }

@@ -8,19 +8,25 @@
 
 package io.element.android.features.preferences.impl.root
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
@@ -35,6 +41,7 @@ import io.element.android.libraries.designsystem.preview.ElementPreviewDark
 import io.element.android.libraries.designsystem.preview.ElementPreviewLight
 import io.element.android.libraries.designsystem.preview.PreviewWithLargeHeight
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.ListItem
@@ -48,7 +55,6 @@ import io.element.android.libraries.matrix.ui.components.MatrixUserProvider
 import io.element.android.libraries.matrix.ui.components.MatrixUserRow
 import io.element.android.libraries.matrix.ui.components.aMatrixUserList
 import io.element.android.libraries.ui.strings.CommonStrings
-import java.util.Locale
 
 @Composable
 fun PreferencesRootView(
@@ -71,7 +77,8 @@ fun PreferencesRootView(
     onSignOutClick: () -> Unit,
     onDeactivateClick: () -> Unit,
     modifier: Modifier = Modifier,
-) {
+
+    ) {
     val snackbarHostState = rememberSnackbarHostState(snackbarMessage = state.snackbarMessage)
 
     // Include pref from other modules
@@ -120,7 +127,8 @@ fun PreferencesRootView(
             onOpenLabs = onOpenLabs,
             onSignOutClick = onSignOutClick,
             onDeactivateClick = onDeactivateClick,
-        )
+
+            )
 
         Footer(
             version = state.version,
@@ -173,21 +181,7 @@ private fun ColumnScope.ManageAppSection(
     onOpenLockScreenSettings: () -> Unit,
     onSecureBackupClick: () -> Unit,
 ) {
-    val context = LocalContext.current
 
-//    Button(onClick = {
-//        localeSelection(context = context, localeTag = Locale("ta").toLanguageTag())
-//    }) {
-//        Text(text = "Tamil")
-//    }
-//    ListItem(
-////        headlineContent = { Text(stringResource(id = R.string.screen_notification_settings_title)) },
-//        headlineContent = { Text(stringResource(id = context.)) },
-//        leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Notifications())),
-//        onClick = {
-//            setLocaleLang
-//        },
-//    )
     ListItem(
         headlineContent = { Text(stringResource(id = R.string.screen_notification_settings_title)) },
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Notifications())),
@@ -266,6 +260,50 @@ private fun ColumnScope.GeneralSection(
     onSignOutClick: () -> Unit,
     onDeactivateClick: () -> Unit,
 ) {
+
+    var menuExpanded by remember { mutableStateOf(false) }
+
+    var clickOffset by remember { mutableStateOf(Offset.Zero) }
+    val context1 = LocalContext.current
+    val shared = context1.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+    val lang = shared.getString("lang", "uz")
+//    ListItem(
+//        headlineContent = { Text(lang ?: "uz") },
+//        leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Language())),
+//        onClick = {
+//            menuExpanded = true
+//        },
+//    )
+//
+//    val context = LocalContext.current
+//    DropdownMenu(
+//        offset = DpOffset(clickOffset.x.dp, clickOffset.y.dp),
+//        modifier = Modifier,
+//        expanded = menuExpanded,
+//        onDismissRequest = { menuExpanded = false },
+//    ) {
+//        DropdownMenuItem(
+//            text = { Text("Uzbek") },
+//            onClick = {
+//                state.eventSink(PreferencesRootEvents.SwitchLanguage("uz", context))
+//                menuExpanded = false
+//            }
+//        )
+//        DropdownMenuItem(
+//            text = { Text("Russian") },
+//            onClick = {
+//                state.eventSink(PreferencesRootEvents.SwitchLanguage("ru", context))
+//                menuExpanded = false
+//            }
+//        )
+//        DropdownMenuItem(
+//            text = { Text("English") },
+//            onClick = {
+//                state.eventSink(PreferencesRootEvents.SwitchLanguage("en", context))
+//                menuExpanded = false
+//            }
+//        )
+//    }
     ListItem(
         headlineContent = { Text(stringResource(id = CommonStrings.common_about)) },
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Info())),
@@ -388,7 +426,8 @@ private fun ContentToPreview(matrixUser: MatrixUser) {
         onOpenBlockedUsers = {},
         onSignOutClick = {},
         onDeactivateClick = {},
-    )
+
+        )
 }
 
 @PreviewsDayNight

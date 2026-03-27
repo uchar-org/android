@@ -40,4 +40,5 @@ fun aPreferencesRootState(
     snackbarMessage = SnackbarMessage(CommonStrings.common_verification_complete),
     directLogoutState = aDirectLogoutState(),
     eventSink = eventSink,
+    lang = "uz"
 )

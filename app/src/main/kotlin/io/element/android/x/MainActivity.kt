@@ -7,19 +7,15 @@
  */
 
 package io.element.android.x
-
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -30,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.core.os.LocaleListCompat
+import androidx.core.content.edit
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -38,6 +34,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.bumble.appyx.core.integrationpoint.NodeActivity
 import com.bumble.appyx.core.plugin.NodeReadyObserver
 import com.google.android.gms.common.util.CollectionUtils.listOf
+import com.scottyab.rootbeer.RootBeer
 import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.lockscreen.api.LockScreenEntryPoint
@@ -48,6 +45,7 @@ import io.element.android.libraries.architecture.appyx.DebugNavStateNodeHost
 import io.element.android.libraries.architecture.bindings
 import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.designsystem.theme.ElementThemeApp
+import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.utils.snackbar.LocalSnackbarDispatcher
 import io.element.android.services.analytics.compose.LocalAnalyticsService
 import io.element.android.x.di.AppBindings
@@ -55,11 +53,7 @@ import io.element.android.x.intent.SafeUriHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import com.scottyab.rootbeer.RootBeer
-import io.element.android.compound.tokens.generated.SemanticColors
-import io.element.android.libraries.designsystem.theme.components.Text
 import java.util.Locale
-import androidx.core.content.edit
 
 private val loggerTag = LoggerTag("MainActivity")
 
@@ -84,14 +78,10 @@ class MainActivity : NodeActivity() {
                 setContent {
                     RootCheck()
                 }
-                // Device is rooted, take appropriate action
-                Timber.log(0, "Device is rooted!")
             } else {
                 setContent {
                     MainContent(appBindings)
                 }
-                // Device is not rooted
-                Timber.log(0, "Device is not rooted!")
             }
         }
     }
@@ -112,8 +102,9 @@ class MainActivity : NodeActivity() {
             }
         }
     }
+
     fun setLocaleLang(lang: String, context: Context) {
-        val locale = Locale(lang)
+        val locale = Locale.forLanguageTag(lang)
         Locale.setDefault(locale)
         val resources = context.resources
         val configuration = resources.configuration
@@ -121,14 +112,18 @@ class MainActivity : NodeActivity() {
         resources.updateConfiguration(configuration, resources.displayMetrics)
 
         context.getSharedPreferences("Settings", Context.MODE_PRIVATE).edit {
-            putString("My_Lang", lang)
+            putString("lang", lang)
         }
     }
+
     @Composable
     private fun MainContent(appBindings: AppBindings) {
         val context = LocalContext.current
-//        context.getSharedPreferences.getString("Settings","My_Lang")
-        setLocaleLang("zh",context)
+        val sharedPrefs = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        val lang = sharedPrefs.getString("lang", "uz")
+
+        setLocaleLang(lang ?:"uz", context)
+
         val migrationState = appBindings.migrationEntryPoint().present()
         val colors by remember {
             appBindings.enterpriseService().semanticColorsFlow(sessionId = null)
