@@ -21,7 +21,9 @@ import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.core.SessionId
 import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.push.impl.intent.IntentProvider
-import io.element.android.x.MainActivity
+import uz.uzinfocom.ucharmessenger.MainActivity
+
+//import io.element.android.x.MainActivity
 
 @ContributesBinding(AppScope::class)
 class DefaultIntentProvider(

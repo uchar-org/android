@@ -6,7 +6,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.x
+package uz.uzinfocom.ucharmessenger
 
 import android.app.Application
 import androidx.startup.AppInitializer
