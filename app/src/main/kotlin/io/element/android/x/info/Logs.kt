@@ -10,8 +10,9 @@ package io.element.android.x.info
 
 import android.content.Context
 import io.element.android.libraries.androidutils.system.getVersionCodeFromManifest
-import io.element.android.x.BuildConfig
+//import io.element.android.x.BuildConfig
 import timber.log.Timber
+import uz.uzinfocom.ucharmessenger.BuildConfig
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

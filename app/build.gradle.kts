@@ -44,7 +44,8 @@ plugins {
 setupKover()
 
 android {
-    namespace = "io.element.android.x"
+//    namespace = "io.element.android.x"
+    namespace = "uz.uzinfocom.ucharmessenger"
 
     defaultConfig {
         applicationId = BuildTimeConfig.APPLICATION_ID
