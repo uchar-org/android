@@ -31,6 +31,7 @@ import io.element.android.features.preferences.impl.analytics.AnalyticsSettingsN
 import io.element.android.features.preferences.impl.blockedusers.BlockedUsersNode
 import io.element.android.features.preferences.impl.developer.DeveloperSettingsNode
 import io.element.android.features.preferences.impl.labs.LabsNode
+import io.element.android.features.preferences.impl.localization.LocalizationNode
 import io.element.android.features.preferences.impl.notifications.NotificationSettingsNode
 import io.element.android.features.preferences.impl.notifications.edit.EditDefaultNotificationSettingNode
 import io.element.android.features.preferences.impl.root.PreferencesRootNode
@@ -82,6 +83,9 @@ class PreferencesFlowNode(
 
         @Parcelize
         data object AnalyticsSettings : NavTarget
+      @Parcelize
+        data object Localization : NavTarget{
+        }
 
         @Parcelize
         data object About : NavTarget
@@ -141,6 +145,10 @@ class PreferencesFlowNode(
 
                     override fun navigateToAbout() {
                         backstack.push(NavTarget.About)
+                    }
+
+                    override fun navigateToLocalization() {
+                        backstack.push(NavTarget.Localization)
                     }
 
                     override fun navigateToDeveloperSettings() {
@@ -319,6 +327,10 @@ class PreferencesFlowNode(
             }
             NavTarget.AccountDeactivation -> {
                 accountDeactivationEntryPoint.createNode(this, buildContext)
+            }
+            NavTarget.Localization -> {
+
+                createNode<LocalizationNode>(buildContext, listOf(callback))
             }
         }
     }

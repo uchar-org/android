@@ -394,6 +394,9 @@ object CompoundIcons {
     @Composable fun Notifications(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_notifications)
     }
+      @Composable fun Language(): ImageVector {
+            return ImageVector.vectorResource(R.drawable.ic_compound_public)
+        }
     @Composable fun NotificationsOff(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_notifications_off)
     }
@@ -538,9 +541,15 @@ object CompoundIcons {
     @Composable fun Space(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_space)
     }
+    @Composable fun Profile(): ImageVector {
+        return ImageVector.vectorResource(R.drawable.ic_compound_space)
+    }
     @Composable fun SpaceSolid(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_space_solid)
     }
+      @Composable fun SpaceProfile(): ImageVector {
+            return ImageVector.vectorResource(R.drawable.ic_compound_space_solid)
+        }
     @Composable fun Spinner(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_spinner)
     }

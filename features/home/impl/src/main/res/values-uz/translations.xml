@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+  <string name="all_chats">"Barchasi"</string>
+  <string name="un_read">"O'qilmagan"</string>
+  <string name="people">"Odamlar"</string>
+  <string name="favourites">"Yoqtirganlar"</string>
   <string name="banner_battery_optimization_content_android">"Ushbu ilova uchun quvvatni optimallashtirishni oʻchirib qoʻying, barcha xabarnomalar qabul qilinganligiga ishonch hosil qilish uchun."</string>
   <string name="banner_battery_optimization_submit_android">"Optimallashtirishni o\'chiring"</string>
   <string name="banner_battery_optimization_title_android">"Bildirishnoma kelmayaptimi?"</string>

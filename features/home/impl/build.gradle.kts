@@ -27,6 +27,8 @@ android {
 setupDependencyInjection()
 
 dependencies {
+//    implementation("com.scottyab:rootbeer-lib:0.1.2")
+
     implementation(projects.appconfig)
     implementation(projects.libraries.core)
     implementation(projects.libraries.androidutils)

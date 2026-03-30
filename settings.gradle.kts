@@ -12,6 +12,9 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven {
+            url = uri("https://company/com/maven2")
+        }
     }
 }
 dependencyResolutionManagement {

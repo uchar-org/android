@@ -25,7 +25,7 @@ data class RoomListState(
     val contextMenu: ContextMenu,
     val declineInviteMenu: DeclineInviteMenu,
     val leaveRoomState: LeaveRoomState,
-    val filtersState: RoomListFiltersState,
+    var filtersState: RoomListFiltersState,
     val searchState: RoomListSearchState,
     val spaceFiltersState: SpaceFiltersState,
     val contentState: RoomListContentState,

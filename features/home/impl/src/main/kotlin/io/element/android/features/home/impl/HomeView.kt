@@ -5,31 +5,43 @@
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
  * Please see LICENSE files in the repository root for full details.
  */
-
 @file:OptIn(ExperimentalHazeMaterialsApi::class)
 
 package io.element.android.features.home.impl
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +55,7 @@ import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.chrisbanes.haze.rememberHazeState
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.features.home.impl.components.HomeTabs
 import io.element.android.features.home.impl.components.HomeTopBar
 import io.element.android.features.home.impl.components.RoomListContentView
 import io.element.android.features.home.impl.components.RoomListMenuAction
@@ -57,6 +70,10 @@ import io.element.android.features.home.impl.spacefilters.SpaceFiltersState
 import io.element.android.features.home.impl.spacefilters.SpaceFiltersView
 import io.element.android.features.home.impl.spaces.HomeSpacesView
 import io.element.android.libraries.androidutils.throttler.FirstThrottler
+import io.element.android.libraries.designsystem.atomic.atoms.RedIndicatorAtom
+import io.element.android.libraries.designsystem.components.avatar.Avatar
+import io.element.android.libraries.designsystem.components.avatar.AvatarSize
+import io.element.android.libraries.designsystem.components.avatar.AvatarType
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.FloatingActionButton
@@ -64,11 +81,18 @@ import io.element.android.libraries.designsystem.theme.components.HorizontalFloa
 import io.element.android.libraries.designsystem.theme.components.HorizontalFloatingToolbarItem
 import io.element.android.libraries.designsystem.theme.components.HorizontalFloatingToolbarSeparator
 import io.element.android.libraries.designsystem.theme.components.Icon
+import io.element.android.libraries.designsystem.theme.components.IconButton
 import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
 import io.element.android.libraries.designsystem.utils.snackbar.rememberSnackbarHostState
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.core.SessionId
+import io.element.android.libraries.matrix.api.user.MatrixUser
+import io.element.android.libraries.matrix.ui.model.getAvatarData
+import io.element.android.libraries.testtags.TestTags
+import io.element.android.libraries.testtags.testTag
 import io.element.android.libraries.ui.strings.CommonStrings
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 
 @Composable
@@ -158,6 +182,8 @@ private fun HomeScaffold(
     val snackbarHostState = rememberSnackbarHostState(snackbarMessage = state.snackbarMessage)
     val roomListState: RoomListState = state.roomListState
 
+
+
     BackHandler(enabled = state.isBackHandlerEnabled) {
         if (state.currentHomeNavigationBarItem != HomeNavigationBarItem.Chats) {
             state.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Chats))
@@ -173,12 +199,14 @@ private fun HomeScaffold(
     val roomsLazyListState = rememberLazyListState()
     val spacesLazyListState = rememberLazyListState()
 
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(pageCount = { HomeTabs.entries.size })
+    val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier,
         topBar = {
             HomeTopBar(
                 selectedNavigationItem = state.currentHomeNavigationBarItem,
-                currentUserAndNeighbors = state.currentUserAndNeighbors,
                 showAvatarIndicator = state.showAvatarIndicator,
                 areSearchResultsDisplayed = roomListState.searchState.isSearchActive,
                 onToggleSearch = { roomListState.eventSink(RoomListEvent.ToggleSearchResults) },
@@ -195,60 +223,89 @@ private fun HomeScaffold(
                 modifier = Modifier.hazeEffect(
                     state = hazeState,
                     style = HazeMaterials.thick(),
-                )
+                ),
+                selectedTabIndex = selectedTabIndex,
+                scope = scope,
+                pagerState = pagerState
             )
+        },
+        bottomBar = {
+            val coroutineScope = rememberCoroutineScope()
+
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+
+                    modifier = Modifier
+                        .padding(bottom = 24.dp)
+                        .align(Alignment.BottomCenter),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    HomeBottomBar(
+                        onOpenSettings = onOpenSettings,
+                        state = state,
+                        currentHomeNavigationBarItem = state.currentHomeNavigationBarItem,
+                        onItemClick = { item ->
+
+                            // scroll to top if selecting the same item
+                            if (item == state.currentHomeNavigationBarItem) {
+                                val lazyListStateTarget = when (item) {
+                                    HomeNavigationBarItem.Chats -> roomsLazyListState
+                                    HomeNavigationBarItem.Spaces -> spacesLazyListState
+                                }
+                                coroutineScope.launch {
+                                    if (lazyListStateTarget.firstVisibleItemIndex > 10) {
+                                        lazyListStateTarget.scrollToItem(10)
+                                    }
+                                    // Also reset the scrollBehavior height offset as it's not triggered by programmatic scrolls
+                                    scrollBehavior.state.heightOffset = 0f
+                                    lazyListStateTarget.animateScrollToItem(0)
+                                }
+                            } else {
+                                state.eventSink(HomeEvent.SelectHomeNavigationBarItem(item))
+                            }
+                        },
+                        floatingActionButton = when (state.currentHomeNavigationBarItem) {
+                            HomeNavigationBarItem.Chats -> {
+                                {
+                                    HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
+                                }
+                            }
+                            HomeNavigationBarItem.Spaces -> if (state.homeSpacesState.canCreateSpaces) {
+                                {
+                                    HomeFloatingActionButton(onCreateSpaceClick, CommonStrings.action_create_space)
+                                }
+                            } else {
+                                null
+                            }
+                        },
+                    )
+                }
+            }
         },
         floatingActionButton = {
             if (state.showNavigationBar) {
-                val coroutineScope = rememberCoroutineScope()
-                HomeBottomBar(
-                    currentHomeNavigationBarItem = state.currentHomeNavigationBarItem,
-                    onItemClick = { item ->
-                        // scroll to top if selecting the same item
-                        if (item == state.currentHomeNavigationBarItem) {
-                            val lazyListStateTarget = when (item) {
-                                HomeNavigationBarItem.Chats -> roomsLazyListState
-                                HomeNavigationBarItem.Spaces -> spacesLazyListState
-                            }
-                            coroutineScope.launch {
-                                if (lazyListStateTarget.firstVisibleItemIndex > 10) {
-                                    lazyListStateTarget.scrollToItem(10)
-                                }
-                                // Also reset the scrollBehavior height offset as it's not triggered by programmatic scrolls
-                                scrollBehavior.state.heightOffset = 0f
-                                lazyListStateTarget.animateScrollToItem(0)
-                            }
-                        } else {
-                            state.eventSink(HomeEvent.SelectHomeNavigationBarItem(item))
-                        }
-                    },
-                    floatingActionButton = when (state.currentHomeNavigationBarItem) {
-                        HomeNavigationBarItem.Chats -> {
-                            {
-                                HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
-                            }
-                        }
-                        HomeNavigationBarItem.Spaces -> if (state.homeSpacesState.canCreateSpaces) {
-                            {
-                                HomeFloatingActionButton(onCreateSpaceClick, CommonStrings.action_create_space)
-                            }
-                        } else {
-                            // No FAB for spaces if we cannot create spaces
-                            null
-                        }
-                    },
-                )
+                if (state.currentHomeNavigationBarItem == HomeNavigationBarItem.Chats) {
+                    HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
+                } else if (state.currentHomeNavigationBarItem == HomeNavigationBarItem.Spaces) {
+                    HomeFloatingActionButton(onCreateSpaceClick, CommonStrings.action_create_space)
+                }
             } else {
-                HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
+                Row {
+                    HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
+                }
             }
         },
-        floatingActionButtonPosition = if (state.showNavigationBar) FabPosition.Center else FabPosition.End,
+        floatingActionButtonPosition = FabPosition.End,
         content = { padding ->
             val contentPadding = PaddingValues(
-                bottom = 96.dp,
+                bottom = 196.dp,
             )
             when (state.currentHomeNavigationBarItem) {
                 HomeNavigationBarItem.Chats -> {
+
                     RoomListContentView(
                         contentState = roomListState.contentState,
                         filtersState = roomListState.filtersState,
@@ -266,13 +323,12 @@ private fun HomeScaffold(
                                 PaddingValues(
                                     start = padding.calculateStartPadding(LocalLayoutDirection.current),
                                     end = padding.calculateEndPadding(LocalLayoutDirection.current),
-                                    // Remove these two lines once https://issuetracker.google.com/issues/436432313 has been fixed
-                                    bottom = padding.calculateBottomPadding(),
-                                    top = padding.calculateTopPadding()
                                 )
                             )
                             .consumeWindowInsets(padding)
-                            .hazeSource(state = hazeState)
+                            .hazeSource(state = hazeState),
+                        pagerState = pagerState,
+                        selectedTabIndex = selectedTabIndex
                     )
                     SpaceFiltersView(roomListState.spaceFiltersState)
                 }
@@ -290,7 +346,6 @@ private fun HomeScaffold(
                             onRoomClick(spaceId)
                         },
                         onCreateSpaceClick = onCreateSpaceClick,
-                        // TODO use actual callbacks for this
                         onExploreClick = {},
                     )
                 }
@@ -314,16 +369,19 @@ private fun HomeFloatingActionButton(
     }
 }
 
+@Suppress("ParamsComparedByRef")
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun HomeBottomBar(
+    state: HomeState,
+    onOpenSettings: () -> Unit,
     currentHomeNavigationBarItem: HomeNavigationBarItem,
     onItemClick: (HomeNavigationBarItem) -> Unit,
     modifier: Modifier = Modifier,
     floatingActionButton: (@Composable () -> Unit)?,
 ) {
     HorizontalFloatingToolbar(
-        floatingActionButton = floatingActionButton,
+        //            floatingActionButton = floatingActionButton,
         modifier = modifier
             .zIndex(1f),
     ) {
@@ -338,6 +396,90 @@ private fun HomeBottomBar(
                 isSelected = isSelected,
                 onClick = { onItemClick(item) },
             )
+            if (index > 0) NavigationIcon(
+                currentUserAndNeighbors = state.currentUserAndNeighbors,
+                showAvatarIndicator = state.showAvatarIndicator,
+                onAccountSwitch = {
+                    state.eventSink(HomeEvent.SwitchToAccount(it))
+                },
+                onClick = onOpenSettings,
+            )
+        }
+    }
+}
+
+@Composable
+private fun NavigationIcon(
+    currentUserAndNeighbors: ImmutableList<MatrixUser>,
+    showAvatarIndicator: Boolean,
+    onAccountSwitch: (SessionId) -> Unit,
+    onClick: () -> Unit,
+) {
+    if (currentUserAndNeighbors.size == 1) {
+        AccountIcon(
+            matrixUser = currentUserAndNeighbors.single(),
+            isCurrentAccount = true,
+            showAvatarIndicator = showAvatarIndicator,
+            onClick = onClick,
+            modifier = Modifier
+                .size(size = 55.dp)
+                .padding(horizontal = 12.dp, vertical = 12.dp)
+        )
+    } else {
+        val pagerState = rememberPagerState(initialPage = 1) { currentUserAndNeighbors.size }
+        val latestOnAccountSwitch by rememberUpdatedState(onAccountSwitch)
+        LaunchedEffect(pagerState) {
+            snapshotFlow { pagerState.settledPage }.collect { page ->
+                latestOnAccountSwitch(SessionId(currentUserAndNeighbors[page].userId.value))
+            }
+        }
+        VerticalPager(
+            state = pagerState,
+            modifier = Modifier.height(56.dp),
+        ) { page ->
+            AccountIcon(
+                matrixUser = currentUserAndNeighbors[page],
+                isCurrentAccount = page == 1,
+                showAvatarIndicator = page == 1 && showAvatarIndicator,
+                onClick = if (page == 1) {
+                    onClick
+                } else {
+                    {}
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun AccountIcon(
+    matrixUser: MatrixUser,
+    isCurrentAccount: Boolean,
+    showAvatarIndicator: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val testTag = if (isCurrentAccount) Modifier.testTag(TestTags.homeScreenSettings) else Modifier
+    IconButton(
+        modifier = modifier.then(testTag),
+        onClick = onClick,
+    ) {
+        Box {
+            val avatarData by remember(matrixUser) {
+                derivedStateOf {
+                    matrixUser.getAvatarData(size = AvatarSize.UserHeader)
+                }
+            }
+            Avatar(
+                avatarData = avatarData,
+                avatarType = AvatarType.User,
+                contentDescription = if (isCurrentAccount) stringResource(CommonStrings.common_settings) else null,
+            )
+            if (showAvatarIndicator) {
+                RedIndicatorAtom(
+                    modifier = Modifier.align(Alignment.TopEnd)
+                )
+            }
         }
     }
 }
@@ -383,3 +525,4 @@ internal fun HomeViewA11yPreview() = ElementPreview {
         leaveRoomView = {}
     )
 }
+

@@ -34,4 +34,5 @@ data class PreferencesRootState(
     val directLogoutState: DirectLogoutState,
     val snackbarMessage: SnackbarMessage?,
     val eventSink: (PreferencesRootEvents) -> Unit,
+    val lang:String
 )

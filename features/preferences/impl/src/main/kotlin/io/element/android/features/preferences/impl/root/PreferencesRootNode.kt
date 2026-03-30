@@ -9,9 +9,12 @@
 package io.element.android.features.preferences.impl.root
 
 import android.app.Activity
+import android.content.Context
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.edit
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
@@ -25,6 +28,7 @@ import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTa
 import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.user.MatrixUser
+import java.util.Locale
 
 @ContributesNode(SessionScope::class)
 @AssistedInject
@@ -40,6 +44,7 @@ class PreferencesRootNode(
         fun navigateToSecureBackup()
         fun navigateToAnalyticsSettings()
         fun navigateToAbout()
+        fun navigateToLocalization()
         fun navigateToDeveloperSettings()
         fun navigateToNotificationSettings()
         fun navigateToLockScreenSettings()
@@ -73,6 +78,7 @@ class PreferencesRootNode(
         val state = presenter.present()
         val activity = requireNotNull(LocalActivity.current)
         val isDark = ElementTheme.isLightTheme.not()
+
         PreferencesRootView(
             state = state,
             modifier = modifier,
@@ -98,7 +104,10 @@ class PreferencesRootNode(
                     callback.startSignOutFlow()
                 }
             },
-            onDeactivateClick = callback::startAccountDeactivationFlow
+            onDeactivateClick = callback::startAccountDeactivationFlow,
+            onOpenLocalization=callback::navigateToLocalization
+
+
         )
 
         directLogoutView.Render(state = state.directLogoutState)

@@ -12,6 +12,7 @@ import dev.zacsweers.metro.ContributesBinding
 import io.element.android.features.home.impl.filters.RoomListFilter
 import io.element.android.libraries.di.SessionScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.LinkedHashSet
 
 @ContributesBinding(SessionScope::class)
 class DefaultFilterSelectionStrategy : FilterSelectionStrategy {
