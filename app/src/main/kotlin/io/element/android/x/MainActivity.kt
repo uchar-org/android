@@ -52,6 +52,7 @@ import io.element.android.x.di.AppBindings
 import io.element.android.x.intent.SafeUriHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.Locale
 
@@ -74,13 +75,15 @@ class MainActivity : NodeActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             val rootBeer = RootBeer(this@MainActivity)
-            if (rootBeer.isRooted) {
+            val isRooted = rootBeer.isRooted
+
+            withContext(Dispatchers.Main) {
                 setContent {
-                    RootCheck()
-                }
-            } else {
-                setContent {
-                    MainContent(appBindings)
+                    if (isRooted) {
+                        RootCheck()
+                    } else {
+                        MainContent(appBindings)
+                    }
                 }
             }
         }
