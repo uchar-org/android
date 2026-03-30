@@ -13,6 +13,7 @@ import io.element.android.features.preferences.impl.about.ElementLegal
 import android.app.Activity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.bumble.appyx.core.modality.BuildContext
@@ -33,29 +34,32 @@ class LocalizationNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
 ) : Node(buildContext, plugins = plugins) {
-    interface Callback : Plugin {
-    }
-
-    private val callback: Callback = callback()
-
-
+    val languages = listOf(LocaleData(0, "Uzbek", false), LocaleData(1, "English", false), LocaleData(2, "Russian", false))
 
     @Composable
     override fun View(modifier: Modifier) {
-        val activity = requireNotNull(LocalActivity.current)
-        val isDark = ElementTheme.isLightTheme.not()
 
-
+//        var languages= remember<List<LocaleData>>(LocaleData(0, "Uzbek", false), LocaleData(1, "English", false), LocaleData(2, "Russian", false))
         LocalizationView(
             title = stringResource(R.string.language),
             onBackClick = ::navigateUp,
-            //            state = state,
-//            onBackClick = ::navigateUp,
-//            onElementLegalClick = { elementLegal ->
-//                onElementLegalClick(activity, isDark, elementLegal)
-//            },
-//            onOpenSourceLicensesClick = callback::navigateToOssLicenses,
-//            modifier = modifier
+            languages = languages,
+            onChecked = { checked, id ->
+                for (i in 0 until languages.size) {
+                    if (languages[i].id == id) {
+                        languages[i].name = "aaaa"
+                        languages[i].checked=checked
+                    }else{
+                        languages[i].checked=!checked
+                    }
+                }
+            }
         )
     }
 }
+
+data class LocaleData(
+    var id: Int,
+    var name: String,
+    var checked: Boolean
+)

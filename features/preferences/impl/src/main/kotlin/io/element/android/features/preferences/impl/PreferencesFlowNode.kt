@@ -329,9 +329,7 @@ class PreferencesFlowNode(
                 accountDeactivationEntryPoint.createNode(this, buildContext)
             }
             NavTarget.Localization -> {
-                val callback = object : LocalizationNode.Callback {
 
-                }
                 createNode<LocalizationNode>(buildContext, listOf(callback))
             }
         }

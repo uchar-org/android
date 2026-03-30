@@ -112,7 +112,8 @@ fun HomeTopBar(
                         heading()
                     },
                     style = ElementTheme.typography.aliasScreenTitle,
-                    text = displayTitle,
+//                    text = displayTitle,
+                    text = "Uchar",
                 )
             },
             actions = {
