@@ -30,12 +30,14 @@ import io.element.android.libraries.di.annotations.AppCoroutineScope
 import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.recentemojis.api.EmojibaseProvider
 import io.element.android.libraries.recentemojis.impl.DefaultEmojibaseProvider
-import io.element.android.x.BuildConfig
-import io.element.android.x.R
+//import io.element.android.x.BuildConfig
+//import io.element.android.x.R
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.plus
+import uz.uzinfocom.ucharmessenger.BuildConfig
+import uz.uzinfocom.ucharmessenger.R
 import java.io.File
 
 @BindingContainer
