@@ -42,8 +42,10 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -53,6 +55,7 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.chrisbanes.haze.rememberHazeState
+import io.element.android.compound.R
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.home.impl.components.HomeTabs
@@ -99,6 +102,7 @@ import kotlinx.coroutines.launch
 fun HomeView(
     homeState: HomeState,
     onRoomClick: (RoomId) -> Unit,
+    navigateToProfileEdit: (MatrixUser) -> Unit,
     onSettingsClick: () -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
@@ -145,6 +149,7 @@ fun HomeView(
             onStartChatClick = { if (firstThrottler.canHandle()) onStartChatClick() },
             onCreateSpaceClick = { if (firstThrottler.canHandle()) onCreateSpaceClick() },
             onMenuActionClick = onMenuActionClick,
+            navigateToProfileEdit=navigateToProfileEdit
         )
         // This overlaid view will only be visible when state.displaySearchResults is true
         RoomListSearchView(
@@ -172,7 +177,9 @@ private fun HomeScaffold(
     onCreateSpaceClick: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
     modifier: Modifier = Modifier,
-) {
+    navigateToProfileEdit: (MatrixUser) -> Unit,
+
+    ) {
     fun onRoomClick(room: RoomListRoomSummary) {
         onRoomClick(room.roomId)
     }
@@ -281,6 +288,7 @@ private fun HomeScaffold(
                                 null
                             }
                         },
+                        navigateToProfileEdit = navigateToProfileEdit
                     )
                 }
             }
@@ -379,7 +387,9 @@ private fun HomeBottomBar(
     onItemClick: (HomeNavigationBarItem) -> Unit,
     modifier: Modifier = Modifier,
     floatingActionButton: (@Composable () -> Unit)?,
-) {
+    navigateToProfileEdit: (MatrixUser) -> Unit,
+
+    ) {
     HorizontalFloatingToolbar(
         //            floatingActionButton = floatingActionButton,
         modifier = modifier
@@ -396,13 +406,23 @@ private fun HomeBottomBar(
                 isSelected = isSelected,
                 onClick = { onItemClick(item) },
             )
+            if(index>0){
+                HorizontalFloatingToolbarItem(
+                    icon =ImageVector.vectorResource(R.drawable.ic_compound_settings),
+                    tooltipLabel = stringResource(item.labelRes),
+                    isSelected = false,
+                    onClick = onOpenSettings,
+                )
+            }
             if (index > 0) NavigationIcon(
                 currentUserAndNeighbors = state.currentUserAndNeighbors,
                 showAvatarIndicator = state.showAvatarIndicator,
                 onAccountSwitch = {
                     state.eventSink(HomeEvent.SwitchToAccount(it))
                 },
-                onClick = onOpenSettings,
+                onClick = {
+                    navigateToProfileEdit(state.currentUserAndNeighbors.first())
+                },
             )
         }
     }
@@ -502,7 +522,8 @@ internal fun HomeViewPreview(@PreviewParameter(HomeStateProvider::class) state: 
         onMenuActionClick = {},
         onDeclineInviteAndBlockUser = {},
         acceptDeclineInviteView = {},
-        leaveRoomView = {}
+        leaveRoomView = {},
+        navigateToProfileEdit={}
     )
 }
 
@@ -522,7 +543,8 @@ internal fun HomeViewA11yPreview() = ElementPreview {
         onMenuActionClick = {},
         onDeclineInviteAndBlockUser = {},
         acceptDeclineInviteView = {},
-        leaveRoomView = {}
+        leaveRoomView = {},
+        navigateToProfileEdit={}
     )
 }
 

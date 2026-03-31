@@ -18,6 +18,7 @@ import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.di.SessionScope
+import io.element.android.libraries.matrix.api.user.MatrixUser
 
 @ContributesNode(SessionScope::class)
 @AssistedInject
@@ -31,6 +32,7 @@ class LoggedInNode(
 ) {
     interface Callback : Plugin {
         fun navigateToNotificationTroubleshoot()
+        fun navigateToUserProfileEdit(matrixUser: MatrixUser)
     }
 
     private val callback: Callback = callback()

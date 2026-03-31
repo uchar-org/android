@@ -14,6 +14,7 @@ import com.bumble.appyx.core.plugin.Plugin
 import io.element.android.libraries.architecture.FeatureEntryPoint
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
+import io.element.android.libraries.matrix.api.user.MatrixUser
 
 interface HomeEntryPoint : FeatureEntryPoint {
     fun createNode(

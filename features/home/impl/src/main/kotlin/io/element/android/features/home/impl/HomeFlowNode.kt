@@ -56,6 +56,7 @@ import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.di.annotations.SessionCoroutineScope
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.core.RoomId
+import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -215,9 +216,15 @@ class HomeFlowNode(
                 loadingJoinedRoomJob.value = AsyncData.Loading(job)
             }
 
+            fun navigateToProfileEdit(
+                matrixUser: MatrixUser
+            ){
+//                callback.navigateToProfileEdit(matrixUser)
+            }
             HomeView(
                 homeState = state,
                 onRoomClick = ::navigateToRoom,
+                navigateToProfileEdit = ::navigateToProfileEdit,
                 onSettingsClick = callback::navigateToSettings,
                 onStartChatClick = callback::navigateToCreateRoom,
                 onCreateSpaceClick = callback::navigateToCreateSpace,
@@ -278,6 +285,7 @@ class HomeFlowNode(
                     listType = ChangeRoomMemberRolesListType.SelectNewOwnersWhenLeaving,
                 )
             }
+
             NavTarget.Root -> rootNode(buildContext)
         }
     }

@@ -14,6 +14,7 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.features.home.api.HomeEntryPoint
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
+import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.test.FakeMatrixClient
 import io.element.android.services.analytics.test.FakeAnalyticsService
 import io.element.android.tests.testutils.lambda.lambdaError

@@ -56,4 +56,5 @@ Sizda oʻqilmagan xabarlar yoʻq!"</string>
   <string name="screen_roomlist_tombstoned_room_description">"Bu xona yangilandi"</string>
   <string name="session_verification_banner_message">"Siz yangi qurilmadan foydalanayotganga o‘xshaysiz. Shifrlangan xabarlaringizga kirish uchun boshqa qurilma bilan tasdiqlang."</string>
   <string name="session_verification_banner_title">"Siz ekanligingizni tasdiqlang"</string>
+  <string name="screen_roomlist_your_spaces">"Sizning maydonlar"</string>
 </resources>
