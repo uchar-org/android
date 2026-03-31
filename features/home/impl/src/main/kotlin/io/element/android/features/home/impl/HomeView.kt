@@ -102,7 +102,7 @@ import kotlinx.coroutines.launch
 fun HomeView(
     homeState: HomeState,
     onRoomClick: (RoomId) -> Unit,
-    navigateToProfileEdit: () -> Unit,
+    navigateToProfileEdit: (matrixUser: MatrixUser) -> Unit,
     onSettingsClick: () -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
@@ -146,7 +146,7 @@ fun HomeView(
             onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
             onRoomClick = { if (firstThrottler.canHandle()) onRoomClick(it) },
             onOpenSettings = { if (firstThrottler.canHandle()) onSettingsClick() },
-            navigateToProfileEdit={ if (firstThrottler.canHandle()) navigateToProfileEdit() },
+            navigateToProfileEdit={ if (firstThrottler.canHandle()) navigateToProfileEdit(it) },
             onStartChatClick = { if (firstThrottler.canHandle()) onStartChatClick() },
             onCreateSpaceClick = { if (firstThrottler.canHandle()) onCreateSpaceClick() },
             onMenuActionClick = onMenuActionClick
@@ -173,7 +173,7 @@ private fun HomeScaffold(
     onConfirmRecoveryKeyClick: () -> Unit,
     onRoomClick: (RoomId) -> Unit,
     onOpenSettings: () -> Unit,
-    navigateToProfileEdit: (MatrixUser) -> Unit,
+    navigateToProfileEdit: (matrixUser: MatrixUser) -> Unit,
     onStartChatClick: () -> Unit,
     onCreateSpaceClick: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
@@ -387,7 +387,7 @@ private fun HomeBottomBar(
     onItemClick: (HomeNavigationBarItem) -> Unit,
     modifier: Modifier = Modifier,
     floatingActionButton: (@Composable () -> Unit)?,
-    navigateToProfileEdit: (MatrixUser) -> Unit,
+    navigateToProfileEdit: (matrixUser: MatrixUser) -> Unit,
 
     ) {
     HorizontalFloatingToolbar(
