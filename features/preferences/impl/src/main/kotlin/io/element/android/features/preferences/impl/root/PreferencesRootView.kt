@@ -128,8 +128,8 @@ fun PreferencesRootView(
             onOpenLabs = onOpenLabs,
             onSignOutClick = onSignOutClick,
             onDeactivateClick = onDeactivateClick,
-            onOpenLocalization=onOpenLocalization
-            )
+            onOpenLocalization = onOpenLocalization
+        )
 
         Footer(
             version = state.version,
@@ -263,14 +263,11 @@ private fun ColumnScope.GeneralSection(
     onDeactivateClick: () -> Unit,
 ) {
 
-    var menuExpanded by remember { mutableStateOf(false) }
-
-    var clickOffset by remember { mutableStateOf(Offset.Zero) }
     val context1 = LocalContext.current
     val shared = context1.getSharedPreferences("Settings", Context.MODE_PRIVATE)
     val lang = shared.getString("lang", "uz")
     ListItem(
-        headlineContent = { Text(lang ?: "uz") },
+        headlineContent = { Text(if (lang == "uz") "O'zbekcha" else if (lang == "ru") "Русский" else if (lang == "en") "English" else stringResource(R.string.language)) },
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Language())),
         onClick = onOpenLocalization,
     )
@@ -426,10 +423,9 @@ private fun ContentToPreview(matrixUser: MatrixUser) {
         onOpenBlockedUsers = {},
         onSignOutClick = {},
         onDeactivateClick = {},
-        onOpenLocalization={}
+        onOpenLocalization = {}
 
-        )
-
+    )
 }
 
 @PreviewsDayNight

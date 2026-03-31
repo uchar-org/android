@@ -53,6 +53,7 @@ class HomePresenter(
 
     @Composable
     override fun present(): HomeState {
+
         val coroutineState = rememberCoroutineScope()
         val matrixUser by client.userProfile.collectAsState()
         val currentUserAndNeighbors by remember {

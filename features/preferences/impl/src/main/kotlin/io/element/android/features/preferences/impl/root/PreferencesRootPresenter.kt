@@ -71,19 +71,6 @@ class PreferencesRootPresenter(
 
 
     suspend fun setLocaleLang(lang: String, context: Context) {
-
-//        withContext(Dispatchers.Main) {
-//            val list = LocaleListCompat.forLanguageTags("ru")
-//            AppCompatDelegate.setApplicationLocales(list)
-//        }
-//        Handler(Looper.getMainLooper()).post {
-//            val list = LocaleListCompat.forLanguageTags(lang)
-//            AppCompatDelegate.setApplicationLocales(list)
-//        }
-
-
-
-
         val locale = Locale.forLanguageTag(/* languageTag = */ lang)
         Locale.setDefault(locale)
         val resources = context.resources

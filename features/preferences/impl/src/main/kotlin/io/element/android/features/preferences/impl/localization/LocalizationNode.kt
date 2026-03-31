@@ -7,14 +7,13 @@
 
 package io.element.android.features.preferences.impl.localization
 
-import io.element.android.features.preferences.impl.about.AboutPresenter
-import io.element.android.features.preferences.impl.about.AboutView
-import io.element.android.features.preferences.impl.about.ElementLegal
-import android.app.Activity
-import androidx.activity.compose.LocalActivity
+import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -22,10 +21,7 @@ import com.bumble.appyx.core.plugin.Plugin
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
-import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.preferences.impl.R
-import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
-import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.di.SessionScope
 
 @ContributesNode(SessionScope::class)
@@ -33,33 +29,42 @@ import io.element.android.libraries.di.SessionScope
 class LocalizationNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-) : Node(buildContext, plugins = plugins) {
-    val languages = listOf(LocaleData(0, "Uzbek", false), LocaleData(1, "English", false), LocaleData(2, "Russian", false))
+    private val presenter: LocalizationPresenter,
+    ) : Node(buildContext, plugins = plugins) {
 
+
+    init {
+
+    }
     @Composable
     override fun View(modifier: Modifier) {
+        val state = presenter.present()
+        val context1 = LocalContext.current
+        val shared = context1.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+        val lang = shared.getString("lang", "uz")
 
-//        var languages= remember<List<LocaleData>>(LocaleData(0, "Uzbek", false), LocaleData(1, "English", false), LocaleData(2, "Russian", false))
+
         LocalizationView(
             title = stringResource(R.string.language),
             onBackClick = ::navigateUp,
-            languages = languages,
-            onChecked = { checked, id ->
-                for (i in 0 until languages.size) {
-                    if (languages[i].id == id) {
-                        languages[i].name = "aaaa"
-                        languages[i].checked=checked
-                    }else{
-                        languages[i].checked=!checked
-                    }
-                }
+            languages = state.languages,
+            onChecked = { checked, id ,ctx->
+                presenter.changeLanguage(checked,id,ctx)
+            },
+            lang = lang!!,
+            onSaveLang = {ctx->
+                presenter.saveLang(ctx)
             }
         )
     }
+
 }
 
-data class LocaleData(
+ class LocaleData(
     var id: Int,
     var name: String,
-    var checked: Boolean
-)
+    var code: String,
+     checked: Boolean
+){
+    var checked by mutableStateOf(checked)
+}
