@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="screen_edit_profile_error">"Произошла неизвестная ошибка, изменить информацию не удалось."</string>
+    <string name="screen_edit_profile_error_title">"Невозможно обновить профиль"</string>
+    <string name="screen_edit_profile_updating_details">"Обновление профиля…"</string>
+    <string name="screen_edit_profile_display_name">"Отображаемое имя"</string>
+    <string name="screen_edit_profile_title">"Редактировать профиль"</string>
     <string name="all_chats">"Все"</string>
     <string name="un_read">"Непрочитанные"</string>
     <string name="people">"Люди"</string>

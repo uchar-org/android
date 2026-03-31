@@ -35,6 +35,7 @@ import io.element.android.features.home.api.HomeEntryPoint
 import io.element.android.features.home.impl.components.RoomListMenuAction
 import io.element.android.features.home.impl.model.RoomListRoomSummary
 import io.element.android.features.home.impl.roomlist.RoomListEvent
+import io.element.android.features.home.impl.user.editprofile.EditUserProfileNode
 import io.element.android.features.invite.api.InviteData
 import io.element.android.features.invite.api.acceptdecline.AcceptDeclineInviteView
 import io.element.android.features.invite.api.declineandblock.DeclineInviteAndBlockEntryPoint
@@ -48,6 +49,7 @@ import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
 import io.element.android.libraries.architecture.appyx.launchMolecule
 import io.element.android.libraries.architecture.callback
+import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.core.extensions.runCatchingExceptions
 import io.element.android.libraries.deeplink.api.usecase.InviteFriendsUseCase
 import io.element.android.libraries.designsystem.components.ProgressDialog
@@ -130,6 +132,9 @@ class HomeFlowNode(
         data class ReportRoom(val roomId: RoomId) : NavTarget
 
         @Parcelize
+        data class NavigateProfile(val matrixUser: MatrixUser) : NavTarget
+
+        @Parcelize
         data class DeclineInviteAndBlockUser(val inviteData: InviteData) : NavTarget
 
         @Parcelize
@@ -138,6 +143,10 @@ class HomeFlowNode(
 
     private fun navigateToReportRoom(roomId: RoomId) {
         backstack.push(NavTarget.ReportRoom(roomId))
+    }
+
+    private fun navigateToProfile(matrixUser: MatrixUser) {
+        backstack.push(NavTarget.NavigateProfile(matrixUser))
     }
 
     private fun navigateToDeclineInviteAndBlockUser(roomSummary: RoomListRoomSummary) {
@@ -216,15 +225,13 @@ class HomeFlowNode(
                 loadingJoinedRoomJob.value = AsyncData.Loading(job)
             }
 
-            fun navigateToProfileEdit(
-                matrixUser: MatrixUser
-            ){
-//                callback.navigateToProfileEdit(matrixUser)
-            }
+
             HomeView(
                 homeState = state,
                 onRoomClick = ::navigateToRoom,
-                navigateToProfileEdit = ::navigateToProfileEdit,
+                navigateToProfileEdit = {
+                    navigateToProfile(state.currentUserAndNeighbors.first())
+                },
                 onSettingsClick = callback::navigateToSettings,
                 onStartChatClick = callback::navigateToCreateRoom,
                 onCreateSpaceClick = callback::navigateToCreateSpace,
@@ -262,6 +269,16 @@ class HomeFlowNode(
 
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
+
+            is NavTarget.NavigateProfile -> {
+                val inputs = EditUserProfileNode.Inputs(navTarget.matrixUser)
+                val callback = object : EditUserProfileNode.Callback {
+                    override fun onDone() {
+                        backstack.pop()
+                    }
+                }
+                createNode<EditUserProfileNode>(buildContext, listOf(inputs, callback))
+            }
             is NavTarget.ReportRoom -> {
                 reportRoomEntryPoint.createNode(
                     parentNode = this,
@@ -269,6 +286,7 @@ class HomeFlowNode(
                     roomId = navTarget.roomId,
                 )
             }
+
             is NavTarget.DeclineInviteAndBlockUser -> {
                 declineInviteAndBlockUserEntryPoint.createNode(
                     parentNode = this,

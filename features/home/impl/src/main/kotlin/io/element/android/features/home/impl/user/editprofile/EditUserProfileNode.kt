@@ -6,7 +6,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.appnav.loggedin
+package io.element.android.features.home.impl.user.editprofile
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,35 +18,42 @@ import dev.zacsweers.metro.AssistedInject
 import io.element.android.annotations.ContributesNode
 import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.callback
+import io.element.android.libraries.architecture.inputs
 import io.element.android.libraries.di.SessionScope
 import io.element.android.libraries.matrix.api.user.MatrixUser
 
 @ContributesNode(SessionScope::class)
 @AssistedInject
-class LoggedInNode(
+class EditUserProfileNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
-    private val loggedInPresenter: LoggedInPresenter,
-) : Node(
-    buildContext = buildContext,
-    plugins = plugins
-) {
+    presenterFactory: EditUserProfilePresenter.Factory,
+) : Node(buildContext, plugins = plugins),
+    EditUserProfileNavigator {
     data class Inputs(
         val matrixUser: MatrixUser
     ) : NodeInputs
+
     interface Callback : Plugin {
-        fun navigateToNotificationTroubleshoot()
+        fun onDone()
     }
 
-    private val callback: Callback = callback()
+    val matrixUser = inputs<Inputs>().matrixUser
+    val callback: Callback = callback()
+    val presenter = presenterFactory.create(
+        matrixUser = matrixUser,
+        navigator = this,
+    )
 
     @Composable
     override fun View(modifier: Modifier) {
-        val loggedInState = loggedInPresenter.present()
-        LoggedInView(
-            state = loggedInState,
-            navigateToNotificationTroubleshoot = callback::navigateToNotificationTroubleshoot,
+        val state = presenter.present()
+        EditUserProfileView(
+            state = state,
+            onEditProfileSuccess = ::close,
             modifier = modifier
         )
     }
+
+    override fun close() = callback.onDone()
 }

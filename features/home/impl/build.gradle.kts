@@ -28,6 +28,8 @@ setupDependencyInjection()
 
 dependencies {
 //    implementation("com.scottyab:rootbeer-lib:0.1.2")
+    implementation(projects.libraries.mediapickers.api)
+    implementation(projects.libraries.mediaupload.api)
 
     implementation(projects.appconfig)
     implementation(projects.libraries.core)

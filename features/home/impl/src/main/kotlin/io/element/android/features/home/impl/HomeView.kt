@@ -102,7 +102,7 @@ import kotlinx.coroutines.launch
 fun HomeView(
     homeState: HomeState,
     onRoomClick: (RoomId) -> Unit,
-    navigateToProfileEdit: (MatrixUser) -> Unit,
+    navigateToProfileEdit: () -> Unit,
     onSettingsClick: () -> Unit,
     onSetUpRecoveryClick: () -> Unit,
     onConfirmRecoveryKeyClick: () -> Unit,
@@ -146,10 +146,10 @@ fun HomeView(
             onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
             onRoomClick = { if (firstThrottler.canHandle()) onRoomClick(it) },
             onOpenSettings = { if (firstThrottler.canHandle()) onSettingsClick() },
+            navigateToProfileEdit={ if (firstThrottler.canHandle()) navigateToProfileEdit() },
             onStartChatClick = { if (firstThrottler.canHandle()) onStartChatClick() },
             onCreateSpaceClick = { if (firstThrottler.canHandle()) onCreateSpaceClick() },
-            onMenuActionClick = onMenuActionClick,
-            navigateToProfileEdit=navigateToProfileEdit
+            onMenuActionClick = onMenuActionClick
         )
         // This overlaid view will only be visible when state.displaySearchResults is true
         RoomListSearchView(
@@ -173,11 +173,11 @@ private fun HomeScaffold(
     onConfirmRecoveryKeyClick: () -> Unit,
     onRoomClick: (RoomId) -> Unit,
     onOpenSettings: () -> Unit,
+    navigateToProfileEdit: (MatrixUser) -> Unit,
     onStartChatClick: () -> Unit,
     onCreateSpaceClick: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
     modifier: Modifier = Modifier,
-    navigateToProfileEdit: (MatrixUser) -> Unit,
 
     ) {
     fun onRoomClick(room: RoomListRoomSummary) {

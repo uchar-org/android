@@ -68,6 +68,7 @@ import io.element.android.features.userprofile.api.UserProfileEntryPoint
 import io.element.android.features.verifysession.api.IncomingVerificationEntryPoint
 import io.element.android.libraries.architecture.BackstackView
 import io.element.android.libraries.architecture.BaseFlowNode
+import io.element.android.libraries.architecture.NodeInputs
 import io.element.android.libraries.architecture.callback
 import io.element.android.libraries.architecture.createNode
 import io.element.android.libraries.architecture.waitForChildAttached
@@ -86,6 +87,7 @@ import io.element.android.libraries.matrix.api.core.toRoomIdOrAlias
 import io.element.android.libraries.matrix.api.permalink.PermalinkData
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.sync.SyncService
+import io.element.android.libraries.matrix.api.user.MatrixUser
 import io.element.android.libraries.matrix.api.verification.SessionVerificationServiceListener
 import io.element.android.libraries.matrix.api.verification.VerificationRequest
 import io.element.android.libraries.preferences.api.store.AppPreferencesStore
@@ -111,6 +113,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toKotlinDuration
 import im.vector.app.features.analytics.plan.JoinedRoom as JoinedRoomAnalyticsEvent
+import io.element.android.features.home.api.HomeEntryPoint.Callback
 
 // The maximum number of room nodes that should be kept in the backstack at the same time.
 // Having 5 rooms in the backstack seems reasonable and shouldn't grow the saved state size too much.
@@ -161,6 +164,7 @@ class LoggedInFlowNode(
     buildContext = buildContext,
     plugins = plugins
 ) {
+
     interface Callback : Plugin {
         fun navigateToBugReport()
         fun navigateToAddAccount()
@@ -257,6 +261,11 @@ class LoggedInFlowNode(
     }
 
     sealed interface NavTarget : Parcelable {
+
+
+        @Parcelize
+        data class UserProfileSettings(val matrixUser: MatrixUser) : NavTarget
+
         @Parcelize
         data object Placeholder : NavTarget
 
@@ -316,11 +325,23 @@ class LoggedInFlowNode(
     override fun resolve(navTarget: NavTarget, buildContext: BuildContext): Node {
         return when (navTarget) {
             NavTarget.Placeholder -> emptyNode(buildContext)
+            is NavTarget.UserProfileSettings -> {
+                val inputs = LoggedInNode.Inputs(navTarget.matrixUser)
+                val callback = object : LoggedInNode.Callback {
+                    override fun navigateToNotificationTroubleshoot() {
+
+                    }
+
+
+                }
+                createNode<LoggedInNode>(buildContext, listOf(inputs, callback))
+            }
             NavTarget.LoggedInPermanent -> {
                 val callback = object : LoggedInNode.Callback {
                     override fun navigateToNotificationTroubleshoot() {
                         backstack.push(NavTarget.Settings(PreferencesEntryPoint.InitialTarget.NotificationTroubleshoot))
                     }
+
                 }
                 createNode<LoggedInNode>(buildContext, listOf(callback))
             }
@@ -336,8 +357,12 @@ class LoggedInFlowNode(
                         }
                     }
 
+
                     override fun navigateToSettings() {
                         backstack.push(NavTarget.Settings())
+                    }
+                    override fun navigateToUserProfile(matrixUser: MatrixUser) {
+                        backstack.push(NavTarget.UserProfileSettings(matrixUser=matrixUser))
                     }
 
                     override fun navigateToCreateRoom() {
