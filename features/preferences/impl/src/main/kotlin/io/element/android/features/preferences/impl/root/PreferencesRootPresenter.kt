@@ -9,9 +9,6 @@
 package io.element.android.features.preferences.impl.root
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -23,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.core.content.edit
-import androidx.core.os.LocaleListCompat
 import dev.zacsweers.metro.Inject
 import io.element.android.features.logout.api.direct.DirectLogoutState
 import io.element.android.features.preferences.impl.utils.ShowDeveloperSettingsProvider
@@ -44,13 +40,11 @@ import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Locale
 
 @Inject
@@ -70,8 +64,8 @@ class PreferencesRootPresenter(
 ) : Presenter<PreferencesRootState> {
 
 
-    suspend fun setLocaleLang(lang: String, context: Context) {
-        val locale = Locale.forLanguageTag(/* languageTag = */ lang)
+     fun setLocaleLang(lang: String, context: Context) {
+        val locale = Locale.forLanguageTag(lang)
         Locale.setDefault(locale)
         val resources = context.resources
 

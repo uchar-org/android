@@ -313,13 +313,13 @@ private fun ColumnScope.GeneralSection(
             onClick = onOpenRageShake
         )
     }
-    if (state.showAnalyticsSettings) {
-        ListItem(
-            headlineContent = { Text(stringResource(id = CommonStrings.common_analytics)) },
-            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Chart())),
-            onClick = onOpenAnalytics,
-        )
-    }
+//    if (state.showAnalyticsSettings) {
+//        ListItem(
+//            headlineContent = { Text(stringResource(id = CommonStrings.common_analytics)) },
+//            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Chart())),
+//            onClick = onOpenAnalytics,
+//        )
+//    }
     ListItem(
         headlineContent = { Text(stringResource(id = CommonStrings.common_advanced_settings)) },
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Settings())),

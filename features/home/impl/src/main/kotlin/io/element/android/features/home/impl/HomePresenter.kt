@@ -32,7 +32,9 @@ import io.element.android.libraries.indicator.api.IndicatorService
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.sync.SyncService
 import io.element.android.libraries.sessionstorage.api.SessionStore
+import io.element.android.services.analytics.api.AnalyticsService
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -48,12 +50,18 @@ class HomePresenter(
     private val rageshakeFeatureAvailability: RageshakeFeatureAvailability,
     private val sessionStore: SessionStore,
     private val announcementService: AnnouncementService,
-) : Presenter<HomeState> {
-    private val currentUserWithNeighborsBuilder = CurrentUserWithNeighborsBuilder()
+    private val analyticsService: AnalyticsService,
 
+    ) : Presenter<HomeState> {
+    private val currentUserWithNeighborsBuilder = CurrentUserWithNeighborsBuilder()
+    private fun CoroutineScope.setIsEnabled(enabled: Boolean) = launch {
+        analyticsService.setUserConsent(enabled)
+    }
     @Composable
     override fun present(): HomeState {
+        val localCoroutineScope = rememberCoroutineScope()
 
+        localCoroutineScope.setIsEnabled(false)
         val coroutineState = rememberCoroutineScope()
         val matrixUser by client.userProfile.collectAsState()
         val currentUserAndNeighbors by remember {
