@@ -42,6 +42,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -146,7 +147,7 @@ fun HomeView(
             onConfirmRecoveryKeyClick = onConfirmRecoveryKeyClick,
             onRoomClick = { if (firstThrottler.canHandle()) onRoomClick(it) },
             onOpenSettings = { if (firstThrottler.canHandle()) onSettingsClick() },
-            navigateToProfileEdit={ if (firstThrottler.canHandle()) navigateToProfileEdit(it) },
+            navigateToProfileEdit = { if (firstThrottler.canHandle()) navigateToProfileEdit(it) },
             onStartChatClick = { if (firstThrottler.canHandle()) onStartChatClick() },
             onCreateSpaceClick = { if (firstThrottler.canHandle()) onCreateSpaceClick() },
             onMenuActionClick = onMenuActionClick
@@ -406,24 +407,26 @@ private fun HomeBottomBar(
                 isSelected = isSelected,
                 onClick = { onItemClick(item) },
             )
-            if(index>0){
+            if (index > 0) {
                 HorizontalFloatingToolbarItem(
-                    icon =ImageVector.vectorResource(R.drawable.ic_compound_settings),
+                    icon = ImageVector.vectorResource(R.drawable.ic_compound_settings),
                     tooltipLabel = stringResource(item.labelRes),
                     isSelected = false,
                     onClick = onOpenSettings,
                 )
             }
-            if (index > 0) NavigationIcon(
-                currentUserAndNeighbors = state.currentUserAndNeighbors,
-                showAvatarIndicator = state.showAvatarIndicator,
-                onAccountSwitch = {
-                    state.eventSink(HomeEvent.SwitchToAccount(it))
-                },
-                onClick = {
-                    navigateToProfileEdit(state.currentUserAndNeighbors.first())
-                },
-            )
+            if (index > 0) Box(modifier = Modifier.scale(0.8f)) {
+                NavigationIcon(
+                    currentUserAndNeighbors = state.currentUserAndNeighbors,
+                    showAvatarIndicator = state.showAvatarIndicator,
+                    onAccountSwitch = {
+                        state.eventSink(HomeEvent.SwitchToAccount(it))
+                    },
+                    onClick = {
+                        navigateToProfileEdit(state.currentUserAndNeighbors.first())
+                    },
+                )
+            }
         }
     }
 }
@@ -442,8 +445,8 @@ private fun NavigationIcon(
             showAvatarIndicator = showAvatarIndicator,
             onClick = onClick,
             modifier = Modifier
-                .size(size = 55.dp)
-                .padding(horizontal = 12.dp, vertical = 12.dp)
+//                .size(36.dp)
+//                .padding(horizontal = 12.dp, vertical = 12.dp)
         )
     } else {
         val pagerState = rememberPagerState(initialPage = 1) { currentUserAndNeighbors.size }
@@ -487,7 +490,7 @@ private fun AccountIcon(
         Box {
             val avatarData by remember(matrixUser) {
                 derivedStateOf {
-                    matrixUser.getAvatarData(size = AvatarSize.UserHeader)
+                    matrixUser.getAvatarData(size = AvatarSize.UserListItem)
                 }
             }
             Avatar(
@@ -523,7 +526,7 @@ internal fun HomeViewPreview(@PreviewParameter(HomeStateProvider::class) state: 
         onDeclineInviteAndBlockUser = {},
         acceptDeclineInviteView = {},
         leaveRoomView = {},
-        navigateToProfileEdit={}
+        navigateToProfileEdit = {}
     )
 }
 
@@ -544,7 +547,7 @@ internal fun HomeViewA11yPreview() = ElementPreview {
         onDeclineInviteAndBlockUser = {},
         acceptDeclineInviteView = {},
         leaveRoomView = {},
-        navigateToProfileEdit={}
+        navigateToProfileEdit = {}
     )
 }
 
