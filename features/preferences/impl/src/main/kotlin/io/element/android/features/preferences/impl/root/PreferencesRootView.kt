@@ -349,9 +349,9 @@ private fun ColumnScope.GeneralSection(
         )
     }
     // Put developer settings at the end, so nothing bad happens if the user clicks 8 times to enable the entry
-    if (state.showDeveloperSettings) {
-        DeveloperPreferencesView(onOpenDeveloperSettings)
-    }
+//    if (state.showDeveloperSettings) {
+//        DeveloperPreferencesView(onOpenDeveloperSettings)
+//    }
 }
 
 @Composable
