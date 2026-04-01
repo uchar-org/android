@@ -24,11 +24,11 @@ import io.element.android.libraries.matrix.test.A_SESSION_ID
 import io.element.android.libraries.matrix.test.A_THREAD_ID
 import io.element.android.tests.testutils.lambda.lambdaRecorder
 import io.element.android.tests.testutils.lambda.value
-import io.element.android.x.MainActivity
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import uz.uzinfocom.ucharmessenger.MainActivity
 
 @RunWith(RobolectricTestRunner::class)
 class DefaultIntentProviderTest {

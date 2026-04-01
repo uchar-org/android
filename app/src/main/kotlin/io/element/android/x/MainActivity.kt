@@ -170,7 +170,6 @@ class MainActivity : NodeActivity() {
 
     @Composable
     private fun MainNodeHost() {
-        // TODO this is a temporary helper to capture the nav state in a more readable format for crash reports
         // Revert to `NodeHost` once this is fixed
         DebugNavStateNodeHost(integrationPoint = appyxV1IntegrationPoint) {
             MainNode(
