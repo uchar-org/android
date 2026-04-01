@@ -10,8 +10,8 @@ package io.element.android.x.oidc
 
 import com.google.common.truth.Truth.assertThat
 import io.element.android.services.toolbox.test.strings.FakeStringProvider
-import io.element.android.x.R
 import org.junit.Test
+import uz.uzinfocom.ucharmessenger.R
 
 class DefaultOidcRedirectUrlProviderTest {
     @Test
