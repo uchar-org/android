@@ -26,7 +26,7 @@ enum class FeatureFlags(
         key = "feature.roomdirectorysearch",
         title = "Room directory search",
         description = "Allow user to search for public rooms in their homeserver",
-        defaultValue = { false },
+        defaultValue = { true },
         isFinished = false,
     ),
     ShowBlockedUsersDetails(
@@ -105,7 +105,7 @@ enum class FeatureFlags(
         key = "feature.selectable_media_quality",
         title = "Select media quality per upload",
         description = "You can select the media quality for each attachment you upload.",
-        defaultValue = { false },
+        defaultValue = { true },
         // False so it's displayed in the developer options screen
         isFinished = false,
     ),
@@ -123,7 +123,7 @@ enum class FeatureFlags(
         description = "Allow the application to connect to multiple accounts at the same time." +
             "\n\nWARNING: this feature is EXPERIMENTAL and UNSTABLE.",
         defaultValue = { false },
-        isFinished = false,
+        isFinished = true,
     ),
     SyncNotificationsWithWorkManager(
         key = "feature.sync_notifications_with_workmanager",
@@ -137,7 +137,7 @@ enum class FeatureFlags(
         key = "feature.qr_code_login",
         title = "QR Code Login",
         description = "Allow logging in on other devices using a QR code.",
-        defaultValue = { false },
+        defaultValue = { true },
         isFinished = false,
     ),
     SignInWithClassic(
