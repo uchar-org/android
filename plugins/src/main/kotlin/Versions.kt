@@ -33,19 +33,22 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
  * Year of the version on 2 digits.
  * Do not update this value. it is updated by the release script.
  */
-private const val versionYear = 26
+//private const val versionYear = 26
+private const val versionYear = 2
 
 /**
  * Month of the version on 2 digits. Value must be in [1,12].
  * Do not update this value. it is updated by the release script.
  */
-private const val versionMonth = 3
+//private const val versionMonth = 3
+private const val versionMonth = 5
 
 /**
  * Release number in the month. Value must be in [0,99].
  * Do not update this value. it is updated by the release script.
  */
-private const val versionReleaseNumber = 3
+//private const val versionReleaseNumber = 3
+private const val versionReleaseNumber = 0
 
 object Versions {
     /**
@@ -54,8 +57,9 @@ object Versions {
      * AAB will have a ABI code of 0.
      * See comment above for the calculation method.
      */
-    const val VERSION_CODE = (2000 + versionYear) * 10_000 + versionMonth * 100 + versionReleaseNumber
-    val VERSION_NAME = "$versionYear.${versionMonth.toString().padStart(2, '0')}.$versionReleaseNumber"
+//    const val VERSION_CODE = (2000 + versionYear) * 10_000 + versionMonth * 100 + versionReleaseNumber
+    const val VERSION_CODE = 1
+    val VERSION_NAME = "$versionYear.${versionMonth}.$versionReleaseNumber"
 
     /**
      * Compile SDK version. Must be updated when a new Android version is released.
