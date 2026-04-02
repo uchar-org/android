@@ -21,7 +21,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,19 +47,14 @@ import io.element.android.libraries.core.log.logger.LoggerTag
 import io.element.android.libraries.designsystem.theme.ElementThemeApp
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.utils.snackbar.LocalSnackbarDispatcher
-import io.element.android.services.analytics.api.AnalyticsService
 import io.element.android.services.analytics.compose.LocalAnalyticsService
-import io.element.android.services.analytics.impl.DefaultAnalyticsService
-import io.element.android.services.analyticsproviders.api.trackers.AnalyticsTracker
 import io.element.android.x.di.AppBindings
 import io.element.android.x.intent.SafeUriHandler
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.Locale
-import kotlin.also
 
 private val loggerTag = LoggerTag("MainActivity")
 
