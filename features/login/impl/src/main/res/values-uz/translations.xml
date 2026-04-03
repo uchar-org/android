@@ -43,7 +43,7 @@
   <string name="screen_onboarding_sign_up">"Hisob yaratish"</string>
   <string name="screen_onboarding_welcome_message">"Eng tezkor %1$sga xush kelibsiz. Tezlik va oddylik uchun super zaryadlangan."</string>
   <string name="screen_onboarding_welcome_subtitle">"%1$sga Xush kelibsiz. Tezlik va oddylik uchun o\'ta zaryadlangan."</string>
-  <string name="screen_onboarding_welcome_title">"Elementingizda bo\'ling"</string>
+  <string name="screen_onboarding_welcome_title">"Ucharingizda bo\'ling"</string>
   <string name="screen_qr_code_login_connecting_subtitle">"Xavfsiz aloqa oʻrnatish"</string>
   <string name="screen_qr_code_login_connection_note_secure_state_description">"Yangi qurilmaga xavfsiz ulanish amalga oshirilmadi. Mavjud qurilmalaringiz hali ham xavfsiz va ular haqida qaygʻurishingiz shart emas."</string>
   <string name="screen_qr_code_login_connection_note_secure_state_list_header">"Endi nima?"</string>
