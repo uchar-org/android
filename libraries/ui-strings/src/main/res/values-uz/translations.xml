@@ -100,7 +100,7 @@
   <string name="action_ignore">"E’tiborsiz qoldirish"</string>
   <string name="action_invite">"Taklif qilish"</string>
   <string name="action_invite_friends">"Odamlarni taklif qiling"</string>
-  <string name="action_invite_friends_to_app">"Odamlarni taklif qilish%1$s"</string>
+  <string name="action_invite_friends_to_app">"Odamlarni taklif qilish %1$s"</string>
   <string name="action_invite_people_to_app">"Odamlarni taklif qiling%1$s"</string>
   <string name="action_invites_list">"Takliflar"</string>
   <string name="action_join">"Qo\'shilish"</string>

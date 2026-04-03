@@ -7,7 +7,7 @@
  */
 
 package config
-
+//merge develop
 object BuildTimeConfig {
 //    const val APPLICATION_ID = "io.element.android.x"
     const val APPLICATION_ID = "uz.uzinfocom.ucharmessenger"

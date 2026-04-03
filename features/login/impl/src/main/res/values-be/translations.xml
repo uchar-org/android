@@ -9,7 +9,7 @@
   <string name="screen_account_provider_signin_title">"Вы збіраецеся ўвайсці ў %s"</string>
   <string name="screen_account_provider_signup_subtitle">"Тут будуць захоўвацца вашыя размовы - сапраўды гэтак жа, як вы выкарыстоўваеце паштовага правайдара для захоўвання сваіх лістоў."</string>
   <string name="screen_account_provider_signup_title">"Вы збіраецеся стварыць уліковы запіс на %s"</string>
-  <string name="screen_change_account_provider_matrix_org_subtitle">"Matrix.org - гэта вялікі бясплатны сервер у агульнадаступнай сетцы Matrix для бяспечнай дэцэнтралізаванай сувязі, якім кіруе фонд Matrix.org."</string>
+  <string name="screen_change_account_provider_matrix_org_subtitle">"Uchar — гэта вялікі бясплатны сервер у публічнай сетцы Matrix для бяспечнай дэцэнтралізаванай сувязі, якім кіруе Uzinfocom."</string>
   <string name="screen_change_account_provider_other">"Іншае"</string>
   <string name="screen_change_account_provider_subtitle">"Выкарыстоўвайце іншага правайдара ўліковых запісаў, напрыклад, уласны прыватны сервер або працоўны ўліковы запіс."</string>
   <string name="screen_change_account_provider_title">"Змяніць правайдара ўліковага запісу"</string>
