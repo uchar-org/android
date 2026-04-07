@@ -83,12 +83,12 @@ object Versions {
     /**
      * Minimum SDK version for FOSS builds.
      */
-    private const val MIN_SDK_FOSS = 24
+    private const val MIN_SDK_FOSS = 26
 
     /**
      * Minimum SDK version for Enterprise builds.
      */
-    private const val MIN_SDK_ENTERPRISE = 33
+    private const val MIN_SDK_ENTERPRISE = 26
 
     /**
      * minSdkVersion that will be set in the Android Manifest.

@@ -124,7 +124,8 @@ class DefaultFtueService(
     }
 
     private suspend fun needsAnalyticsOptIn(): Boolean {
-        return analyticsService.didAskUserConsentFlow.first().not()
+//        return analyticsService.didAskUserConsentFlow.first().not()
+        return false
     }
 
     private suspend fun shouldAskNotificationPermissions(): Boolean {
