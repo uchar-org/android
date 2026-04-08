@@ -241,10 +241,10 @@ androidComponents {
             val name = output.filters.find { it.filterType == ABI }?.identifier
 
             // Stores the value of abiCodes that is associated with the ABI for this variant.
-            val abiCode = abiVersionCodes[name] ?: 0
+            val abiCode =  0
             // Assigns the new version code to output.versionCode, which changes the version code
             // for only the output APK, not for the variant itself.
-            output.versionCode.set((output.versionCode.orNull ?: 0) * 10 + abiCode)
+//            output.versionCode.set((output.versionCode.orNull ?: 0) + abiCode)
         }
     }
 
