@@ -200,7 +200,11 @@ class PreferencesFlowNode(
                     }
 
                     override fun onDone() {
-                        backstack.pop()
+                        if (backstack.canPop()) {
+                            backstack.pop()
+                        } else {
+                            navigateUp()
+                        }
                     }
                 }
                 createNode<DeveloperSettingsNode>(buildContext, listOf(developerSettingsCallback))

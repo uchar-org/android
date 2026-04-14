@@ -30,6 +30,7 @@ import io.element.android.libraries.matrix.api.room.SendQueueUpdate
 import io.element.android.libraries.matrix.api.room.history.RoomHistoryVisibility
 import io.element.android.libraries.matrix.api.room.join.JoinRule
 import io.element.android.libraries.matrix.api.room.knock.KnockRequest
+import io.element.android.libraries.matrix.api.room.location.LiveLocationShare
 import io.element.android.libraries.matrix.api.room.powerlevels.RoomPowerLevelsValues
 import io.element.android.libraries.matrix.api.room.powerlevels.UserRoleChange
 import io.element.android.libraries.matrix.api.room.roomNotificationSettings
@@ -497,6 +498,28 @@ class JoinedRustRoom(
                     trySend(update.map())
                 }
             })
+        }
+    }
+
+    override fun subscribeToLiveLocationShares(): Flow<List<LiveLocationShare>> {
+        TODO("Not implemented yet")
+    }
+
+    override suspend fun startLiveLocationShare(durationMillis: Long): Result<Unit> = withContext(roomDispatcher) {
+        runCatchingExceptions {
+            innerRoom.startLiveLocationShare(durationMillis.toULong())
+        }
+    }
+
+    override suspend fun stopLiveLocationShare(): Result<Unit> = withContext(roomDispatcher) {
+        runCatchingExceptions {
+            innerRoom.stopLiveLocationShare()
+        }
+    }
+
+    override suspend fun sendLiveLocation(geoUri: String): Result<Unit> = withContext(roomDispatcher) {
+        runCatchingExceptions {
+            innerRoom.sendLiveLocation(geoUri)
         }
     }
 

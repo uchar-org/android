@@ -107,6 +107,10 @@ class TimelineEventContentMapper(
                                 threadInfo = extractThreadInfo(it.content),
                             )
                         }
+                        is MsgLikeKind.LiveLocation -> {
+                            // Live location messages are a special kind of message that we want to treat as unknown content for now
+                             UnknownContent
+                        }
                         is MsgLikeKind.Other -> UnknownContent
                     }
                 }
@@ -134,9 +138,6 @@ class TimelineEventContentMapper(
                 }
                 is TimelineItemContent.CallInvite -> LegacyCallInviteContent
                 is TimelineItemContent.RtcNotification -> CallNotifyContent
-                is TimelineItemContent.LiveLocation -> {
-                    UnknownContent
-                }
             }
         }
     }
@@ -222,7 +223,6 @@ private fun RustOtherState.map(): OtherState {
         RustOtherState.PolicyRuleRoom -> OtherState.PolicyRuleRoom
         RustOtherState.PolicyRuleServer -> OtherState.PolicyRuleServer
         RustOtherState.PolicyRuleUser -> OtherState.PolicyRuleUser
-        RustOtherState.RoomAliases -> OtherState.RoomAliases
         is RustOtherState.RoomAvatar -> OtherState.RoomAvatar(url)
         RustOtherState.RoomCanonicalAlias -> OtherState.RoomCanonicalAlias
         RustOtherState.RoomCreate -> OtherState.RoomCreate
