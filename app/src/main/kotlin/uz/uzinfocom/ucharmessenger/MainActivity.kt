@@ -71,9 +71,6 @@ class MainActivity : NodeActivity() {
         appBindings = bindings()
         setupLockManagement(appBindings.lockScreenService(), appBindings.lockScreenEntryPoint())
         enableEdgeToEdge()
-//        setContent {
-//            MainContent(appBindings)
-//        }
 
         lifecycleScope.launch(Dispatchers.IO) {
             val rootBeer = RootBeer(this@MainActivity)
@@ -128,8 +125,8 @@ class MainActivity : NodeActivity() {
         val sharedPrefs = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
         val lang = sharedPrefs.getString("lang", "uz")
 
-
         setLocaleLang(lang ?:"uz", context)
+
         val migrationState = appBindings.migrationEntryPoint().present()
         val colors by remember {
             appBindings.enterpriseService().semanticColorsFlow(sessionId = null)
