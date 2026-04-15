@@ -281,7 +281,8 @@ private fun HomeScaffold(
                                     HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
                                 }
                             }
-                            HomeNavigationBarItem.Spaces -> if (state.homeSpacesState.canCreateSpaces) {
+                            HomeNavigationBarItem.Spaces ->
+                                if (state.homeSpacesState.canExploreSpaces) {
                                 {
                                     HomeFloatingActionButton(onCreateSpaceClick, CommonStrings.action_create_space)
                                 }
@@ -295,17 +296,13 @@ private fun HomeScaffold(
             }
         },
         floatingActionButton = {
-            if (state.showNavigationBar) {
+
                 if (state.currentHomeNavigationBarItem == HomeNavigationBarItem.Chats) {
                     HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
                 } else if (state.currentHomeNavigationBarItem == HomeNavigationBarItem.Spaces) {
                     HomeFloatingActionButton(onCreateSpaceClick, CommonStrings.action_create_space)
                 }
-            } else {
-                Row {
-                    HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
-                }
-            }
+
         },
         floatingActionButtonPosition = FabPosition.End,
         content = { padding ->

@@ -42,7 +42,10 @@ sqldelight {
             // ./gradlew generateDebugSessionDatabaseSchema
             // Test migration by running
             // ./gradlew verifySqlDelightMigration
+
             schemaOutputDirectory = File("src/main/sqldelight/databases")
+            packageName.set("io.element.android.libraries.sessionstorage.impl")
+
             verifyMigrations = true
         }
     }

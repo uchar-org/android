@@ -25,6 +25,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 
+
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 class DatabaseSessionStore(
