@@ -6,7 +6,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.x.intent
+package uz.uzinfocom.ucharmessenger.intent
 
 import android.content.Context
 import android.content.Intent
@@ -23,7 +23,6 @@ import io.element.android.libraries.matrix.api.core.ThreadId
 import io.element.android.libraries.push.impl.intent.IntentProvider
 import uz.uzinfocom.ucharmessenger.MainActivity
 
-//import io.element.android.x.MainActivity
 
 @ContributesBinding(AppScope::class)
 class DefaultIntentProvider(

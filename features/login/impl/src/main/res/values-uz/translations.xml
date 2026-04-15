@@ -8,7 +8,7 @@
   <string name="screen_account_provider_signin_subtitle">"Bu sizning suhbatlaringiz yashaydigan joy - xuddi siz elektron pochta xabarlaringizni saqlash uchun elektron pochta provayderidan foydalanganingiz kabi."</string>
   <string name="screen_account_provider_signin_title">"Siz '%s'ga kirmoqchisiz"</string>
   <string name="screen_account_provider_signup_subtitle">"Bu sizning suhbatlaringiz yashaydigan joy - xuddi siz elektron pochta xabarlaringizni saqlash uchun elektron pochta provayderidan foydalanganingiz kabi."</string>
-  <string name="screen_account_provider_signup_title">"Siz %sda hisob yaratmoqchisiz"</string>
+  <string name="screen_account_provider_signup_title">"Siz '%s' da hisob yaratmoqchisiz"</string>
   <string name="screen_change_account_provider_matrix_org_subtitle">"Uchar - bu Uzinfocom tomonidan boshqariladigan xavfsiz, markazlashtirilmagan aloqa uchun ommaviy Matrix tarmog\'idagi katta, bepul server."</string>
   <string name="screen_change_account_provider_other">"Boshqa"</string>
   <string name="screen_change_account_provider_subtitle">"Shaxsiy serveringiz yoki ishchi hisob qaydnomangiz kabi boshqa hisob provayderidan foydalaning."</string>

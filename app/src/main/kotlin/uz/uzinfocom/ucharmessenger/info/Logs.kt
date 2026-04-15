@@ -6,11 +6,10 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.x.info
+package uz.uzinfocom.ucharmessenger.info
 
 import android.content.Context
 import io.element.android.libraries.androidutils.system.getVersionCodeFromManifest
-//import io.element.android.x.BuildConfig
 import timber.log.Timber
 import uz.uzinfocom.ucharmessenger.BuildConfig
 import java.text.SimpleDateFormat

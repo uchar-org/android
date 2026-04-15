@@ -6,7 +6,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.x.di
+package uz.uzinfocom.ucharmessenger.di
 
 import android.content.Context
 import androidx.work.ListenableWorker

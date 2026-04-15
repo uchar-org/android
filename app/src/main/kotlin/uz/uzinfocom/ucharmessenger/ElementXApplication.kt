@@ -14,11 +14,11 @@ import androidx.work.Configuration
 import dev.zacsweers.metro.createGraphFactory
 import io.element.android.libraries.di.DependencyInjectionGraphOwner
 import io.element.android.libraries.workmanager.api.di.MetroWorkerFactory
-import io.element.android.x.di.AppGraph
-import io.element.android.x.info.logApplicationInfo
-import io.element.android.x.initializer.CacheCleanerInitializer
-import io.element.android.x.initializer.CrashInitializer
-import io.element.android.x.initializer.PlatformInitializer
+import uz.uzinfocom.ucharmessenger.di.AppGraph
+import uz.uzinfocom.ucharmessenger.info.logApplicationInfo
+import uz.uzinfocom.ucharmessenger.initializer.CacheCleanerInitializer
+import uz.uzinfocom.ucharmessenger.initializer.CrashInitializer
+import uz.uzinfocom.ucharmessenger.initializer.PlatformInitializer
 
 class ElementXApplication : Application(), DependencyInjectionGraphOwner, Configuration.Provider {
     override val graph: AppGraph = createGraphFactory<AppGraph.Factory>().create(this)

@@ -6,7 +6,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.x.di
+package uz.uzinfocom.ucharmessenger.di
 
 import dev.zacsweers.metro.GraphExtension
 import dev.zacsweers.metro.Provides
