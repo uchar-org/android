@@ -46,7 +46,11 @@ setupKover()
 android {
 //    namespace = "io.element.android.x"
     namespace = "uz.uzinfocom.ucharmessenger"
-
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
     defaultConfig {
         applicationId = BuildTimeConfig.APPLICATION_ID
         targetSdk = Versions.TARGET_SDK

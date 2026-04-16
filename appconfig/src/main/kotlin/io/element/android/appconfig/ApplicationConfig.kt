@@ -17,7 +17,7 @@ object ApplicationConfig {
      * - "Element X dbg" for debug builds;
      * - "Element X nightly" for nightly builds.
      */
-    const val APPLICATION_NAME: String = ""
+    const val APPLICATION_NAME: String = "Uchar"
 
     /**
      * Used in the strings to reference the Element client.

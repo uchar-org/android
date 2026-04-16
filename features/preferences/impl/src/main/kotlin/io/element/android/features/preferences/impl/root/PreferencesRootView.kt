@@ -8,25 +8,22 @@
 
 package io.element.android.features.preferences.impl.root
 
+import android.app.LocaleManager
 import android.content.Context
+import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
@@ -41,7 +38,6 @@ import io.element.android.libraries.designsystem.preview.ElementPreviewDark
 import io.element.android.libraries.designsystem.preview.ElementPreviewLight
 import io.element.android.libraries.designsystem.preview.PreviewWithLargeHeight
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
-import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.ListItem
@@ -264,43 +260,28 @@ private fun ColumnScope.GeneralSection(
 ) {
 
     val context1 = LocalContext.current
-    val shared = context1.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-    val lang = shared.getString("lang", "uz")
+//    val shared = context1.getSharedPreferences("Settings", Context.MODE_PRIVATE)
+//    val lang = shared.getString("lang", "uz")
+
+    fun getLanguageCode(context: Context): String {
+        val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.getSystemService(LocaleManager::class.java)
+                ?.applicationLocales
+                ?.get(0)
+        } else {
+            AppCompatDelegate.getApplicationLocales().get(0)
+        }
+        return locale?.language ?: "uz"
+    }
+
+    val lang = getLanguageCode(context1)
+
     ListItem(
         headlineContent = { Text(if (lang == "uz") "O'zbekcha" else if (lang == "ru") "Русский" else if (lang == "en") "English" else stringResource(R.string.language)) },
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Language())),
         onClick = onOpenLocalization,
     )
-//
-//    val context = LocalContext.current
-//    DropdownMenu(
-//        offset = DpOffset(clickOffset.x.dp, clickOffset.y.dp),
-//        modifier = Modifier,
-//        expanded = menuExpanded,
-//        onDismissRequest = { menuExpanded = false },
-//    ) {
-//        DropdownMenuItem(
-//            text = { Text("Uzbek") },
-//            onClick = {
-//                state.eventSink(PreferencesRootEvents.SwitchLanguage("uz", context))
-//                menuExpanded = false
-//            }
-//        )
-//        DropdownMenuItem(
-//            text = { Text("Russian") },
-//            onClick = {
-//                state.eventSink(PreferencesRootEvents.SwitchLanguage("ru", context))
-//                menuExpanded = false
-//            }
-//        )
-//        DropdownMenuItem(
-//            text = { Text("English") },
-//            onClick = {
-//                state.eventSink(PreferencesRootEvents.SwitchLanguage("en", context))
-//                menuExpanded = false
-//            }
-//        )
-//    }
+
     ListItem(
         headlineContent = { Text(stringResource(id = CommonStrings.common_about)) },
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Info())),

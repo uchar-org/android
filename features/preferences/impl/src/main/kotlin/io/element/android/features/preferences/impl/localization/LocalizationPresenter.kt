@@ -7,13 +7,15 @@
 
 package io.element.android.features.preferences.impl.localization
 
+import android.annotation.SuppressLint
+import android.app.LocaleManager
 import android.content.Context
+import android.os.Build
+import android.os.LocaleList
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.core.content.edit
 import dev.zacsweers.metro.Inject
 import io.element.android.libraries.architecture.Presenter
-import java.util.Locale
 
 @Inject
 class LocalizationPresenter : Presenter<LocalizationState> {
@@ -25,33 +27,37 @@ class LocalizationPresenter : Presenter<LocalizationState> {
     )
     var selectLang = "uz"
 
-    fun setLangState(lang: String,) {
+    fun setLangState(lang: String) {
         selectLang = lang
     }
 
-    fun saveLang(context: Context){
+    fun saveLang(context: Context) {
         setLocaleLang(selectLang, context)
     }
-    fun setLocaleLang(lang: String, context: Context) {
-        val locale = Locale.forLanguageTag(lang)
-        Locale.setDefault(locale)
-        selectLang = lang
-        val resources = context.resources
-        val configuration = resources.configuration
-        configuration.setLocale(locale)
-        resources.updateConfiguration(configuration, resources.displayMetrics)
 
-        context.getSharedPreferences("Settings", Context.MODE_PRIVATE).edit {
-            putString("lang", lang)
+    fun getLanguageCode(context: Context): String {
+        val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.getSystemService(LocaleManager::class.java)
+                ?.applicationLocales
+                ?.get(0)
+        } else {
+            AppCompatDelegate.getApplicationLocales().get(0)
+        }
+        return locale?.language ?: "uz"
+    }
+
+    fun setLocaleLang(lang: String, context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.getSystemService(LocaleManager::class.java)
+                ?.applicationLocales = LocaleList.forLanguageTags(lang)
         }
     }
 
-    fun changeLanguage(checked: Boolean, id: Int, context: Context) {
+    fun changeLanguage(checked: Boolean, id: Int) {
         languages.forEach { item ->
             item.checked = item.id == id && checked
             if (item.id == id && checked) {
                 setLangState(item.code)
-//                setLocaleLang(item.code, context)
             }
         }
     }
