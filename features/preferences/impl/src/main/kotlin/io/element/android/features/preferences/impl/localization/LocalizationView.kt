@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -19,7 +18,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,12 +29,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.element.android.compound.theme.ElementTheme
-import io.element.android.features.preferences.impl.R
 import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.aliasButtonText
 import io.element.android.libraries.designsystem.theme.aliasScreenTitle
-import io.element.android.libraries.designsystem.theme.components.Checkbox
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconToggleButton
 import io.element.android.libraries.designsystem.theme.components.Scaffold
@@ -112,19 +108,13 @@ fun LocalizationItem(data: LocaleData, onChecked: (checked: Boolean, id: Int, co
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(data.name, style = TextStyle(fontSize = 16.sp))
-//            Spacer(modifier = Modifier)
-//            Checkbox(checked = data.checked, onCheckedChange = {
-//                onChecked(it, data.id, context)
-//            })
+
             IconToggleButton(checked = data.checked, onCheckedChange = {
                 onChecked(it, data.id, context)
             }) {
                 if (data.checked) Icon(
                     painter = painterResource(io.element.android.compound.R.drawable.ic_compound_check),
                     contentDescription = "Language",
-//                    tint = Color(
-//                        0xFF9B51E0
-//                    )
                 )
             }
         }

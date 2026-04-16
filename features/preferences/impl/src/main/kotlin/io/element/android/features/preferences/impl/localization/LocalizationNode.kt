@@ -43,13 +43,7 @@ class LocalizationNode(
     override fun View(modifier: Modifier) {
         val state = presenter.present()
         val context1 = LocalContext.current
-//        val shared = context1.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-//        val lang = shared.getString("lang", "uz")
-//For setOverrideLocaleConfig
-//        val localeManager = applicationContext?.getSystemService(LocaleManager::class.java)
-//        localeManager?.overrideLocaleConfig = LocaleConfig(
-//            LocaleList.forLanguageTags("en-US,ja-JP,zh-Hans-SG,uz,ru")
-//        )
+
 
         fun getLanguageCode(context: Context): String {
             val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

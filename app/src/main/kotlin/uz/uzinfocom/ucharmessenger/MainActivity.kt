@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.core.content.edit
-import androidx.core.os.LocaleListCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -138,19 +137,6 @@ class MainActivity : NodeActivity() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @Composable
     private fun MainContent(appBindings: AppBindings) {
-
-//        val context = LocalContext.current
-//        val sharedPrefs = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-//        val lang = sharedPrefs.getString("lang", "uz")
-//
-//        setLocaleLang(lang ?:"uz", context)
-
-
-
-
-
-
-
 
 
         val context = LocalContext.current

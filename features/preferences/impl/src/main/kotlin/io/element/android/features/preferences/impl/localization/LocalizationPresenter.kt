@@ -6,8 +6,6 @@
  */
 
 package io.element.android.features.preferences.impl.localization
-
-import android.annotation.SuppressLint
 import android.app.LocaleManager
 import android.content.Context
 import android.os.Build

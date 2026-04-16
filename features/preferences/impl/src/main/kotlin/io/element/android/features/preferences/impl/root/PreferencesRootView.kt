@@ -260,8 +260,7 @@ private fun ColumnScope.GeneralSection(
 ) {
 
     val context1 = LocalContext.current
-//    val shared = context1.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-//    val lang = shared.getString("lang", "uz")
+
 
     fun getLanguageCode(context: Context): String {
         val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

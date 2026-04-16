@@ -8,6 +8,10 @@
 
 package io.element.android.features.login.impl.screens.onboarding
 
+import android.app.LocaleManager
+import android.content.Context
+import android.os.Build
+import android.os.LocaleList
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,18 +21,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -52,6 +62,7 @@ import io.element.android.libraries.designsystem.components.dialogs.Confirmation
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Button
+import io.element.android.libraries.designsystem.theme.components.DropdownMenu
 import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
@@ -162,6 +173,13 @@ private fun AddFirstAccountScaffold(
     buttons: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var menuExpanded by remember { mutableStateOf(false) }
+    fun setLocaleLang(lang: String, context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.getSystemService(LocaleManager::class.java)
+                ?.applicationLocales = LocaleList.forLanguageTags(lang)
+        }
+    }
     OnBoardingPage(
         modifier = modifier,
         renderBackground = state.onBoardingLogoResId == null,
@@ -175,10 +193,47 @@ private fun AddFirstAccountScaffold(
             }
             loginView()
         },
+
         footer = {
             buttons()
+        },
+        onClickLanguage = {
+            menuExpanded=true
         }
+
     )
+
+    var clickOffset by remember { mutableStateOf(Offset.Zero) }
+    val context = LocalContext.current
+    DropdownMenu(
+//        offset = DpOffset(clickOffset.x.dp, clickOffset.y.dp),
+        offset = DpOffset(x = 16.dp, y = 8.dp),
+            modifier = Modifier,
+        expanded = menuExpanded,
+        onDismissRequest = { menuExpanded = false },
+    ) {
+        DropdownMenuItem(
+            text = { Text("Uzbek") },
+            onClick = {
+                setLocaleLang("uz",context)
+                menuExpanded = false
+            }
+        )
+        DropdownMenuItem(
+            text = { Text("Russian") },
+            onClick = {
+                setLocaleLang("ru",context)
+                menuExpanded = false
+            }
+        )
+        DropdownMenuItem(
+            text = { Text("English") },
+            onClick = {
+                setLocaleLang("en",context)
+                menuExpanded = false
+            }
+        )
+    }
 }
 
 @Composable
@@ -203,6 +258,7 @@ private fun OnBoardingContent(state: OnBoardingState) {
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
+
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = BiasAlignment(
@@ -210,6 +266,7 @@ private fun OnBoardingContent(state: OnBoardingState) {
                 verticalBias = -0.4f
             )
         ) {
+
             ElementLogoAtom(
                 size = ElementLogoAtomSize.Large,
                 modifier = Modifier.padding(top = ElementLogoAtomSize.Large.shadowRadius / 2)
@@ -227,6 +284,7 @@ private fun OnBoardingContent(state: OnBoardingState) {
                     .fillMaxWidth(),
                 horizontalAlignment = CenterHorizontally,
             ) {
+
                 Text(
                     text = stringResource(id = R.string.screen_onboarding_welcome_title),
                     color = ElementTheme.colors.textPrimary,

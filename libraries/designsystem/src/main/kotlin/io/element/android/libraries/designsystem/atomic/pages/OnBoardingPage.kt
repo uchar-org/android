@@ -9,12 +9,18 @@
 package io.element.android.libraries.designsystem.atomic.pages
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +31,7 @@ import io.element.android.compound.theme.ElementTheme
 import io.element.android.libraries.designsystem.R
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
 
 /**
@@ -44,6 +51,7 @@ fun OnBoardingPage(
     contentAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     footer: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
+    onClickLanguage: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -58,6 +66,28 @@ fun OnBoardingPage(
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
             )
+        }
+        Row(
+            modifier = Modifier
+                .align(alignment = Alignment.TopEnd)
+                .statusBarsPadding()
+                .padding(horizontal = 12.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .height(56.dp)
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(height = 36.dp, width = 36.dp)
+                        .clickable {
+                            onClickLanguage()
+                        },
+                    resourceId = io.element.android.compound.R.drawable.ic_compound_public,
+                    contentDescription = null,
+                )
+            }
         }
         Column(
             modifier = Modifier
@@ -82,6 +112,7 @@ fun OnBoardingPage(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @PreviewsDayNight
 @Composable
 internal fun OnBoardingPagePreview() = ElementPreview {
@@ -92,6 +123,7 @@ internal fun OnBoardingPagePreview() = ElementPreview {
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
+
                 Text(
                     text = "Content",
                     style = ElementTheme.typography.fontHeadingXlBold
@@ -109,6 +141,7 @@ internal fun OnBoardingPagePreview() = ElementPreview {
                     style = ElementTheme.typography.fontHeadingXlBold
                 )
             }
-        }
+        },
+        onClickLanguage = {}
     )
 }
