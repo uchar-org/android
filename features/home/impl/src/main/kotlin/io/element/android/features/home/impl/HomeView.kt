@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -241,7 +242,7 @@ private fun HomeScaffold(
             val coroutineScope = rememberCoroutineScope()
 
             Box(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().navigationBarsPadding()
             ) {
                 Column(
 
