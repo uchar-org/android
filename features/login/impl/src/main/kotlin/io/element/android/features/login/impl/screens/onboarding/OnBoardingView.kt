@@ -6,22 +6,30 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package io.element.android.features.login.impl.screens.onboarding
 
 import android.app.LocaleManager
 import android.content.Context
 import android.os.Build
 import android.os.LocaleList
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -33,7 +41,9 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -63,7 +73,10 @@ import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Button
 import io.element.android.libraries.designsystem.theme.components.DropdownMenu
+import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconSource
+import io.element.android.libraries.designsystem.theme.components.IconToggleButton
+import io.element.android.libraries.designsystem.theme.components.ModalBottomSheet
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.matrix.api.auth.OidcDetails
@@ -166,6 +179,7 @@ private fun LoginWithElementClassicView(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddFirstAccountScaffold(
     state: OnBoardingState,
@@ -173,66 +187,116 @@ private fun AddFirstAccountScaffold(
     buttons: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var menuExpanded by remember { mutableStateOf(false) }
+    var showSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
+    val context = LocalContext.current
+
     fun setLocaleLang(lang: String, context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             context.getSystemService(LocaleManager::class.java)
                 ?.applicationLocales = LocaleList.forLanguageTags(lang)
         }
     }
+    fun getLanguageCode(context: Context,): String {
+        val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.getSystemService(LocaleManager::class.java)
+                ?.applicationLocales
+                ?.get(0)
+        } else {
+            AppCompatDelegate.getApplicationLocales().get(0)
+        }
+        return locale?.language ?:"uz"
+    }
+    val currentLanguage=getLanguageCode(context)
     OnBoardingPage(
         modifier = modifier,
         renderBackground = state.onBoardingLogoResId == null,
         content = {
             if (state.onBoardingLogoResId != null) {
-                OnBoardingLogo(
-                    onBoardingLogoResId = state.onBoardingLogoResId,
-                )
+                OnBoardingLogo(onBoardingLogoResId = state.onBoardingLogoResId)
             } else {
                 OnBoardingContent(state = state)
             }
             loginView()
         },
-
         footer = {
             buttons()
         },
         onClickLanguage = {
-            menuExpanded=true
+            showSheet = true
         }
-
     )
 
-    var clickOffset by remember { mutableStateOf(Offset.Zero) }
-    val context = LocalContext.current
-    DropdownMenu(
-//        offset = DpOffset(clickOffset.x.dp, clickOffset.y.dp),
-        offset = DpOffset(x = 16.dp, y = 8.dp),
-            modifier = Modifier,
-        expanded = menuExpanded,
-        onDismissRequest = { menuExpanded = false },
+    if (showSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showSheet = false },
+            sheetState = sheetState,
+            containerColor = ElementTheme.colors.bgCanvasDefault,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp)
+            ) {
+//                Text(
+//                    text = stringResource(CommonStrings.common_appearance_language),
+//                    modifier = Modifier.padding(16.dp),
+//                    style = ElementTheme.typography.fontHeadingLgBold
+//                )
+
+                LanguageOption(
+                    label = "O'zbekcha",
+                    isSelected = currentLanguage == "uz",
+                    onClick = { setLocaleLang("uz",context) }
+                )
+                LanguageOption(
+                    label = "Русский",
+                    isSelected = currentLanguage == "ru",
+                    onClick = { setLocaleLang("ru",context) }
+                )
+                LanguageOption(
+                    label = "English",
+                    isSelected = currentLanguage == "en",
+                    onClick = { setLocaleLang("en",context) }
+                )
+            }
+        }
+    }}
+
+
+
+@Composable
+private fun LanguageOption(
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        DropdownMenuItem(
-            text = { Text("Uzbek") },
-            onClick = {
-                setLocaleLang("uz",context)
-                menuExpanded = false
-            }
+        Text(
+            text = label,
+            style = ElementTheme.typography.fontBodyLgRegular,
+            modifier = Modifier.weight(1f),
+            color = if (isSelected) ElementTheme.colors.textActionPrimary else ElementTheme.colors.textPrimary
         )
-        DropdownMenuItem(
-            text = { Text("Russian") },
-            onClick = {
-                setLocaleLang("ru",context)
-                menuExpanded = false
+
+        IconToggleButton(
+            checked = isSelected,
+            onCheckedChange = { onClick() }
+        ) {
+            if (isSelected) {
+                Icon(
+                    painter = painterResource(io.element.android.compound.R.drawable.ic_compound_check),
+                    contentDescription = null,
+                    tint = ElementTheme.colors.textActionPrimary
+                )
             }
-        )
-        DropdownMenuItem(
-            text = { Text("English") },
-            onClick = {
-                setLocaleLang("en",context)
-                menuExpanded = false
-            }
-        )
+        }
     }
 }
 

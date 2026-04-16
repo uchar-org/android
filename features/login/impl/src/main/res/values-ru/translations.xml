@@ -9,7 +9,7 @@
   <string name="screen_account_provider_signin_title">"Вы собираетесь войти в %s"</string>
   <string name="screen_account_provider_signup_subtitle">"Здесь будут храниться ваши разговоры — точно так же, как если бы вы использовали почтового провайдера для хранения своих писем."</string>
   <string name="screen_account_provider_signup_title">"Вы собираетесь создать учетную запись на %s"</string>
-  <string name="screen_change_account_provider_matrix_org_subtitle">"Matrix.org — это большой бесплатный сервер в общедоступной сети Matrix для безопасной децентрализованной связи, управляемый Matrix.org Foundation."</string>
+  <string name="screen_change_account_provider_matrix_org_subtitle">"Uchar — это большой бесплатный сервер в общедоступной сети Uchar для безопасной децентрализованной связи, управляемый Matrix Foundation."</string>
   <string name="screen_change_account_provider_other">"Другое"</string>
   <string name="screen_change_account_provider_subtitle">"Используйте другого поставщика учетных записей, например, собственный частный сервер или рабочую учетную запись."</string>
   <string name="screen_change_account_provider_title">"Сменить поставщика учетной записи"</string>
@@ -44,7 +44,7 @@
   <string name="screen_onboarding_sign_up">"Создать учетную запись"</string>
   <string name="screen_onboarding_welcome_message">"Добро пожаловать в самый быстрый клиент %1$s. Ориентирован на скорость и простоту."</string>
   <string name="screen_onboarding_welcome_subtitle">"Добро пожаловать в %1$s. Ориентирован на скорость и простоту."</string>
-  <string name="screen_onboarding_welcome_title">"Чувствуйте себя как дома с Element"</string>
+  <string name="screen_onboarding_welcome_title">"Чувствуйте себя как дома с Uchar"</string>
   <string name="screen_qr_code_login_connecting_subtitle">"Установление безопасного соединения"</string>
   <string name="screen_qr_code_login_connection_note_secure_state_description">"Не удалось установить безопасное соединение с новым устройством. Существующие устройства по-прежнему в безопасности, и вам не нужно беспокоиться о них."</string>
   <string name="screen_qr_code_login_connection_note_secure_state_list_header">"Что теперь?"</string>
@@ -92,7 +92,7 @@
   <string name="screen_qr_code_login_verify_code_title">"Ваш код подтверждения"</string>
   <string name="screen_server_confirmation_change_server">"Сменить поставщика учетной записи"</string>
   <string name="screen_server_confirmation_message_login_element_dot_io">"Частный сервер для сотрудников Element."</string>
-  <string name="screen_server_confirmation_message_login_matrix_dot_org">"Matrix — это открытая сеть для безопасной децентрализованной связи."</string>
+  <string name="screen_server_confirmation_message_login_matrix_dot_org">"Uchar — это открытая сеть для безопасной децентрализованной связи."</string>
   <string name="screen_server_confirmation_message_register">"Здесь будут храниться ваши разговоры — точно так же, как если бы вы использовали почтового провайдера для хранения своих писем."</string>
   <string name="screen_server_confirmation_title_login">"Вы собираетесь войти в %1$s"</string>
   <string name="screen_server_confirmation_title_picker_mode">"Выберите поставщика учетной записи"</string>

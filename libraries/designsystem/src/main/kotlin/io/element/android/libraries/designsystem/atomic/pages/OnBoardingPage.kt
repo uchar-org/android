@@ -9,7 +9,7 @@
 package io.element.android.libraries.designsystem.atomic.pages
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,10 +20,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -51,11 +54,12 @@ fun OnBoardingPage(
     contentAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     footer: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
-    onClickLanguage: () -> Unit
+    onClickLanguage: (Offset) -> Unit
 ) {
     Box(
         modifier = modifier
             .fillMaxSize()
+
     ) {
         // BG
         if (renderBackground) {
@@ -76,13 +80,17 @@ fun OnBoardingPage(
             Box(
                 modifier = Modifier
                     .height(56.dp)
+                    .wrapContentSize(Alignment.TopEnd)
             ) {
                 Icon(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(height = 36.dp, width = 36.dp)
-                        .clickable {
-                            onClickLanguage()
+                        .pointerInput(Unit) {
+                            detectTapGestures { offset ->
+                                // Bosilgan joyning (x, y) pikselini yuqoriga jo'natadi
+                                onClickLanguage(offset)
+                            }
                         },
                     resourceId = io.element.android.compound.R.drawable.ic_compound_public,
                     contentDescription = null,
