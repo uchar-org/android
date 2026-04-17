@@ -8,11 +8,17 @@
 
 package uz.uzinfocom.ucharmessenger
 
+import android.annotation.SuppressLint
+import android.app.LocaleManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.LocaleList
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,12 +55,12 @@ import io.element.android.libraries.designsystem.theme.ElementThemeApp
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.utils.snackbar.LocalSnackbarDispatcher
 import io.element.android.services.analytics.compose.LocalAnalyticsService
-import io.element.android.x.di.AppBindings
-import io.element.android.x.intent.SafeUriHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import uz.uzinfocom.ucharmessenger.di.AppBindings
+import uz.uzinfocom.ucharmessenger.intent.SafeUriHandler
 import java.util.Locale
 
 private val loggerTag = LoggerTag("MainActivity")
@@ -63,7 +69,7 @@ class MainActivity : NodeActivity() {
     private lateinit var mainNode: MainNode
     private lateinit var appBindings: AppBindings
 
-
+    @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.tag(loggerTag.value).d("onCreate, with savedInstanceState: ${savedInstanceState != null}")
         installSplashScreen()
@@ -118,14 +124,24 @@ class MainActivity : NodeActivity() {
         }
     }
 
+    fun getLanguageCode(context: Context,): String {
+        val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.getSystemService(LocaleManager::class.java)
+                ?.applicationLocales
+                ?.get(0)
+        } else {
+            AppCompatDelegate.getApplicationLocales().get(0)
+        }
+        return locale?.language ?:"uz"
+    }
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @Composable
     private fun MainContent(appBindings: AppBindings) {
 
-        val context = LocalContext.current
-        val sharedPrefs = context.getSharedPreferences("Settings", Context.MODE_PRIVATE)
-        val lang = sharedPrefs.getString("lang", "uz")
 
-        setLocaleLang(lang ?:"uz", context)
+        val context = LocalContext.current
+        context.getSystemService(LocaleManager::class.java)
+            ?.applicationLocales = LocaleList.forLanguageTags(getLanguageCode(context))
 
         val migrationState = appBindings.migrationEntryPoint().present()
         val colors by remember {

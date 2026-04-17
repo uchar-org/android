@@ -6,7 +6,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.x.oidc
+package uz.uzinfocom.ucharmessenger.oidc
 
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -14,7 +14,6 @@ import io.element.android.libraries.matrix.api.auth.OidcRedirectUrlProvider
 import io.element.android.services.toolbox.api.strings.StringProvider
 import uz.uzinfocom.ucharmessenger.R
 
-//import io.element.android.x.R
 
 @ContributesBinding(AppScope::class)
 class DefaultOidcRedirectUrlProvider(

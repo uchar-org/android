@@ -458,8 +458,8 @@ Are you sure you want to continue?"</string>
   <string name="error_room_address_invalid_symbols">"Some characters are not allowed. Only letters, digits and the following symbols are supported ! $ &amp; ‘ ( ) * + / ; = ? @ [ ] - . _"</string>
   <string name="error_some_messages_have_not_been_sent">"Some messages have not been sent"</string>
   <string name="error_unknown">"Sorry, an error occurred"</string>
-  <string name="invite_friends_rich_title">"🔐️ Menga qo\'shiling %1$s"</string>
-  <string name="invite_friends_text">"Hey, men bilan %1$sda gaplash : %2$s"</string>
+  <string name="invite_friends_rich_title">"🔐️ Join me on %1$s"</string>
+  <string name="invite_friends_text">"Hey, talk to me on %1$s: %2$s"</string>
   <string name="login_initial_device_name_android">"%1$s Android"</string>
   <string name="preference_rageshake">"Rageshake to report bug"</string>
   <string name="screen_bug_report_a11y_screenshot">"Screenshot"</string>
@@ -507,6 +507,8 @@ Are you sure you want to continue?"</string>
   <string name="screen_room_pinned_banner_loading_description">"Loading message…"</string>
   <string name="screen_room_pinned_banner_view_all_button_title">"View All"</string>
   <string name="screen_room_title">"Chat"</string>
+  <string name="screen_share_location_live_location_disclaimer_title">"Your live location history will be stored in the room and visible to members after the session ends."</string>
+  <string name="screen_share_location_live_location_duration_picker_title">"Choose how long to share your live location."</string>
   <string name="screen_share_location_title">"Share location"</string>
   <string name="screen_share_my_location_action">"Share my location"</string>
   <string name="screen_share_open_apple_maps">"Open in Apple Maps"</string>

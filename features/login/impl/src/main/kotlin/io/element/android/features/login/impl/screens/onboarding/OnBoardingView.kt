@@ -6,29 +6,49 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package io.element.android.features.login.impl.screens.onboarding
 
+import android.app.LocaleManager
+import android.content.Context
+import android.os.Build
+import android.os.LocaleList
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -52,7 +72,11 @@ import io.element.android.libraries.designsystem.components.dialogs.Confirmation
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.Button
+import io.element.android.libraries.designsystem.theme.components.DropdownMenu
+import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.IconSource
+import io.element.android.libraries.designsystem.theme.components.IconToggleButton
+import io.element.android.libraries.designsystem.theme.components.ModalBottomSheet
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
 import io.element.android.libraries.matrix.api.auth.OidcDetails
@@ -155,6 +179,7 @@ private fun LoginWithElementClassicView(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddFirstAccountScaffold(
     state: OnBoardingState,
@@ -162,14 +187,33 @@ private fun AddFirstAccountScaffold(
     buttons: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var showSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
+    val context = LocalContext.current
+
+    fun setLocaleLang(lang: String, context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.getSystemService(LocaleManager::class.java)
+                ?.applicationLocales = LocaleList.forLanguageTags(lang)
+        }
+    }
+    fun getLanguageCode(context: Context,): String {
+        val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.getSystemService(LocaleManager::class.java)
+                ?.applicationLocales
+                ?.get(0)
+        } else {
+            AppCompatDelegate.getApplicationLocales().get(0)
+        }
+        return locale?.language ?:"uz"
+    }
+    val currentLanguage=getLanguageCode(context)
     OnBoardingPage(
         modifier = modifier,
         renderBackground = state.onBoardingLogoResId == null,
         content = {
             if (state.onBoardingLogoResId != null) {
-                OnBoardingLogo(
-                    onBoardingLogoResId = state.onBoardingLogoResId,
-                )
+                OnBoardingLogo(onBoardingLogoResId = state.onBoardingLogoResId)
             } else {
                 OnBoardingContent(state = state)
             }
@@ -177,8 +221,83 @@ private fun AddFirstAccountScaffold(
         },
         footer = {
             buttons()
+        },
+        onClickLanguage = {
+            showSheet = true
         }
     )
+
+    if (showSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showSheet = false },
+            sheetState = sheetState,
+            containerColor = ElementTheme.colors.bgCanvasDefault,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp)
+            ) {
+//                Text(
+//                    text = stringResource(CommonStrings.common_appearance_language),
+//                    modifier = Modifier.padding(16.dp),
+//                    style = ElementTheme.typography.fontHeadingLgBold
+//                )
+
+                LanguageOption(
+                    label = "O'zbekcha",
+                    isSelected = currentLanguage == "uz",
+                    onClick = { setLocaleLang("uz",context) }
+                )
+                LanguageOption(
+                    label = "Русский",
+                    isSelected = currentLanguage == "ru",
+                    onClick = { setLocaleLang("ru",context) }
+                )
+                LanguageOption(
+                    label = "English",
+                    isSelected = currentLanguage == "en",
+                    onClick = { setLocaleLang("en",context) }
+                )
+            }
+        }
+    }}
+
+
+
+@Composable
+private fun LanguageOption(
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = ElementTheme.typography.fontBodyLgRegular,
+            modifier = Modifier.weight(1f),
+            color = if (isSelected) ElementTheme.colors.textActionPrimary else ElementTheme.colors.textPrimary
+        )
+
+        IconToggleButton(
+            checked = isSelected,
+            onCheckedChange = { onClick() }
+        ) {
+            if (isSelected) {
+                Icon(
+                    painter = painterResource(io.element.android.compound.R.drawable.ic_compound_check),
+                    contentDescription = null,
+                    tint = ElementTheme.colors.textActionPrimary
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -203,6 +322,7 @@ private fun OnBoardingContent(state: OnBoardingState) {
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
+
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = BiasAlignment(
@@ -210,6 +330,7 @@ private fun OnBoardingContent(state: OnBoardingState) {
                 verticalBias = -0.4f
             )
         ) {
+
             ElementLogoAtom(
                 size = ElementLogoAtomSize.Large,
                 modifier = Modifier.padding(top = ElementLogoAtomSize.Large.shadowRadius / 2)
@@ -227,6 +348,7 @@ private fun OnBoardingContent(state: OnBoardingState) {
                     .fillMaxWidth(),
                 horizontalAlignment = CenterHorizontally,
             ) {
+
                 Text(
                     text = stringResource(id = R.string.screen_onboarding_welcome_title),
                     color = ElementTheme.colors.textPrimary,

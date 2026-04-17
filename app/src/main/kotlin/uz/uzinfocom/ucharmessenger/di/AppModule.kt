@@ -6,7 +6,7 @@
  * Please see LICENSE files in the repository root for full details.
  */
 
-package io.element.android.x.di
+package uz.uzinfocom.ucharmessenger.di
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -30,8 +30,6 @@ import io.element.android.libraries.di.annotations.AppCoroutineScope
 import io.element.android.libraries.di.annotations.ApplicationContext
 import io.element.android.libraries.recentemojis.api.EmojibaseProvider
 import io.element.android.libraries.recentemojis.impl.DefaultEmojibaseProvider
-//import io.element.android.x.BuildConfig
-//import io.element.android.x.R
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
