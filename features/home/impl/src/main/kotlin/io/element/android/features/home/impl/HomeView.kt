@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -24,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -179,9 +177,8 @@ private fun HomeScaffold(
     onStartChatClick: () -> Unit,
     onCreateSpaceClick: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
-    modifier: Modifier = Modifier,
-
-    ) {
+    modifier: Modifier = Modifier
+) {
     fun onRoomClick(room: RoomListRoomSummary) {
         onRoomClick(room.roomId)
     }
@@ -242,7 +239,9 @@ private fun HomeScaffold(
             val coroutineScope = rememberCoroutineScope()
 
             Box(
-                modifier = Modifier.fillMaxWidth().navigationBarsPadding()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
             ) {
                 Column(
 
@@ -284,12 +283,12 @@ private fun HomeScaffold(
                             }
                             HomeNavigationBarItem.Spaces ->
                                 if (state.homeSpacesState.canExploreSpaces) {
-                                {
-                                    HomeFloatingActionButton(onCreateSpaceClick, CommonStrings.action_create_space)
+                                    {
+                                        HomeFloatingActionButton(onCreateSpaceClick, CommonStrings.action_create_space)
+                                    }
+                                } else {
+                                    null
                                 }
-                            } else {
-                                null
-                            }
                         },
                         navigateToProfileEdit = navigateToProfileEdit
                     )
@@ -298,17 +297,18 @@ private fun HomeScaffold(
         },
         floatingActionButton = {
 
-                if (state.currentHomeNavigationBarItem == HomeNavigationBarItem.Chats) {
-                    HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
-                } else if (state.currentHomeNavigationBarItem == HomeNavigationBarItem.Spaces) {
-                    HomeFloatingActionButton(onCreateSpaceClick, CommonStrings.action_create_space)
-                }
+            if (state.currentHomeNavigationBarItem == HomeNavigationBarItem.Chats) {
+                HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
+            } else if (state.currentHomeNavigationBarItem == HomeNavigationBarItem.Spaces) {
+                HomeFloatingActionButton(onCreateSpaceClick, CommonStrings.action_create_space)
+            }
 
         },
         floatingActionButtonPosition = FabPosition.End,
         content = { padding ->
             val contentPadding = PaddingValues(
                 bottom = 196.dp,
+                top = 16.dp
             )
             when (state.currentHomeNavigationBarItem) {
                 HomeNavigationBarItem.Chats -> {

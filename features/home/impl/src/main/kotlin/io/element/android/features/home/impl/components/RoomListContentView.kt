@@ -96,36 +96,7 @@ fun RoomListContentView(
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(top = 116.dp),
-//                .fillMaxWidth()
-
             ) { page ->
-//                var list: List<RoomListRoomSummary> = contentState.summaries
-//                if (HomeTabs.entries[selectedTabIndex.value].text == "All") {
-//                     list = contentState.summaries
-////                    filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-
-//                } else
-//                    if (HomeTabs.entries[selectedTabIndex.value].text == "Unread") {
-//                        list = contentState.summaries.fastFilter { it.isMarkedUnread }
-//
-////                        filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-////                        filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Unread))
-
-//                    } else
-//                        if (HomeTabs.entries[selectedTabIndex.value].text == "People") {
-//                            list = contentState.summaries.fastFilter { it.isDirect }
-//
-////                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-////                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Rooms))
-
-//                        } else
-//                            if (HomeTabs.entries[selectedTabIndex.value].text == "Favourites") {
-//                            list = contentState.summaries.fastFilter { it.isFavorite }
-//
-////                            filtersState.eventSink(RoomListFiltersEvent.ClearSelectedFilters)
-////                            filtersState.eventSink(RoomListFiltersEvent.ToggleFilter(RoomListFilter.Favourites))
-//                        }
-
                 RoomsView(
                     modifier = modifier,
                     state = contentState,
@@ -139,7 +110,6 @@ fun RoomListContentView(
                     lazyListState = lazyListState,
                     contentPadding = contentPadding,
                     list=contentState.summaries
-//                    list=list
                 )
 
             }
@@ -264,9 +234,7 @@ private fun RoomsViewList(
 //        eventSink(RoomListEvent.UpdateVisibleRange(visibleRange))
 //    }
     LazyColumn(
-//        state = lazyListState,
         state = rememberLazyListState(),
-
         modifier = modifier,
         contentPadding = contentPadding,
     ) {
@@ -305,7 +273,6 @@ private fun RoomsViewList(
         }
 
         itemsIndexed(
-//            items = state.summaries,
             items =list,
             contentType = { _, room -> room.contentType() },
         ) { index, room ->
