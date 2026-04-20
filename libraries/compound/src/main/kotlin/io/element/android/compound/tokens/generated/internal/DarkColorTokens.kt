@@ -240,7 +240,7 @@ object DarkColorTokens {
     val colorGreen1000 = Color(0xff1140A4).copy(alpha = 0.1f)
 //    val colorGreen1100 = Color(0xff1fc090)
 //    val colorGreen1100 = Color(0xff1140A4).copy(alpha = 1.1f)
-    val colorGreen1100 = Color.Black.copy(alpha = 0.7f)
+    val colorGreen1100 = Color.White.copy(alpha = 0.7f)
     val colorGreen1200 = Color(0xff72d5ae)
     val colorGreen1300 = Color(0xffb5e8d1)
     val colorGreen1400 = Color(0xffd9f4e7)
