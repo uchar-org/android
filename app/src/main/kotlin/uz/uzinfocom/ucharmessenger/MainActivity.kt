@@ -111,18 +111,6 @@ class MainActivity : NodeActivity() {
         }
     }
 
-    fun setLocaleLang(lang: String, context: Context) {
-        val locale = Locale.forLanguageTag(lang)
-        Locale.setDefault(locale)
-        val resources = context.resources
-        val configuration = resources.configuration
-        configuration.setLocale(locale)
-        resources.updateConfiguration(configuration, resources.displayMetrics)
-
-        context.getSharedPreferences("Settings", Context.MODE_PRIVATE).edit {
-            putString("lang", lang)
-        }
-    }
 
     fun getLanguageCode(context: Context,): String {
         val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -134,14 +122,17 @@ class MainActivity : NodeActivity() {
         }
         return locale?.language ?:"uz"
     }
+    @SuppressLint("ObsoleteSdkInt")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @Composable
     private fun MainContent(appBindings: AppBindings) {
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 
-        val context = LocalContext.current
+            val context = LocalContext.current
         context.getSystemService(LocaleManager::class.java)
             ?.applicationLocales = LocaleList.forLanguageTags(getLanguageCode(context))
+        }
 
         val migrationState = appBindings.migrationEntryPoint().present()
         val colors by remember {
