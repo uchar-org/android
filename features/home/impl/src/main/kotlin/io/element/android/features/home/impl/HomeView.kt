@@ -408,7 +408,7 @@ private fun HomeBottomBar(
             if (index > 0) {
                 HorizontalFloatingToolbarItem(
                     icon = ImageVector.vectorResource(R.drawable.ic_compound_settings),
-                    tooltipLabel = stringResource(item.labelRes),
+                    tooltipLabel = stringResource(io.element.android.libraries.ui.strings.R.string.action_go_to_settings),
                     isSelected = false,
                     onClick = onOpenSettings,
                 )

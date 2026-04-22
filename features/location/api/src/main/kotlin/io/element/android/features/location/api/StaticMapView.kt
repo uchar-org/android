@@ -8,10 +8,12 @@
 
 package io.element.android.features.location.api
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -22,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.dp
 import coil3.Extras
 import coil3.compose.AsyncImagePainter
@@ -35,10 +38,25 @@ import io.element.android.libraries.designsystem.components.LocationPin
 import io.element.android.libraries.designsystem.components.PinVariant
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import org.maplibre.compose.camera.rememberCameraState
+import org.maplibre.compose.camera.CameraMoveReason
+import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.camera.rememberCameraState
+import org.maplibre.compose.location.DesiredAccuracy
+import org.maplibre.compose.location.LocationPuck
+import org.maplibre.compose.location.LocationPuckColors
+import org.maplibre.compose.location.LocationPuckSizes
+import org.maplibre.compose.location.UserLocationState
+import org.maplibre.compose.location.rememberAndroidLocationProvider
+import org.maplibre.compose.location.rememberNullLocationProvider
+import org.maplibre.compose.location.rememberUserLocationState
+import org.maplibre.spatialk.geojson.Position
+import kotlin.time.Duration.Companion.minutes
 
 /**
  * Shows a static map image downloaded via a third party service's static maps API.
  */
+@Suppress("COMPOSE_APPLIER_CALL_MISMATCH")
 @Composable
 fun StaticMapView(
     lat: Double,
@@ -58,12 +76,17 @@ fun StaticMapView(
     ) {
         val context = LocalContext.current
         var retryHash by remember { mutableIntStateOf(0) }
+
+
+
+
         val builder = remember { StaticMapUrlBuilder() }
         val painter = rememberAsyncImagePainter(
             model = if (constraints.isZero) {
                 // Avoid building a URL if any of the size constraints is zero (else it will thrown an exception).
                 null
-            } else {
+            } else
+            {
                 ImageRequest.Builder(context)
                     .data(
                         builder.build(
@@ -83,6 +106,19 @@ fun StaticMapView(
                     .build()
             }
         )
+
+
+
+        val initialPosition = remember {
+                val firstLocation = Location(lat,lon)
+                CameraPosition(
+                    target = Position(latitude = firstLocation.lat, longitude = firstLocation.lon),
+                    zoom = MapDefaults.DEFAULT_ZOOM
+                )
+        }
+        val cameraState = rememberCameraState(firstPosition = initialPosition)
+
+
 
         val collectedState = painter.state.collectAsState()
         if (collectedState.value is AsyncImagePainter.State.Success) {
@@ -108,6 +144,9 @@ fun StaticMapView(
         }
     }
 }
+
+
+
 
 private fun AsyncImagePainter.State.isLoading(): Boolean {
     return this is AsyncImagePainter.State.Empty ||

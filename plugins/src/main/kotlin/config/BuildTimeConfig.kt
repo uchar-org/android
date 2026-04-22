@@ -25,15 +25,14 @@ object BuildTimeConfig {
     val URL_POLICY: String? = null
     val SERVICES_MAPTILER_BASE_URL: String? = null
     val SERVICES_MAPTILER_APIKEY: String? = null
-    val SERVICES_MAPTILER_LIGHT_MAPID: String? = null
-    val SERVICES_MAPTILER_DARK_MAPID: String? = null
+    const val SERVICES_MAPTILER_LIGHT_MAPID: String = "streets-v4"
+    const val SERVICES_MAPTILER_DARK_MAPID: String = "streets-v4-dark"
     val SERVICES_POSTHOG_HOST: String? = null
     val SERVICES_POSTHOG_APIKEY: String? = null
     val SERVICES_SENTRY_DSN: String? = null
     val SERVICES_SENTRY_DSN_RUST: String? = null
     val BUG_REPORT_URL: String? = null
     val BUG_REPORT_APP_NAME: String? = null
-
     const val PUSH_CONFIG_INCLUDE_FIREBASE = true
     const val PUSH_CONFIG_INCLUDE_UNIFIED_PUSH = true
 }

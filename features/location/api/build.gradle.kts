@@ -47,7 +47,7 @@ android {
                     ?: readLocalProperty("services.maptiler.lightMapId")
             }
             // fall back to maptiler's default light map.
-                ?: "basic-v2"
+                ?: "streets-v4"
         )
         buildConfigFieldStr(
             name = "MAPTILER_DARK_MAP_ID",
@@ -58,12 +58,14 @@ android {
                     ?: readLocalProperty("services.maptiler.darkMapId")
             }
             // fall back to maptiler's default dark map.
-                ?: "basic-v2-dark"
+                ?: "streets-v4-dark"
         )
     }
 }
 
 dependencies {
+    implementation(libs.maplibre.compose)
+
     implementation(projects.libraries.architecture)
     implementation(projects.libraries.designsystem)
     implementation(projects.libraries.core)
@@ -71,6 +73,7 @@ dependencies {
     implementation(projects.libraries.matrixui)
     implementation(projects.libraries.uiStrings)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.espresso.core)
 
     testCommonDependencies(libs)
 }
