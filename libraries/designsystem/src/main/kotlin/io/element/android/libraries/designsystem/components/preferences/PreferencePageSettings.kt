@@ -8,14 +8,12 @@
 
 package io.element.android.libraries.designsystem.components.preferences
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -25,13 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.components.button.BackButton
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.aliasScreenTitle
-import io.element.android.libraries.designsystem.theme.components.Scaffold
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TopAppBar
 
@@ -43,25 +41,45 @@ fun PreferencePageSettings(
     snackbarHost: @Composable () -> Unit = {},
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Scaffold(
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .systemBarsPadding()
-            .imePadding(),
-        contentWindowInsets = WindowInsets.statusBars,
-
-        snackbarHost = snackbarHost,
-        content = {
-            Column(
-                modifier = Modifier
-                    .padding(it)
-                    .consumeWindowInsets(it)
-                    .verticalScroll(state = rememberScrollState())
-            ) {
-                content()
-            }
+//            .systemBarsPadding()
+//            .imePadding()
+        ,
+        ) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(state = rememberScrollState())
+        ) {
+            content()
+            Box(Modifier.size(height = 180.dp, width = 0.dp))
         }
-    )
+    }
+//    Scaffold(
+//        modifier = modifier
+//            .fillMaxSize()
+//            .systemBarsPadding()
+//            .imePadding(),
+//        contentWindowInsets = WindowInsets.statusBars,
+////        topBar = {
+////            PreferenceTopAppBar(
+////                title = title,
+////                onBackClick = onBackClick,
+////            )
+////        },
+//        snackbarHost = snackbarHost,
+//        content = {
+//            Column(
+//                modifier = Modifier
+//                    .padding(it)
+//                    .consumeWindowInsets(it)
+//                    .verticalScroll(state = rememberScrollState())
+//            ) {
+//                content()
+//            }
+//        }
+//    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

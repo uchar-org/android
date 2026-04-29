@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.VerticalPager
@@ -334,7 +336,13 @@ private fun HomeScaffold(
                     HomeSpacesView(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(padding)
+                            .padding(
+                                PaddingValues(
+                                    start = padding.calculateStartPadding(LocalLayoutDirection.current),
+                                    end = padding.calculateEndPadding(LocalLayoutDirection.current),
+                                )
+                            )
+//                            .padding(padding)
                             .consumeWindowInsets(padding)
                             .hazeSource(state = hazeState),
                         contentPadding = contentPadding,
@@ -348,46 +356,26 @@ private fun HomeScaffold(
                     )
                 }
                 HomeNavigationBarItem.Profile -> {
-                    profileView(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(padding)
-                            .consumeWindowInsets(padding)
-                    )
-//                    val state = presenter.present()
 
-//                    PreferencesRootView(
-//                        state = state,
-//                        modifier = modifier,
-//                        onBackClick = {},
-//                        onAddAccountClick = { },
-//                        onOpenRageShake = {},
-//                        onOpenAnalytics = {},
-//                        onOpenAbout = {},
-//                        onSecureBackupClick = {},
-//                        onOpenDeveloperSettings = {},
-//                        onOpenAdvancedSettings = {},
-//                        onOpenLabs = {},
-//                        onLinkNewDeviceClick = {},
-//                        onManageAccountClick = { },
-//                        onOpenNotificationSettings = {
-//                            onOpenNotification()
-//                        },
-//                        onOpenLockScreenSettings = {},
-//                        onOpenUserProfile = {},
-//                        onOpenBlockedUsers = {},
-//                        onSignOutClick = {
-//                            if (state.directLogoutState.canDoDirectSignOut) {
-//                                state.directLogoutState.eventSink(DirectLogoutEvents.Logout(ignoreSdkError = false))
-//                            } else {
-////                                callback.startSignOutFlow()
-//                            }
-//                        },
-//                        onDeactivateClick = {},
-//                        onOpenLocalization ={
-//                            onOpenNotification()
-//                        }
-//                    )
+                        profileView(
+                            Modifier
+                                .fillMaxSize()
+//                                .padding(padding)
+                                .padding(
+                                    PaddingValues(
+//                                        start = padding.calculateStartPadding(LocalLayoutDirection.current),
+//                                        end = padding.calculateEndPadding(LocalLayoutDirection.current),
+                                        top = padding.calculateTopPadding(),
+//                                        bottom = padding.calculateBottomPadding(),
+                                    )
+                                )
+//                                .statusBarsPadding()
+//                                .navigationBarsPadding()
+//                                .systemBarsPadding()
+//
+//                                .consumeWindowInsets(padding)
+                        )
+
                 }
             }
         },
