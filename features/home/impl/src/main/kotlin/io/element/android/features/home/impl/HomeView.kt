@@ -360,20 +360,12 @@ private fun HomeScaffold(
                         profileView(
                             Modifier
                                 .fillMaxSize()
-//                                .padding(padding)
                                 .padding(
                                     PaddingValues(
-//                                        start = padding.calculateStartPadding(LocalLayoutDirection.current),
-//                                        end = padding.calculateEndPadding(LocalLayoutDirection.current),
                                         top = padding.calculateTopPadding(),
-//                                        bottom = padding.calculateBottomPadding(),
                                     )
                                 )
-//                                .statusBarsPadding()
-//                                .navigationBarsPadding()
-//                                .systemBarsPadding()
-//
-//                                .consumeWindowInsets(padding)
+
                         )
 
                 }
