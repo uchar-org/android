@@ -545,13 +545,13 @@ object CompoundIcons {
         return ImageVector.vectorResource(R.drawable.ic_compound_space)
     }
     @Composable fun Profile(): ImageVector {
-        return ImageVector.vectorResource(R.drawable.ic_compound_space)
+        return ImageVector.vectorResource(R.drawable.ic_compound_settings)
     }
     @Composable fun SpaceSolid(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_space_solid)
     }
       @Composable fun SpaceProfile(): ImageVector {
-            return ImageVector.vectorResource(R.drawable.ic_compound_space_solid)
+            return ImageVector.vectorResource(R.drawable.ic_compound_settings_solid)
         }
     @Composable fun Spinner(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_spinner)

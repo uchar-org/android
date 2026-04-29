@@ -27,6 +27,17 @@ android {
 setupDependencyInjection()
 
 dependencies {
+    implementation(project(":features:preferences:impl"))
+    implementation(project(":features:lockscreen:impl"))
+    implementation(project(":features:licenses:impl"))
+    implementation(project(":features:deactivation:impl"))
+    implementation(project(":features:linknewdevice:impl"))
+    implementation(project(":features:securebackup:impl"))
+    implementation(project(":features:login:impl"))
+    implementation(project(":appnav:"))
+    implementation(project(":libraries:architecture"))
+    implementation(project(":libraries:troubleshoot:impl"))
+
 //    implementation("com.scottyab:rootbeer-lib:0.1.2")
     implementation(projects.libraries.mediapickers.api)
     implementation(projects.libraries.mediaupload.api)

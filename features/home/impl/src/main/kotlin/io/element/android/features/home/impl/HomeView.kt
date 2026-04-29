@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -42,12 +43,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import dev.chrisbanes.haze.hazeEffect
@@ -55,7 +52,6 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.chrisbanes.haze.rememberHazeState
-import io.element.android.compound.R
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.features.home.impl.components.HomeTabs
@@ -77,8 +73,6 @@ import io.element.android.libraries.designsystem.atomic.atoms.RedIndicatorAtom
 import io.element.android.libraries.designsystem.components.avatar.Avatar
 import io.element.android.libraries.designsystem.components.avatar.AvatarSize
 import io.element.android.libraries.designsystem.components.avatar.AvatarType
-import io.element.android.libraries.designsystem.preview.ElementPreview
-import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.FloatingActionButton
 import io.element.android.libraries.designsystem.theme.components.HorizontalFloatingToolbar
 import io.element.android.libraries.designsystem.theme.components.HorizontalFloatingToolbarItem
@@ -115,6 +109,8 @@ fun HomeView(
     acceptDeclineInviteView: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     leaveRoomView: @Composable () -> Unit,
+    profileView: @Composable (Modifier) -> Unit, // Yangi parametr
+
 ) {
     val state: RoomListState = homeState.roomListState
     val coroutineScope = rememberCoroutineScope()
@@ -149,7 +145,9 @@ fun HomeView(
             navigateToProfileEdit = { if (firstThrottler.canHandle()) navigateToProfileEdit(it) },
             onStartChatClick = { if (firstThrottler.canHandle()) onStartChatClick() },
             onCreateSpaceClick = { if (firstThrottler.canHandle()) onCreateSpaceClick() },
-            onMenuActionClick = onMenuActionClick
+            onMenuActionClick = onMenuActionClick,
+            profileView = profileView
+
         )
         // This overlaid view will only be visible when state.displaySearchResults is true
         RoomListSearchView(
@@ -177,8 +175,11 @@ private fun HomeScaffold(
     onStartChatClick: () -> Unit,
     onCreateSpaceClick: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    profileView: @Composable (Modifier) -> Unit, // Yangi parametr
+
 ) {
+
     fun onRoomClick(room: RoomListRoomSummary) {
         onRoomClick(room.roomId)
     }
@@ -208,6 +209,8 @@ private fun HomeScaffold(
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { HomeTabs.entries.size })
     val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
+
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -262,6 +265,7 @@ private fun HomeScaffold(
                                 val lazyListStateTarget = when (item) {
                                     HomeNavigationBarItem.Chats -> roomsLazyListState
                                     HomeNavigationBarItem.Spaces -> spacesLazyListState
+                                    HomeNavigationBarItem.Profile -> LazyListState()
                                 }
                                 coroutineScope.launch {
                                     if (lazyListStateTarget.firstVisibleItemIndex > 10) {
@@ -274,21 +278,6 @@ private fun HomeScaffold(
                             } else {
                                 state.eventSink(HomeEvent.SelectHomeNavigationBarItem(item))
                             }
-                        },
-                        floatingActionButton = when (state.currentHomeNavigationBarItem) {
-                            HomeNavigationBarItem.Chats -> {
-                                {
-                                    HomeFloatingActionButton(onStartChatClick, CommonStrings.action_create_room)
-                                }
-                            }
-                            HomeNavigationBarItem.Spaces ->
-                                if (state.homeSpacesState.canExploreSpaces) {
-                                    {
-                                        HomeFloatingActionButton(onCreateSpaceClick, CommonStrings.action_create_space)
-                                    }
-                                } else {
-                                    null
-                                }
                         },
                         navigateToProfileEdit = navigateToProfileEdit
                     )
@@ -310,7 +299,9 @@ private fun HomeScaffold(
                 bottom = 196.dp,
                 top = 16.dp
             )
+
             when (state.currentHomeNavigationBarItem) {
+
                 HomeNavigationBarItem.Chats -> {
 
                     RoomListContentView(
@@ -356,6 +347,48 @@ private fun HomeScaffold(
                         onExploreClick = {},
                     )
                 }
+                HomeNavigationBarItem.Profile -> {
+                    profileView(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(padding)
+                            .consumeWindowInsets(padding)
+                    )
+//                    val state = presenter.present()
+
+//                    PreferencesRootView(
+//                        state = state,
+//                        modifier = modifier,
+//                        onBackClick = {},
+//                        onAddAccountClick = { },
+//                        onOpenRageShake = {},
+//                        onOpenAnalytics = {},
+//                        onOpenAbout = {},
+//                        onSecureBackupClick = {},
+//                        onOpenDeveloperSettings = {},
+//                        onOpenAdvancedSettings = {},
+//                        onOpenLabs = {},
+//                        onLinkNewDeviceClick = {},
+//                        onManageAccountClick = { },
+//                        onOpenNotificationSettings = {
+//                            onOpenNotification()
+//                        },
+//                        onOpenLockScreenSettings = {},
+//                        onOpenUserProfile = {},
+//                        onOpenBlockedUsers = {},
+//                        onSignOutClick = {
+//                            if (state.directLogoutState.canDoDirectSignOut) {
+//                                state.directLogoutState.eventSink(DirectLogoutEvents.Logout(ignoreSdkError = false))
+//                            } else {
+////                                callback.startSignOutFlow()
+//                            }
+//                        },
+//                        onDeactivateClick = {},
+//                        onOpenLocalization ={
+//                            onOpenNotification()
+//                        }
+//                    )
+                }
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -385,12 +418,10 @@ private fun HomeBottomBar(
     currentHomeNavigationBarItem: HomeNavigationBarItem,
     onItemClick: (HomeNavigationBarItem) -> Unit,
     modifier: Modifier = Modifier,
-    floatingActionButton: (@Composable () -> Unit)?,
     navigateToProfileEdit: (matrixUser: MatrixUser) -> Unit,
 
     ) {
     HorizontalFloatingToolbar(
-        //            floatingActionButton = floatingActionButton,
         modifier = modifier
             .zIndex(1f),
     ) {
@@ -405,15 +436,15 @@ private fun HomeBottomBar(
                 isSelected = isSelected,
                 onClick = { onItemClick(item) },
             )
-            if (index > 0) {
-                HorizontalFloatingToolbarItem(
-                    icon = ImageVector.vectorResource(R.drawable.ic_compound_settings),
-                    tooltipLabel = stringResource(io.element.android.libraries.ui.strings.R.string.action_go_to_settings),
-                    isSelected = false,
-                    onClick = onOpenSettings,
-                )
-            }
-            if (index > 0) Box(modifier = Modifier.scale(0.8f)) {
+//            if (index > 0) {
+//                HorizontalFloatingToolbarItem(
+//                    icon = ImageVector.vectorResource(R.drawable.ic_compound_settings),
+//                    tooltipLabel = stringResource(io.element.android.libraries.ui.strings.R.string.action_go_to_settings),
+//                    isSelected = false,
+//                    onClick = onOpenSettings,
+//                )
+//            }
+            if (index > 1) Box(modifier = Modifier.scale(0.8f)) {
                 NavigationIcon(
                     currentUserAndNeighbors = state.currentUserAndNeighbors,
                     showAvatarIndicator = state.showAvatarIndicator,
@@ -443,8 +474,6 @@ private fun NavigationIcon(
             showAvatarIndicator = showAvatarIndicator,
             onClick = onClick,
             modifier = Modifier
-//                .size(36.dp)
-//                .padding(horizontal = 12.dp, vertical = 12.dp)
         )
     } else {
         val pagerState = rememberPagerState(initialPage = 1) { currentUserAndNeighbors.size }
@@ -478,7 +507,7 @@ private fun AccountIcon(
     isCurrentAccount: Boolean,
     showAvatarIndicator: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val testTag = if (isCurrentAccount) Modifier.testTag(TestTags.homeScreenSettings) else Modifier
     IconButton(
@@ -507,45 +536,45 @@ private fun AccountIcon(
 
 internal fun RoomListRoomSummary.contentType() = displayType.ordinal
 
-@PreviewsDayNight
-@Composable
-internal fun HomeViewPreview(@PreviewParameter(HomeStateProvider::class) state: HomeState) = ElementPreview {
-    HomeView(
-        homeState = state,
-        onRoomClick = {},
-        onSettingsClick = {},
-        onSetUpRecoveryClick = {},
-        onConfirmRecoveryKeyClick = {},
-        onStartChatClick = {},
-        onCreateSpaceClick = {},
-        onRoomSettingsClick = {},
-        onReportRoomClick = {},
-        onMenuActionClick = {},
-        onDeclineInviteAndBlockUser = {},
-        acceptDeclineInviteView = {},
-        leaveRoomView = {},
-        navigateToProfileEdit = {}
-    )
-}
+//@PreviewsDayNight
+//@Composable
+//internal fun HomeViewPreview(@PreviewParameter(HomeStateProvider::class) state: HomeState) = ElementPreview {
+//    HomeView(
+//        homeState = state,
+//        onRoomClick = {},
+//        onSettingsClick = {},
+//        onSetUpRecoveryClick = {},
+//        onConfirmRecoveryKeyClick = {},
+//        onStartChatClick = {},
+//        onCreateSpaceClick = {},
+//        onRoomSettingsClick = {},
+//        onReportRoomClick = {},
+//        onMenuActionClick = {},
+//        onDeclineInviteAndBlockUser = {},
+//        acceptDeclineInviteView = {},
+//        leaveRoomView = {},
+//        navigateToProfileEdit = {}
+//    )
+//}
 
-@Preview
-@Composable
-internal fun HomeViewA11yPreview() = ElementPreview {
-    HomeView(
-        homeState = aHomeState(),
-        onRoomClick = {},
-        onSettingsClick = {},
-        onSetUpRecoveryClick = {},
-        onConfirmRecoveryKeyClick = {},
-        onStartChatClick = {},
-        onCreateSpaceClick = {},
-        onRoomSettingsClick = {},
-        onReportRoomClick = {},
-        onMenuActionClick = {},
-        onDeclineInviteAndBlockUser = {},
-        acceptDeclineInviteView = {},
-        leaveRoomView = {},
-        navigateToProfileEdit = {}
-    )
-}
+//@Preview
+//@Composable
+//internal fun HomeViewA11yPreview() = ElementPreview {
+//    HomeView(
+//        homeState = aHomeState(),
+//        onRoomClick = {},
+//        onSettingsClick = {},
+//        onSetUpRecoveryClick = {},
+//        onConfirmRecoveryKeyClick = {},
+//        onStartChatClick = {},
+//        onCreateSpaceClick = {},
+//        onRoomSettingsClick = {},
+//        onReportRoomClick = {},
+//        onMenuActionClick = {},
+//        onDeclineInviteAndBlockUser = {},
+//        acceptDeclineInviteView = {},
+//        leaveRoomView = {},
+//        navigateToProfileEdit = {}
+//    )
+//}
 

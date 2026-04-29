@@ -12,6 +12,7 @@ import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
 import com.bumble.appyx.core.plugin.Plugin
 import io.element.android.libraries.architecture.FeatureEntryPoint
+import io.element.android.libraries.matrix.api.core.EventId
 import io.element.android.libraries.matrix.api.core.RoomId
 import io.element.android.libraries.matrix.api.room.JoinedRoom
 import io.element.android.libraries.matrix.api.user.MatrixUser
@@ -33,5 +34,6 @@ interface HomeEntryPoint : FeatureEntryPoint {
         fun navigateToEnterRecoveryKey()
         fun navigateToRoomSettings(roomId: RoomId)
         fun navigateToBugReport()
+
     }
 }

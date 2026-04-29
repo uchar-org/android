@@ -50,10 +50,10 @@ enum class HomeNavigationBarItem(
     ),
     Spaces(
         labelRes = R.string.screen_home_tab_spaces
+    ),
+    Profile(
+    labelRes = io.element.android.libraries.ui.strings.R.string.action_go_to_settings
     );
-//    Profile(
-//    labelRes = io.element.android.libraries.ui.strings.R.string.action_go_to_settings
-//    );
 
 
     @Composable
@@ -62,7 +62,7 @@ enum class HomeNavigationBarItem(
     ) = when (this) {
         Chats -> if (isSelected) CompoundIcons.ChatSolid() else CompoundIcons.Chat()
         Spaces -> if (isSelected) CompoundIcons.SpaceSolid() else CompoundIcons.Space()
-//        Profile -> if (isSelected) CompoundIcons.SpaceProfile() else CompoundIcons.Profile()
+        Profile -> if (isSelected) CompoundIcons.SpaceProfile() else CompoundIcons.Profile()
     }
 
     companion object {
