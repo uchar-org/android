@@ -221,7 +221,7 @@ private fun HomeScaffold(
     Scaffold(
         modifier = modifier,
         topBar = {
-            HomeTopBar(
+           if(state.currentHomeNavigationBarItem!=HomeNavigationBarItem.Profile) HomeTopBar(
                 selectedNavigationItem = state.currentHomeNavigationBarItem,
                 showAvatarIndicator = state.showAvatarIndicator,
                 areSearchResultsDisplayed = roomListState.searchState.isSearchActive,
@@ -379,11 +379,11 @@ private fun HomeScaffold(
                         profileView(
                             Modifier
                                 .fillMaxSize()
-                                .padding(
-                                    PaddingValues(
-                                        top = padding.calculateTopPadding(),
-                                    )
-                                )
+//                                .padding(
+//                                    PaddingValues(
+//                                        top = padding.calculateTopPadding(),
+//                                    )
+//                                )
 
                         )
 

@@ -9,6 +9,7 @@
 package io.element.android.features.home.impl.user.editprofile
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +19,8 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -74,34 +77,30 @@ fun EditUserProfileViewBottom(
         state.eventSink(EditUserProfileEvent.Exit)
     }
 
-
-//    LaunchedEffect(Unit) {
-//        // Force a refresh of the profile
-//        matrixClient.getUserProfile()
-//    }
     BackHandler(
         enabled = true,
         ::onBackClick,
     )
-    Scaffold(
+    Scaffold (
         modifier = modifier.clearFocusOnTap(focusManager),
-//        topBar = {
-//            TopAppBar(
-//                titleStr = "",
-//                navigationIcon = { },
-//                actions = {
-//                    TextButton(
-//                        text = stringResource(CommonStrings.action_save),
-//                        enabled = state.saveButtonEnabled,
-//                        onClick = {
-//                            focusManager.clearFocus()
-//                            state.eventSink(EditUserProfileEvent.Save)
-//                        },
-//                    )
-//                }
-//            )
-//        },
+        topBar = {
+            TopAppBar(
+                titleStr = stringResource(R.string.screen_edit_profile_title),
+                navigationIcon = {  },
+                actions = {
+                    TextButton(
+                        text = stringResource(CommonStrings.action_save),
+                        enabled = state.saveButtonEnabled,
+                        onClick = {
+                            focusManager.clearFocus()
+                            state.eventSink(EditUserProfileEvent.Save)
+                        },
+                    )
+                }
+            )
+        },
     ) { padding ->
+
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -139,16 +138,7 @@ fun EditUserProfileViewBottom(
                 singleLine = true,
                 onValueChange = { state.eventSink(EditUserProfileEvent.UpdateDisplayName(it)) },
             )
-            TextButton(
-                text = stringResource(CommonStrings.action_save),
-                enabled = state.saveButtonEnabled,
-                onClick = {
-                    focusManager.clearFocus()
-                    state.eventSink(EditUserProfileEvent.Save)
 
-
-                },
-            )
         }
 
         AvatarActionBottomSheet(
