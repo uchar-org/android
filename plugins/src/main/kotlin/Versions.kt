@@ -58,7 +58,7 @@ object Versions {
      * See comment above for the calculation method.
      */
 //    const val VERSION_CODE = (2000 + versionYear) * 10_000 + versionMonth * 100 + versionReleaseNumber
-    const val VERSION_CODE = 3555
+    const val VERSION_CODE = 3556
 
     //    val VERSION_NAME = "$versionYear.${versionMonth}.$versionReleaseNumber"
     const val VERSION_NAME = "2.3.0"
