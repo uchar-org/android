@@ -21,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
@@ -67,9 +68,15 @@ class EditUserProfilePresenter(
 
     @Composable
     override fun present(): EditUserProfileState {
+        val matrixUser = matrixClient.userProfile.collectAsStateWithLifecycle()
+        LaunchedEffect(Unit) {
+            // Force a refresh of the profile
+            matrixClient.getUserProfile()
+        }
+
         val cameraPermissionState = cameraPermissionPresenter.present()
-        var userAvatarUri by rememberSaveable { mutableStateOf(matrixUser.avatarUrl) }
-        var userDisplayName by rememberSaveable { mutableStateOf(matrixUser.displayName) }
+        var userAvatarUri by rememberSaveable { mutableStateOf(matrixUser.value.avatarUrl) }
+        var userDisplayName by rememberSaveable { mutableStateOf(matrixUser.value.displayName) }
         val cameraPhotoPicker = mediaPickerProvider.registerCameraPhotoPicker(
             onResult = { uri ->
                 if (uri != null) {
@@ -108,8 +115,8 @@ class EditUserProfilePresenter(
         val localCoroutineScope = rememberCoroutineScope()
 
         val canSave = remember(userDisplayName, userAvatarUri) {
-            val hasProfileChanged = hasDisplayNameChanged(userDisplayName, matrixUser) ||
-                hasAvatarUrlChanged(userAvatarUri, matrixUser)
+            val hasProfileChanged = hasDisplayNameChanged(userDisplayName, matrixUser.value) ||
+                hasAvatarUrlChanged(userAvatarUri, matrixUser.value)
             !userDisplayName.isNullOrBlank() && hasProfileChanged
         }
 
@@ -118,7 +125,7 @@ class EditUserProfilePresenter(
                 is EditUserProfileEvent.Save -> localCoroutineScope.saveChanges(
                     name = userDisplayName,
                     avatarUri = userAvatarUri?.toUri(),
-                    currentUser = matrixUser,
+                    currentUser = matrixUser.value,
                     action = saveAction,
                 )
                 is EditUserProfileEvent.HandleAvatarAction -> {
@@ -163,7 +170,7 @@ class EditUserProfilePresenter(
         }
 
         return EditUserProfileState(
-            userId = matrixUser.userId,
+            userId = matrixUser.value.userId,
             displayName = userDisplayName.orEmpty(),
             userAvatarUrl = userAvatarUri,
             avatarActions = avatarActions,
