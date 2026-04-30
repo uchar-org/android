@@ -9,6 +9,7 @@
 package io.element.android.features.home.impl.user.editprofile
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.bumble.appyx.core.modality.BuildContext
 import com.bumble.appyx.core.node.Node
@@ -28,10 +29,13 @@ class EditUserProfileNode(
     @Assisted buildContext: BuildContext,
     @Assisted plugins: List<Plugin>,
     presenterFactory: EditUserProfilePresenter.Factory,
+
 ) : Node(buildContext, plugins = plugins),
     EditUserProfileNavigator {
+
     data class Inputs(
-        val matrixUser: MatrixUser
+        val matrixUser: MatrixUser,
+        val isBottom: Boolean?
     ) : NodeInputs
 
     interface Callback : Plugin {
@@ -39,6 +43,7 @@ class EditUserProfileNode(
     }
 
     val matrixUser = inputs<Inputs>().matrixUser
+
     val callback: Callback = callback()
     val presenter = presenterFactory.create(
         matrixUser = matrixUser,
@@ -47,12 +52,24 @@ class EditUserProfileNode(
 
     @Composable
     override fun View(modifier: Modifier) {
+
         val state = presenter.present()
+        if(inputs<Inputs>().isBottom?:false){
+            EditUserProfileViewBottom(
+                state = state,
+                onEditProfileSuccess = ::close,
+                modifier = modifier,
+
+                )
+        }else{
         EditUserProfileView(
             state = state,
             onEditProfileSuccess = ::close,
-            modifier = modifier
-        )
+            modifier = modifier,
+
+            )
+        }
+
     }
 
     override fun close() = callback.onDone()

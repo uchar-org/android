@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.VerticalPager
@@ -111,7 +112,8 @@ fun HomeView(
     acceptDeclineInviteView: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     leaveRoomView: @Composable () -> Unit,
-    profileView: @Composable (Modifier) -> Unit, // Yangi parametr
+    settingsView: @Composable (Modifier) -> Unit,
+    profileView: @Composable (Modifier) -> Unit,
 
 ) {
     val state: RoomListState = homeState.roomListState
@@ -148,7 +150,8 @@ fun HomeView(
             onStartChatClick = { if (firstThrottler.canHandle()) onStartChatClick() },
             onCreateSpaceClick = { if (firstThrottler.canHandle()) onCreateSpaceClick() },
             onMenuActionClick = onMenuActionClick,
-            profileView = profileView
+            settingsView = settingsView,
+            profileView=profileView
 
         )
         // This overlaid view will only be visible when state.displaySearchResults is true
@@ -178,9 +181,11 @@ private fun HomeScaffold(
     onCreateSpaceClick: () -> Unit,
     onMenuActionClick: (RoomListMenuAction) -> Unit,
     modifier: Modifier = Modifier,
-    profileView: @Composable (Modifier) -> Unit, // Yangi parametr
+    settingsView: @Composable (Modifier) -> Unit,
+    profileView: @Composable (Modifier) -> Unit,
 
-) {
+
+    ) {
 
     fun onRoomClick(room: RoomListRoomSummary) {
         onRoomClick(room.roomId)
@@ -267,6 +272,7 @@ private fun HomeScaffold(
                                 val lazyListStateTarget = when (item) {
                                     HomeNavigationBarItem.Chats -> roomsLazyListState
                                     HomeNavigationBarItem.Spaces -> spacesLazyListState
+                                    HomeNavigationBarItem.Settings -> LazyListState()
                                     HomeNavigationBarItem.Profile -> LazyListState()
                                 }
                                 coroutineScope.launch {
@@ -342,7 +348,6 @@ private fun HomeScaffold(
                                     end = padding.calculateEndPadding(LocalLayoutDirection.current),
                                 )
                             )
-//                            .padding(padding)
                             .consumeWindowInsets(padding)
                             .hazeSource(state = hazeState),
                         contentPadding = contentPadding,
@@ -354,6 +359,20 @@ private fun HomeScaffold(
                         onCreateSpaceClick = onCreateSpaceClick,
                         onExploreClick = {},
                     )
+                }
+                HomeNavigationBarItem.Settings -> {
+
+                        settingsView(
+                            Modifier
+                                .fillMaxSize()
+                                .padding(
+                                    PaddingValues(
+                                        top = padding.calculateTopPadding(),
+                                    )
+                                )
+
+                        )
+
                 }
                 HomeNavigationBarItem.Profile -> {
 
@@ -424,18 +443,20 @@ private fun HomeBottomBar(
 //                    onClick = onOpenSettings,
 //                )
 //            }
-            if (index > 1) Box(modifier = Modifier.scale(0.8f)) {
-                NavigationIcon(
-                    currentUserAndNeighbors = state.currentUserAndNeighbors,
-                    showAvatarIndicator = state.showAvatarIndicator,
-                    onAccountSwitch = {
-                        state.eventSink(HomeEvent.SwitchToAccount(it))
-                    },
-                    onClick = {
-                        navigateToProfileEdit(state.currentUserAndNeighbors.first())
-                    },
-                )
-            }
+//            if (index > 1) Box(modifier = Modifier.scale(0.8f)) {
+//              Box(modifier = Modifier.width(20.dp)){}
+//
+//                NavigationIcon(
+//                    currentUserAndNeighbors = state.currentUserAndNeighbors,
+//                    showAvatarIndicator = state.showAvatarIndicator,
+//                    onAccountSwitch = {
+//                        state.eventSink(HomeEvent.SwitchToAccount(it))
+//                    },
+//                    onClick = {
+//                        navigateToProfileEdit(state.currentUserAndNeighbors.first())
+//                    },
+//                )
+//            }
         }
     }
 }

@@ -544,15 +544,22 @@ object CompoundIcons {
     @Composable fun Space(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_space)
     }
-    @Composable fun Profile(): ImageVector {
+    @Composable fun SettingsProfile(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_settings)
     }
     @Composable fun SpaceSolid(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_space_solid)
     }
-      @Composable fun SpaceProfile(): ImageVector {
+    @Composable fun SettingsProfileSolid(): ImageVector {
             return ImageVector.vectorResource(R.drawable.ic_compound_settings_solid)
-        }
+    }
+    @Composable fun Profile(): ImageVector {
+        return ImageVector.vectorResource(R.drawable.ic_compound_user_profile)
+    }
+    @Composable fun ProfileSolid(): ImageVector {
+        return ImageVector.vectorResource(R.drawable.ic_compound_user_profile_solid)
+    }
+
     @Composable fun Spinner(): ImageVector {
         return ImageVector.vectorResource(R.drawable.ic_compound_spinner)
     }

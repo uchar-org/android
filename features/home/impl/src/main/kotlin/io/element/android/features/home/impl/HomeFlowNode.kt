@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
@@ -103,6 +104,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
@@ -139,7 +141,6 @@ class HomeFlowNode(
     private val bugReportEntryPoint: BugReportEntryPoint,
 
     @SessionCoroutineScope private val sessionCoroutineScope: CoroutineScope,
-    private val presenterRoot: PreferencesRootPresenter,
 
     ) : BaseFlowNode<HomeFlowNode.NavTarget>(
     backstack = BackStack(
@@ -199,6 +200,22 @@ class HomeFlowNode(
             }
         }
         createNode<PreferencesRootNode>(buildContext, listOf(prefCallback))
+    }
+
+    private val profileNode by lazy {
+//        var uiState by mutableStateOf(stateFlow)
+//        val inputs = Inputs(uiState.value.currentUserAndNeighbors.first())
+        val matrixClientX = MutableStateFlow(matrixClient)
+        var matrixUser = matrixClientX.value.userProfile.value
+        val inputs = Inputs(matrixUser,true)
+
+        val callback = object : Callback {
+            override fun onDone() {
+                backstack.pop()
+            }
+        }
+        createNode<EditUserProfileNode>(buildContext, listOf(inputs, callback))
+
     }
 
     override fun onBuilt() {
@@ -418,9 +435,13 @@ class HomeFlowNode(
                     )
                 },
 
-                profileView = { profileModifier ->
-                    preferencesRootNode.View(profileModifier)
+                settingsView = { settingsModifier ->
+                    preferencesRootNode.View(settingsModifier)
                 },
+
+                profileView={ profileModifier ->
+                    profileNode.View(profileModifier)
+                }
             )
             directLogoutView.Render(state.directLogoutState)
         }
@@ -568,7 +589,7 @@ class HomeFlowNode(
                 createNode<AnalyticsSettingsNode>(buildContext)
             }
             is NavigateProfile -> {
-                val inputs = Inputs(navTarget.matrixUser)
+                val inputs = Inputs(navTarget.matrixUser,false)
                 val callback = object : Callback {
                     override fun onDone() {
                         backstack.pop()
