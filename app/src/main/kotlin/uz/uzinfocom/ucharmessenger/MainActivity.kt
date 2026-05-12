@@ -61,7 +61,6 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import uz.uzinfocom.ucharmessenger.di.AppBindings
 import uz.uzinfocom.ucharmessenger.intent.SafeUriHandler
-import java.util.Locale
 
 private val loggerTag = LoggerTag("MainActivity")
 
