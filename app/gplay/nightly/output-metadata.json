@@ -1,0 +1,97 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "uz.uzinfocom.ucharmessenger.nightly",
+  "variantName": "gplayNightly",
+  "elements": [
+    {
+      "type": "UNIVERSAL",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 35530,
+      "versionName": "2.3.0-nightly",
+      "outputFile": "app-gplay-universal-nightly.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "armeabi-v7a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 35531,
+      "versionName": "2.3.0-nightly",
+      "outputFile": "app-gplay-armeabi-v7a-nightly.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "arm64-v8a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 35532,
+      "versionName": "2.3.0-nightly",
+      "outputFile": "app-gplay-arm64-v8a-nightly.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86_64"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 35534,
+      "versionName": "2.3.0-nightly",
+      "outputFile": "app-gplay-x86_64-nightly.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 35533,
+      "versionName": "2.3.0-nightly",
+      "outputFile": "app-gplay-x86-nightly.apk"
+    }
+  ],
+  "elementType": "File",
+  "baselineProfiles": [
+    {
+      "minApi": 28,
+      "maxApi": 30,
+      "baselineProfiles": [
+        "baselineProfiles/1/app-gplay-universal-nightly.dm",
+        "baselineProfiles/1/app-gplay-armeabi-v7a-nightly.dm",
+        "baselineProfiles/1/app-gplay-arm64-v8a-nightly.dm",
+        "baselineProfiles/1/app-gplay-x86_64-nightly.dm",
+        "baselineProfiles/1/app-gplay-x86-nightly.dm"
+      ]
+    },
+    {
+      "minApi": 31,
+      "maxApi": 2147483647,
+      "baselineProfiles": [
+        "baselineProfiles/0/app-gplay-universal-nightly.dm",
+        "baselineProfiles/0/app-gplay-armeabi-v7a-nightly.dm",
+        "baselineProfiles/0/app-gplay-arm64-v8a-nightly.dm",
+        "baselineProfiles/0/app-gplay-x86_64-nightly.dm",
+        "baselineProfiles/0/app-gplay-x86-nightly.dm"
+      ]
+    }
+  ],
+  "minSdkVersionForDexing": 24
+}

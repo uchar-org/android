@@ -22,13 +22,6 @@ enum class FeatureFlags(
     override val isFinished: Boolean,
     override val isInLabs: Boolean = false,
 ) : Feature {
-    RoomDirectorySearch(
-        key = "feature.roomdirectorysearch",
-        title = "Room directory search",
-        description = "Allow user to search for public rooms in their homeserver",
-        defaultValue = { true },
-        isFinished = false,
-    ),
     ShowBlockedUsersDetails(
         key = "feature.showBlockedUsersDetails",
         title = "Show blocked users details",
@@ -49,17 +42,6 @@ enum class FeatureFlags(
         description = "This setting controls how end-to-end encryption (E2E) keys are shared." +
             " Enabling it will prevent the inclusion of devices that have not been explicitly verified by their owners." +
             " You'll have to stop and re-open the app manually for that setting to take effect.",
-        defaultValue = { false },
-        isFinished = false,
-    ),
-    EnableKeyShareOnInvite(
-        key = "feature.enableKeyShareOnInvite",
-        title = "Share encrypted history with new members",
-        description = "When inviting a user to an encrypted room that has history visibility set to \"shared\"," +
-            " share encrypted history with that user, and accept encrypted history when you are invited to such a room." +
-            "\nRequires an app restart to take effect." +
-            "\n\nWARNING: this feature is EXPERIMENTAL and not all security precautions are implemented." +
-            " Do not enable on production accounts.",
         defaultValue = { false },
         isFinished = false,
     ),
@@ -126,6 +108,13 @@ enum class FeatureFlags(
         defaultValue = { false },
         isFinished = false,
     ),
+    AllowBlackTheme(
+        key = "feature.allow_black_theme",
+        title = "Allow black theme",
+        description = "Allow selecting the black appearance theme for battery saving on OLED.",
+        defaultValue = { false },
+        isFinished = false,
+    ),
     LiveLocationSharing(
         key = "feature.liveLocationSharing",
         title = "Live location sharing",
@@ -152,6 +141,21 @@ enum class FeatureFlags(
         key = "feature.slash_command",
         title = "Parse slash commands in the message composer",
         description = "Allow parsing slash commands in the message composer and perform action.",
+        defaultValue = { false },
+        isFinished = false,
+    ),
+    RoomThreadList(
+        key = "feature.room_thread_list",
+        title = "Add a list of threads in a room",
+        description = "Add a new screen with a list of threads in a room.",
+        defaultValue = { false },
+        isFinished = false,
+    ),
+    AutomaticBackPagination(
+        key = "feature.automatic_back_pagination",
+        title = "Automatic back pagination of rooms",
+        description = "Allow the app to automatically back paginate in rooms to pre-fetch older messages in background." +
+            "\nRequires an app restart to take effect.",
         defaultValue = { false },
         isFinished = false,
     ),

@@ -46,12 +46,15 @@ allprojects {
         config.from(files("$rootDir/tools/detekt/detekt.yml"))
     }
     dependencies {
-        detektPlugins("io.nlopez.compose.rules:detekt:0.5.6")
+        detektPlugins("io.nlopez.compose.rules:detekt:0.5.8")
         detektPlugins(project(":tests:detekt-rules"))
     }
 
     tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
         exclude("io/element/android/tests/konsist/failures/**")
+
+        // This file comes from another project and we want to keep it as close to the original as possible
+        exclude("org/rustls/platformverifier/**")
     }
 
     // KtLint
@@ -79,6 +82,9 @@ allprojects {
 
             // This file comes from another project and we want to keep it as close to the original as possible
             exclude("**/SafeChildrenTransitionScope.kt")
+
+            // This file comes from another project and we want to keep it as close to the original as possible
+            exclude("org/rustls/platformverifier/**")
         }
     }
     // Dependency check

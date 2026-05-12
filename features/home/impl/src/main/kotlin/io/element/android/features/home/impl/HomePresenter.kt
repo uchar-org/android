@@ -93,7 +93,7 @@ class HomePresenter(
             when (event) {
                 is HomeEvent.SelectHomeNavigationBarItem -> coroutineState.launch {
                     if (event.item == HomeNavigationBarItem.Spaces) {
-                        announcementService.showAnnouncement(Announcement.Space)
+                        announcementService.showAnnouncement(Announcement.Fullscreen.Space)
                     }
 //                    else  if (event.item == HomeNavigationBarItem.Chats){
 //                        announcementService.showAnnouncement(Announcement.NewNotificationSound)

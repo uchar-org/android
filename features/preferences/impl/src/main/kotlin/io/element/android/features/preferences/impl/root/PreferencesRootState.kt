@@ -23,16 +23,18 @@ data class PreferencesRootState(
     val showSecureBackup: Boolean,
     val showSecureBackupBadge: Boolean,
     val accountManagementUrl: String?,
-    val devicesManagementUrl: String?,
     val canReportBug: Boolean,
     val showLinkNewDevice: Boolean,
     val showAnalyticsSettings: Boolean,
     val showDeveloperSettings: Boolean,
     val canDeactivateAccount: Boolean,
-    val showBlockedUsersItem: Boolean,
+    val nbOfBlockedUsers: Int,
     val showLabsItem: Boolean,
     val directLogoutState: DirectLogoutState,
     val snackbarMessage: SnackbarMessage?,
     val eventSink: (PreferencesRootEvents) -> Unit,
     val lang:String
 )
+   {
+    val showBlockedUsersItem = nbOfBlockedUsers > 0
+}

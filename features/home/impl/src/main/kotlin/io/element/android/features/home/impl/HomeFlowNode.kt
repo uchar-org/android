@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import com.bumble.appyx.core.lifecycle.subscribe
@@ -358,6 +359,7 @@ class HomeFlowNode(
             if (loadingJoinedRoomJob.value.isLoading()) {
                 DelayedVisibility(duration = 400.milliseconds) {
                     ProgressDialog(
+                        properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true),
                         onDismissRequest = {
                             loadingJoinedRoomJob.value.dataOrNull()?.cancel()
                             loadingJoinedRoomJob.value = AsyncData.Uninitialized

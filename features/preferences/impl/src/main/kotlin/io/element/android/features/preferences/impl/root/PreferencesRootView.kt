@@ -13,7 +13,6 @@ import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -38,19 +37,17 @@ import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.ElementPreviewDark
 import io.element.android.libraries.designsystem.preview.ElementPreviewLight
 import io.element.android.libraries.designsystem.preview.PreviewWithLargeHeight
-import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 import io.element.android.libraries.designsystem.theme.components.HorizontalDivider
 import io.element.android.libraries.designsystem.theme.components.IconSource
 import io.element.android.libraries.designsystem.theme.components.ListItem
 import io.element.android.libraries.designsystem.theme.components.ListItemStyle
 import io.element.android.libraries.designsystem.theme.components.Text
+import io.element.android.libraries.designsystem.utils.CommonDrawables
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarHost
 import io.element.android.libraries.designsystem.utils.snackbar.rememberSnackbarHostState
 import io.element.android.libraries.matrix.api.core.DeviceId
 import io.element.android.libraries.matrix.api.user.MatrixUser
-import io.element.android.libraries.matrix.ui.components.MatrixUserProvider
 import io.element.android.libraries.matrix.ui.components.MatrixUserRow
-import io.element.android.libraries.matrix.ui.components.aMatrixUserList
 import io.element.android.libraries.ui.strings.CommonStrings
 
 @Composable
@@ -75,8 +72,7 @@ fun PreferencesRootView(
     onDeactivateClick: () -> Unit,
     onOpenLocalization: () -> Unit,
     modifier: Modifier = Modifier,
-
-    ) {
+) {
     val snackbarHostState = rememberSnackbarHostState(snackbarMessage = state.snackbarMessage)
 
     // Include pref from other modules
@@ -90,28 +86,30 @@ fun PreferencesRootView(
             modifier = Modifier.clickable {
                 onOpenUserProfile(state.myUser)
             },
-            user = state.myUser,
+            matrixUser = state.myUser,
         )
         if (state.isMultiAccountEnabled) {
             MultiAccountSection(
                 state = state,
                 onAddAccountClick = onAddAccountClick,
             )
+        } else {
+            HorizontalDivider()
         }
-        // 'Manage my app' section
-        ManageAppSection(
-            state = state,
-            onOpenNotificationSettings = onOpenNotificationSettings,
-            onOpenLockScreenSettings = onOpenLockScreenSettings,
-            onSecureBackupClick = onSecureBackupClick,
-        )
-
+        // User status will be added here
         // 'Account' section
         ManageAccountSection(
             state = state,
             onManageAccountClick = onManageAccountClick,
             onLinkNewDeviceClick = onLinkNewDeviceClick,
             onOpenBlockedUsers = onOpenBlockedUsers
+        )
+        // 'Manage my app' section
+        ManageAppSection(
+            state = state,
+            onOpenNotificationSettings = onOpenNotificationSettings,
+            onOpenLockScreenSettings = onOpenLockScreenSettings,
+            onSecureBackupClick = onSecureBackupClick,
         )
 
         // General section
@@ -127,7 +125,7 @@ fun PreferencesRootView(
             onDeactivateClick = onDeactivateClick,
             onOpenLocalization = onOpenLocalization
         )
-
+        // Version
         Footer(
             version = state.version,
             deviceId = state.deviceId,
@@ -151,13 +149,15 @@ private fun ColumnScope.MultiAccountSection(
     )
     state.otherSessions.forEach { matrixUser ->
         MatrixUserRow(
-            modifier = Modifier.clickable {
-                state.eventSink(PreferencesRootEvents.SwitchToSession(matrixUser.userId))
-            },
+            modifier = Modifier
+                .clickable {
+                    state.eventSink(PreferencesRootEvents.SwitchToSession(matrixUser.userId))
+                }
+                .padding(top = 2.dp, bottom = 2.dp, end = 8.dp),
             matrixUser = matrixUser,
             avatarSize = AvatarSize.AccountItem,
+            verticalSpaceWidth = 16.dp,
         )
-        HorizontalDivider()
     }
     ListItem(
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Plus())),
@@ -179,7 +179,6 @@ private fun ColumnScope.ManageAppSection(
     onOpenLockScreenSettings: () -> Unit,
     onSecureBackupClick: () -> Unit,
 ) {
-
     ListItem(
         headlineContent = { Text(stringResource(id = R.string.screen_notification_settings_title)) },
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Notifications())),
@@ -208,6 +207,14 @@ private fun ColumnScope.ManageAccountSection(
     onLinkNewDeviceClick: () -> Unit,
     onOpenBlockedUsers: () -> Unit,
 ) {
+    state.accountManagementUrl?.let { url ->
+        ListItem(
+            headlineContent = { Text(stringResource(id = CommonStrings.action_manage_account_and_devices)) },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.UserProfile())),
+            trailingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.PopOut())),
+            onClick = { onManageAccountClick(url) },
+        )
+    }
     if (state.showLinkNewDevice) {
         ListItem(
             headlineContent = { Text(stringResource(id = CommonStrings.common_link_new_device)) },
@@ -215,33 +222,15 @@ private fun ColumnScope.ManageAccountSection(
             onClick = onLinkNewDeviceClick,
         )
     }
-    state.accountManagementUrl?.let { url ->
-        ListItem(
-            headlineContent = { Text(stringResource(id = CommonStrings.action_manage_account)) },
-            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.UserProfile())),
-            trailingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.PopOut())),
-            onClick = { onManageAccountClick(url) },
-        )
-    }
-
-    state.devicesManagementUrl?.let { url ->
-        ListItem(
-            headlineContent = { Text(stringResource(id = CommonStrings.action_manage_devices)) },
-            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Devices())),
-            trailingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.PopOut())),
-            onClick = { onManageAccountClick(url) },
-        )
-    }
-
     if (state.showBlockedUsersItem) {
         ListItem(
             headlineContent = { Text(stringResource(id = CommonStrings.common_blocked_users)) },
             leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Block())),
             onClick = onOpenBlockedUsers,
+            trailingContent = ListItemContent.Text(state.nbOfBlockedUsers.toString()),
         )
     }
-
-    if (state.accountManagementUrl != null || state.devicesManagementUrl != null || state.showBlockedUsersItem) {
+    if (state.accountManagementUrl != null || state.showLinkNewDevice || state.showBlockedUsersItem) {
         HorizontalDivider()
     }
 }
@@ -283,6 +272,18 @@ private fun ColumnScope.GeneralSection(
     )
 
     ListItem(
+        headlineContent = { Text(stringResource(id = CommonStrings.common_advanced_settings)) },
+        leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Settings())),
+        onClick = onOpenAdvancedSettings,
+    )
+    if (state.showLabsItem) {
+        ListItem(
+            headlineContent = { Text(stringResource(id = R.string.screen_labs_title)) },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Labs())),
+            onClick = onOpenLabs,
+        )
+    }
+    ListItem(
         headlineContent = { Text(stringResource(id = CommonStrings.common_about)) },
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Info())),
         onClick = onOpenAbout,
@@ -317,14 +318,14 @@ private fun ColumnScope.GeneralSection(
 
     ListItem(
         headlineContent = { Text(stringResource(id = CommonStrings.action_signout)) },
-        leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.SignOut())),
+        leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Close())),
         style = ListItemStyle.Destructive,
         onClick = onSignOutClick,
     )
     if (state.canDeactivateAccount) {
         ListItem(
-            headlineContent = { Text(stringResource(id = CommonStrings.action_deactivate_account)) },
-            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Warning())),
+            headlineContent = { Text(stringResource(id = CommonStrings.action_delete_account)) },
+            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Delete())),
             style = ListItemStyle.Destructive,
             onClick = onDeactivateClick,
         )
@@ -374,19 +375,23 @@ private fun DeveloperPreferencesView(onOpenDeveloperSettings: () -> Unit) {
 
 @PreviewWithLargeHeight
 @Composable
-internal fun PreferencesRootViewLightPreview(@PreviewParameter(MatrixUserProvider::class) matrixUser: MatrixUser) =
-    ElementPreviewLight { ContentToPreview(matrixUser) }
+internal fun PreferencesRootViewLightPreview(@PreviewParameter(PreferencesRootStateProvider::class) state: PreferencesRootState) =
+    ElementPreviewLight(
+        drawableFallbackForImages = CommonDrawables.sample_avatar,
+    ) { ContentToPreview(state) }
 
 @PreviewWithLargeHeight
 @Composable
-internal fun PreferencesRootViewDarkPreview(@PreviewParameter(MatrixUserProvider::class) matrixUser: MatrixUser) =
-    ElementPreviewDark { ContentToPreview(matrixUser) }
+internal fun PreferencesRootViewDarkPreview(@PreviewParameter(PreferencesRootStateProvider::class) state: PreferencesRootState) =
+    ElementPreviewDark(
+        drawableFallbackForImages = CommonDrawables.sample_avatar,
+    ) { ContentToPreview(state) }
 
 @ExcludeFromCoverage
 @Composable
-private fun ContentToPreview(matrixUser: MatrixUser) {
+private fun ContentToPreview(state: PreferencesRootState) {
     PreferencesRootView(
-        state = aPreferencesRootState(myUser = matrixUser),
+        state = state,
         onBackClick = {},
         onAddAccountClick = {},
         onOpenAnalytics = {},
@@ -407,17 +412,4 @@ private fun ContentToPreview(matrixUser: MatrixUser) {
         onOpenLocalization = {}
 
     )
-}
-
-@PreviewsDayNight
-@Composable
-internal fun MultiAccountSectionPreview() = ElementPreview {
-    Column {
-        MultiAccountSection(
-            state = aPreferencesRootState(
-                otherSessions = aMatrixUserList(),
-            ),
-            onAddAccountClick = {},
-        )
-    }
 }
