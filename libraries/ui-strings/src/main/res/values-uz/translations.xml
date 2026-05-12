@@ -100,7 +100,7 @@
   <string name="action_ignore">"E’tiborsiz qoldirish"</string>
   <string name="action_invite">"Taklif qilish"</string>
   <string name="action_invite_friends">"Odamlarni taklif qiling"</string>
-  <string name="action_invite_friends_to_app">"Odamlarni taklif qilish %1$s"</string>
+  <string name="action_invite_friends_to_app">"Odamlarni %1$sga taklif qilish "</string>
   <string name="action_invite_people_to_app">"Odamlarni taklif qiling%1$s"</string>
   <string name="action_invites_list">"Takliflar"</string>
   <string name="action_join">"Qo\'shilish"</string>
@@ -419,8 +419,8 @@ Davom etasizmi?"</string>
   <string name="error_room_address_invalid_symbols">"Ayrim belgilarga ruxsat berilmagan. Faqat harf, raqam va quyidagi belgilar ishlaydi! $ &amp;’() * + /; =? @ [ ] -. _"</string>
   <string name="error_some_messages_have_not_been_sent">"Bazi xabarlar yuborilmagan"</string>
   <string name="error_unknown">"Kechirasiz, xatolik yuz berdi"</string>
-  <string name="invite_friends_rich_title">"🔐️ Menga qo\'shiling%1$s"</string>
-  <string name="invite_friends_text">"Hey, men bilan gaplash%1$s :%2$s"</string>
+  <string name="invite_friends_rich_title">"🔐️ %1$sda menga qo\'shiling"</string>
+  <string name="invite_friends_text">"Hey, men bilan %1$s da gaplash:%2$s"</string>
   <string name="login_initial_device_name_android">"%1$sAndroid"</string>
   <string name="preference_rageshake">"Xato haqida xabar berish uchun G\'azablanish"</string>
   <string name="screen_bug_report_a11y_screenshot">"Skrinshot"</string>
