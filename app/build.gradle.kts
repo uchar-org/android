@@ -36,11 +36,10 @@ plugins {
     alias(libs.plugins.licensee)
     alias(libs.plugins.kotlin.serialization)
     // To be able to update the firebase.xml files, uncomment and build the project
-//    alias(libs.plugins.gms.google.services)
+    alias(libs.plugins.gms.google.services)
 }
 
 android {
-//    namespace = "io.element.android.x"
     namespace = "uz.uzinfocom.ucharmessenger"
     bundle {
         language {
@@ -132,25 +131,25 @@ android {
             signingConfig = signingConfigs.getByName("debug")
 
             optimization {
-//                enable = true
+                enable = true
                 keepRules {
-//                    files.add(File(projectDir, "common-proguard-rules.pro"))
-//                    files.add(getDefaultProguardFile("proguard-android-optimize.txt"))
+                    files.add(File(projectDir, "common-proguard-rules.pro"))
+                    files.add(getDefaultProguardFile("proguard-android-optimize.txt"))
 
                     // Depending on whether the app flavor is enterprise or not we want to use different proguard rules.
                     val flavorProguardFile = if (isEnterpriseBuild) {
                         // Custom rules for enterprise builds
-//                        File(projectDir, "enterprise-proguard-rules.pro")
+                        File(projectDir, "enterprise-proguard-rules.pro")
                     } else {
                         // These default rules prevent the OSS app from being obfuscated
-//                        File(projectDir, "default-proguard-rules.pro")
+                        File(projectDir, "default-proguard-rules.pro")
                     }
 
-//                    if (flavorProguardFile.exists()) {
-//                        files.add(flavorProguardFile)
-//                    } else {
-//                        logger.warn("Proguard file ${flavorProguardFile.absolutePath} does not exist")
-//                    }
+                    if (flavorProguardFile.exists()) {
+                        files.add(flavorProguardFile)
+                    } else {
+                        logger.warn("Proguard file ${flavorProguardFile.absolutePath} does not exist")
+                    }
                 }
             }
         }
@@ -186,9 +185,12 @@ android {
                 // This should not be required, but if I do not add the appId, I get this error:
                 // "App Distribution halted because it had a problem uploading the APK: [404] Requested entity was not found."
                 appId = if (isEnterpriseBuild) {
+
                     "1:912726360885:android:3f7e1fe644d99d5a00427c"
+//                    "1:1004683620206:android:66c257b96c3048ed3cdb7f"
                 } else {
                     "1:912726360885:android:e17435e0beb0303000427c"
+//                    "1:1004683620206:android:66c257b96c3048ed3cdb7f"
                 }
             }
         }

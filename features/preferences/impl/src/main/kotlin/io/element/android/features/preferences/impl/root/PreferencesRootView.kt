@@ -276,13 +276,13 @@ private fun ColumnScope.GeneralSection(
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Settings())),
         onClick = onOpenAdvancedSettings,
     )
-    if (state.showLabsItem) {
-        ListItem(
-            headlineContent = { Text(stringResource(id = R.string.screen_labs_title)) },
-            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Labs())),
-            onClick = onOpenLabs,
-        )
-    }
+//    if (state.showLabsItem) {
+//        ListItem(
+//            headlineContent = { Text(stringResource(id = R.string.screen_labs_title)) },
+//            leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Labs())),
+//            onClick = onOpenLabs,
+//        )
+//    }
     ListItem(
         headlineContent = { Text(stringResource(id = CommonStrings.common_about)) },
         leadingContent = ListItemContent.Icon(IconSource.Vector(CompoundIcons.Info())),

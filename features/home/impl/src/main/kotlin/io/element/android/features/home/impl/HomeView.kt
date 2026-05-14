@@ -23,9 +23,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.VerticalPager
@@ -45,7 +42,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -115,7 +111,7 @@ fun HomeView(
     settingsView: @Composable (Modifier) -> Unit,
     profileView: @Composable (Modifier) -> Unit,
 
-) {
+    ) {
     val state: RoomListState = homeState.roomListState
     val coroutineScope = rememberCoroutineScope()
     val firstThrottler = remember { FirstThrottler(300, coroutineScope) }
@@ -151,7 +147,7 @@ fun HomeView(
             onCreateSpaceClick = { if (firstThrottler.canHandle()) onCreateSpaceClick() },
             onMenuActionClick = onMenuActionClick,
             settingsView = settingsView,
-            profileView=profileView
+            profileView = profileView
 
         )
         // This overlaid view will only be visible when state.displaySearchResults is true
@@ -183,7 +179,6 @@ private fun HomeScaffold(
     modifier: Modifier = Modifier,
     settingsView: @Composable (Modifier) -> Unit,
     profileView: @Composable (Modifier) -> Unit,
-
 
     ) {
 
@@ -221,7 +216,7 @@ private fun HomeScaffold(
     Scaffold(
         modifier = modifier,
         topBar = {
-           if(state.currentHomeNavigationBarItem!=HomeNavigationBarItem.Profile) HomeTopBar(
+            if (state.currentHomeNavigationBarItem != HomeNavigationBarItem.Profile) HomeTopBar(
                 selectedNavigationItem = state.currentHomeNavigationBarItem,
                 showAvatarIndicator = state.showAvatarIndicator,
                 areSearchResultsDisplayed = roomListState.searchState.isSearchActive,
@@ -349,7 +344,8 @@ private fun HomeScaffold(
                                 )
                             )
                             .consumeWindowInsets(padding)
-                            .hazeSource(state = hazeState),
+                            .hazeSource(state = hazeState)
+                        ,
                         contentPadding = contentPadding,
                         state = state.homeSpacesState,
                         lazyListState = spacesLazyListState,
@@ -362,31 +358,22 @@ private fun HomeScaffold(
                 }
                 HomeNavigationBarItem.Settings -> {
 
-                        settingsView(
-                            Modifier
-                                .fillMaxSize()
-                                .padding(
-                                    PaddingValues(
-                                        top = padding.calculateTopPadding(),
-                                    )
+                    settingsView(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(
+                                PaddingValues(
+                                    top = padding.calculateTopPadding(),
                                 )
+                            )
 
-                        )
-
+                    )
                 }
                 HomeNavigationBarItem.Profile -> {
-
-                        profileView(
-                            Modifier
-                                .fillMaxSize()
-//                                .padding(
-//                                    PaddingValues(
-//                                        top = padding.calculateTopPadding(),
-//                                    )
-//                                )
-
-                        )
-
+                    profileView(
+                        Modifier
+                            .fillMaxSize()
+                    )
                 }
             }
         },

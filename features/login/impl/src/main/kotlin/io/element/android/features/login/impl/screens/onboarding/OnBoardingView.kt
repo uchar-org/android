@@ -186,18 +186,18 @@ private fun AddFirstAccountScaffold(
                 } else {
                     OnBoardingContent(state = state)
                 }
-                if (state.showDeveloperSettings) {
-                    IconButton(
-                        onClick = onDeveloperSettingsClick,
-                        modifier = Modifier
-                            .align(Alignment.TopStart),
-                    ) {
-                        Icon(
-                            imageVector = CompoundIcons.SettingsSolid(),
-                            contentDescription = stringResource(CommonStrings.common_developer_options),
-                        )
-                    }
-                }
+//                if (state.showDeveloperSettings) {
+//                    IconButton(
+//                        onClick = onDeveloperSettingsClick,
+//                        modifier = Modifier
+//                            .align(Alignment.TopStart),
+//                    ) {
+//                        Icon(
+//                            imageVector = CompoundIcons.SettingsSolid(),
+//                            contentDescription = stringResource(CommonStrings.common_developer_options),
+//                        )
+//                    }
+//                }
                 if (state.showBackButton) {
                     // Add icon button to "navigate back"
                     IconButton(

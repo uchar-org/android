@@ -36,10 +36,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="uz.uzinfocom.ucharmessenger.debug" />
+                  <option name="mobileSdkAppId" value="1:1004683620206:android:66c257b96c3048ed3cdb7f" />
+                  <option name="projectId" value="uzprojectcom" />
+                  <option name="projectNumber" value="1004683620206" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
