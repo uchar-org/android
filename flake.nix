@@ -31,11 +31,6 @@
               inherit system;
               config.allowUnfree = true;
               config.android_sdk.accept_license = true;
-              overlays = [
-                (final: prev: {
-                  android = inputs.android-nixpkgs;
-                })
-              ];
             };
 
             formatter = pkgs.alejandra;
