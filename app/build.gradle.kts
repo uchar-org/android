@@ -24,7 +24,6 @@ import extension.buildConfigFieldStr
 import extension.locales
 import extension.setupDependencyInjection
 import extension.testCommonDependencies
-import groovy.lang.ExpandoMetaClassCreationHandle.enable
 import java.util.Locale
 
 plugins {
