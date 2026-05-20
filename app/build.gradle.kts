@@ -364,6 +364,7 @@ configurations.all {
     }
 }
 dependencies{
+    //noinspection UseTomlInstead,UseTomlInstead
     implementation("com.scottyab:rootbeer-lib:0.1.2")
 
 }
