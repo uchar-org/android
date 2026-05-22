@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -36,16 +37,19 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.core.R
 import im.vector.app.features.analytics.plan.Interaction
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
+import io.element.android.libraries.designsystem.theme.components.ButtonSize
 import io.element.android.libraries.designsystem.theme.components.Icon
 import io.element.android.libraries.designsystem.theme.components.Text
 import io.element.android.libraries.designsystem.theme.components.TextButton
@@ -121,7 +125,7 @@ private fun PinnedMessagesBannerRow(
             modifier = Modifier.weight(1f)
         )
         ViewAllButton(
-            state = state,
+                state = state,
             onViewAllClick = {
                 onViewAllClick()
                 analyticsService.captureInteraction(Interaction.Name.PinnedMessageBannerViewAllButton)
@@ -141,12 +145,21 @@ private fun ViewAllButton(
     } else {
         ""
     }
-    TextButton(
-        text = text,
-        showProgress = state is PinnedMessagesBannerState.Loading,
-        onClick = onViewAllClick,
-        modifier = modifier,
-    )
+    IconButton(
+        modifier=modifier,
+        onClick = onViewAllClick,) {
+        Icon(
+            imageVector = CompoundIcons.Menu(),
+            contentDescription = text,
+        )
+    }
+//    TextButton(
+//        size = ButtonSize.Small,
+//        text = text,
+//        showProgress = state is PinnedMessagesBannerState.Loading,
+//        onClick = onViewAllClick,
+//        modifier = modifier,
+//    )
 }
 
 private fun Modifier.drawBorder(borderColor: Color): Modifier {
