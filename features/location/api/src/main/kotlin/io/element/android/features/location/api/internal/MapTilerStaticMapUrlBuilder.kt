@@ -59,7 +59,9 @@ internal class MapTilerStaticMapUrlBuilder(
         // The resulting image will have to be scaled to fit the available space in order
         // to keep the perceived content size constant at the expense of sharpness.
 //        return "$baseUrl/$mapId/static/$lon,$lat,$finalZoom/$scale.webp?key=$apiKey&attribution=topright"
-        return  "https://api.maptiler.com/maps/streets-v4/static/$lon,$lat,$finalZoom/333x188$scale.webp?key=$apiKey&attribution=topright"
+//        return  "https://api.maptiler.com/maps/uzinfocom/static/$lon,$lat,$finalZoom/333x188$scale.webp?key=$apiKey&attribution=topright"
+
+          return "https://api.maptiler.com/maps/streets-v4/static/$lon,$lat,$finalZoom/333x188$scale.webp?key=$apiKey&attribution=topright"
     }
     ///worked
     //https://api.maptiler.com/maps/streets-v4/static/-122.08371040522326,37.423244694120406,15.0/333x188@2x.webp?key=$apiKey&attribution=topright
