@@ -92,7 +92,6 @@ fun StaticMapView(
                 pinVariant = pinVariant,
                 darkMode = darkMode,
                 onContentClick = onContentClick,
-                modifier = modifier
             )
         }
     }
@@ -125,7 +124,6 @@ private fun LoadableMapContent(
     pinVariant: PinVariant,
     darkMode: Boolean,
     onContentClick: (() -> Unit)?,
-    modifier: Modifier
 ) {
     val context = LocalContext.current
     val controller = remember { MTMapViewController(context) }
