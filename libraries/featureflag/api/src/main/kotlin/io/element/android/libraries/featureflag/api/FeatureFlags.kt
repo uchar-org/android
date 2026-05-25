@@ -119,7 +119,7 @@ enum class FeatureFlags(
         key = "feature.liveLocationSharing",
         title = "Live location sharing",
         description = "Allow sharing live location in rooms.",
-        defaultValue = { false },
+        defaultValue = { true },
         isFinished = false,
     ),
     ValidateNetworkWhenSchedulingNotificationFetching(
