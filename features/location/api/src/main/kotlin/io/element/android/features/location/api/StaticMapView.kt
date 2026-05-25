@@ -8,12 +8,12 @@
 
 package io.element.android.features.location.api
 
-import android.R.attr.enabled
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
@@ -52,7 +52,6 @@ import io.element.android.libraries.designsystem.components.LocationPin
 import io.element.android.libraries.designsystem.components.PinVariant
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
-
 
 @Composable
 fun StaticMapView(
@@ -93,7 +92,7 @@ fun StaticMapView(
                 pinVariant = pinVariant,
                 darkMode = darkMode,
                 onContentClick = onContentClick,
-                modifier=modifier
+                modifier = modifier
             )
         }
     }
@@ -138,9 +137,9 @@ private fun LoadableMapContent(
 
                 val drawable = ContextCompat.getDrawable(
                     context,
-                    io.element.android.compound.R.drawable.ic_compound_location_pin
+                    io.element.android.compound.R.drawable.ic_compound_location_pin_solid
                 )
-                val mapTilerIcon = drawable?.toBitmap()
+                val mapTilerIcon = drawable?.toBitmap(width = 24, height = 24)
 
                 if (mapTilerIcon != null) {
                     val locationMarker = MTMarker(targetCoordinates, mapTilerIcon)
@@ -154,6 +153,7 @@ private fun LoadableMapContent(
                     //
                 }
             }
+
             override fun onEventTriggered(event: MTEvent, data: MTData?) {
                 // no-op
             }
@@ -166,14 +166,20 @@ private fun LoadableMapContent(
 
     val mapOptions = remember { MTMapOptions() }
 
-    Box(modifier = Modifier.clickable{
-        onContentClick
+    Box(modifier = Modifier.clickable {
+        onContentClick?.invoke()
     }) {
         MTMapView(
             referenceStyle = MTMapReferenceStyle.DATAVIZ,
             options = mapOptions,
             controller = controller,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+
+                .combinedClickable(
+                    onClick = onContentClick!!,
+                    onLongClick = { },
+                ),
             styleVariant = if (darkMode) MTMapStyleVariant.DARK else MTMapStyleVariant.DEFAULT_VARIANT,
         )
 
@@ -181,13 +187,10 @@ private fun LoadableMapContent(
             modifier = Modifier
                 .matchParentSize()
                 .background(Color.Transparent)
-                .clickable(enabled = false){
-
-                }
                 .pointerInteropFilter { motionEvent ->
-//                    if (motionEvent.action == MotionEvent.ACTION_UP) {
-//                        onMapClick()
-//                    }
+                    if (motionEvent.action == MotionEvent.ACTION_UP) {
+                        onContentClick()
+                    }
                     true
                 }
         )
