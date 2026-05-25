@@ -16,6 +16,9 @@ import kotlin.math.roundToInt
  *
  * https://docs.maptiler.com/cloud/api/static-maps/
  */
+
+
+
 internal class MapTilerStaticMapUrlBuilder(
     private val baseUrl: String,
     private val apiKey: String,
@@ -40,11 +43,7 @@ internal class MapTilerStaticMapUrlBuilder(
     ): String {
         val mapId = if (darkMode) darkMapId else lightMapId
         val finalZoom = zoom.coerceIn(zoomRange)
-
-        // Request @2x density for xhdpi and above (xhdpi == 320dpi == 2x density).
         val is2x = density >= 2
-
-        // Scale requested width/height according to the reported display density.
         val (finalWidth, finalHeight) = coerceWidthAndHeight(
             width = (width / density).roundToInt(),
             height = (height / density).roundToInt(),
@@ -53,15 +52,11 @@ internal class MapTilerStaticMapUrlBuilder(
 
         val scale = if (is2x) "@2x" else ""
 
-        // Since Maptiler doesn't support arbitrary dpi scaling, we stick to 2x sized
-        // images even on displays with density higher than 2x, thereby yielding an
-        // image smaller than the available space in pixels.
-        // The resulting image will have to be scaled to fit the available space in order
-        // to keep the perceived content size constant at the expense of sharpness.
 //        return "$baseUrl/$mapId/static/$lon,$lat,$finalZoom/$scale.webp?key=$apiKey&attribution=topright"
 //        return  "https://api.maptiler.com/maps/uzinfocom/static/$lon,$lat,$finalZoom/333x188$scale.webp?key=$apiKey&attribution=topright"
+//        return "https://api.maptiler.com/maps/streets-v4/static/0,0,0/.webp?key=$apiKey&attribution=topright"
+        return "https://api.maptiler.com/maps/streets-v4/1/1/1.jpg?key=$apiKey"
 
-          return "https://api.maptiler.com/maps/streets-v4/static/$lon,$lat,$finalZoom/333x188$scale.webp?key=$apiKey&attribution=topright"
     }
     ///worked
     //https://api.maptiler.com/maps/streets-v4/static/-122.08371040522326,37.423244694120406,15.0/333x188@2x.webp?key=$apiKey&attribution=topright

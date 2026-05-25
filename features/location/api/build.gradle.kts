@@ -64,6 +64,9 @@ android {
 }
 
 dependencies {
+    implementation("com.maptiler:maptiler-sdk-kotlin:1.3.0")
+
+
     implementation(libs.maplibre.compose)
 
     implementation(projects.libraries.architecture)

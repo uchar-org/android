@@ -26,6 +26,9 @@ android {
 setupDependencyInjection()
 
 dependencies {
+
+    implementation("com.maptiler:maptiler-sdk-kotlin:1.3.0")
+
     api(projects.features.messages.api)
     implementation(projects.appconfig)
     implementation(projects.features.call.api)

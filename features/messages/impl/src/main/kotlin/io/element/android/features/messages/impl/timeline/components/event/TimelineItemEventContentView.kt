@@ -8,8 +8,10 @@
 
 package io.element.android.features.messages.impl.timeline.components.event
 
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onFirstVisible
 import io.element.android.features.messages.impl.timeline.TimelineEvent
 import io.element.android.features.messages.impl.timeline.components.layout.ContentAvoidingLayoutData
 import io.element.android.features.messages.impl.timeline.di.LocalTimelineItemPresenterFactories
@@ -76,7 +78,10 @@ fun TimelineItemEventContentView(
             TimelineItemLocationView(
                 content = content.ensureActiveLiveLocation(),
                 onStopLiveLocationClick = { eventSink(TimelineEvent.StopLiveLocationShare) },
-                modifier = modifier
+                modifier = modifier.clickable{
+                    onContentClick?.invoke()
+                },
+                onContentClick =onContentClick
             )
         }
         is TimelineItemImageContent -> TimelineItemImageView(

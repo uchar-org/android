@@ -42,6 +42,7 @@ import io.element.android.libraries.ui.strings.CommonStrings
 @Composable
 fun TimelineItemLocationView(
     content: TimelineItemLocationContent,
+    onContentClick: (() -> Unit)?,
     onStopLiveLocationClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -53,7 +54,8 @@ fun TimelineItemLocationView(
             pinVariant = content.pinVariant,
             location = content.location,
             zoom = 15.0,
-            contentDescription = content.description
+            contentDescription = content.description,
+            onContentClick = onContentClick
         )
 
         if (content.mode is TimelineItemLocationContent.Mode.Live) {
@@ -165,5 +167,6 @@ internal fun TimelineItemLocationViewPreview(@PreviewParameter(TimelineItemLocat
         TimelineItemLocationView(
             content = content,
             onStopLiveLocationClick = {},
+            onContentClick = {},
         )
     }

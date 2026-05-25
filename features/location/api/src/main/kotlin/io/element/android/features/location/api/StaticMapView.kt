@@ -8,47 +8,52 @@
 
 package io.element.android.features.location.api
 
+import android.R.attr.enabled
+import android.annotation.SuppressLint
+import android.view.MotionEvent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil3.Extras
-import coil3.compose.AsyncImagePainter
-import coil3.compose.rememberAsyncImagePainter
-import coil3.request.ImageRequest
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
+import com.maptiler.maptilersdk.annotations.MTMarker
+import com.maptiler.maptilersdk.events.MTEvent
+import com.maptiler.maptilersdk.map.LngLat
+import com.maptiler.maptilersdk.map.MTMapOptions
+import com.maptiler.maptilersdk.map.MTMapView
+import com.maptiler.maptilersdk.map.MTMapViewController
+import com.maptiler.maptilersdk.map.MTMapViewDelegate
+import com.maptiler.maptilersdk.map.style.MTMapReferenceStyle
+import com.maptiler.maptilersdk.map.style.MTMapStyleVariant
+import com.maptiler.maptilersdk.map.types.MTData
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.location.api.internal.StaticMapPlaceholder
-import io.element.android.features.location.api.internal.StaticMapUrlBuilder
 import io.element.android.features.location.api.internal.centerBottomEdge
 import io.element.android.libraries.designsystem.components.LocationPin
 import io.element.android.libraries.designsystem.components.PinVariant
 import io.element.android.libraries.designsystem.preview.ElementPreview
 import io.element.android.libraries.designsystem.preview.PreviewsDayNight
 
-/**
- * Shows a static map image downloaded via a third party service's static maps API.
- *
- * Handles 4 distinct cases:
- * 1. Stale location (pinVariant is StaleLocation) - shows stale map with stale pin, no fetching
- * 2. Null location - shows blurred placeholder, no pin, no loading
- * 3. Loading (location != null, fetching) - shows blurred placeholder with loading indicator
- * 4. Success (location != null, loaded) - shows actual map with pin
- */
+
 @Composable
 fun StaticMapView(
     location: Location?,
@@ -57,15 +62,12 @@ fun StaticMapView(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     darkMode: Boolean = !ElementTheme.isLightTheme,
+    onContentClick: (() -> Unit)?,
 ) {
-    // Using BoxWithConstraints to:
-    // 1) Size the inner Image to the same Dp size of the outer BoxWithConstraints.
-    // 2) Request the static map image of the exact required size in Px to fill the AsyncImage.
     BoxWithConstraints(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        // Case 1: Stale location - show stale map with stale pin, no fetching
         when {
             pinVariant is PinVariant.StaleLocation -> {
                 StaleMapContent(
@@ -75,7 +77,6 @@ fun StaticMapView(
                     height = maxHeight,
                 )
             }
-            // Case 2: Null location - show blurred placeholder, no pin, no loading
             location == null -> {
                 StaticMapPlaceholder(
                     painter = painterResource(R.drawable.blurred_map),
@@ -86,13 +87,13 @@ fun StaticMapView(
                     onLoadMapClick = {}
                 )
             }
-            // Cases 3 & 4: Non-null location - fetch map
             else -> LoadableMapContent(
                 location = location,
                 zoom = zoom,
                 pinVariant = pinVariant,
-                contentDescription = contentDescription,
                 darkMode = darkMode,
+                onContentClick = onContentClick,
+                modifier=modifier
             )
         }
     }
@@ -116,66 +117,80 @@ private fun BoxWithConstraintsScope.StaleMapContent(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
+@SuppressLint("UseKtx")
 @Composable
-private fun BoxWithConstraintsScope.LoadableMapContent(
+private fun LoadableMapContent(
     location: Location,
     zoom: Double,
     pinVariant: PinVariant,
-    contentDescription: String?,
     darkMode: Boolean,
+    onContentClick: (() -> Unit)?,
+    modifier: Modifier
 ) {
     val context = LocalContext.current
-    var retryHash by remember { mutableIntStateOf(0) }
-    val builder = remember { StaticMapUrlBuilder() }
+    val controller = remember { MTMapViewController(context) }
 
-    val painter = rememberAsyncImagePainter(
-        model = if (constraints.isZero) {
-            // Avoid building a URL if any of the size constraints is zero
-            null
-        } else {
-            ImageRequest.Builder(context)
-                .data(
-                    builder.build(
-                        lat = location.lat,
-                        lon = location.lon,
-                        zoom = zoom,
-                        darkMode = darkMode,
-                        width = constraints.maxWidth,
-                        height = constraints.maxHeight,
-                        density = LocalDensity.current.density,
-                    )
+    LaunchedEffect(controller, location) {
+        controller.delegate = object : MTMapViewDelegate {
+            override fun onMapViewInitialized() {
+                val targetCoordinates = LngLat(location.lon, location.lat)
+
+                val drawable = ContextCompat.getDrawable(
+                    context,
+                    io.element.android.compound.R.drawable.ic_compound_location_pin
                 )
-                .size(width = constraints.maxWidth, height = constraints.maxHeight)
-                .apply {
-                    extras.set(Extras.Key("retry_hash"), retryHash).build()
-                }
-                .build()
-        }
-    )
+                val mapTilerIcon = drawable?.toBitmap()
 
-    val state by painter.state.collectAsState()
-    when (state) {
-        is AsyncImagePainter.State.Success -> {
-            Image(
-                painter = painter,
-                contentDescription = contentDescription,
-                modifier = Modifier.size(width = maxWidth, height = maxHeight),
-                // The returned image can be smaller than the requested size due to the static maps API having
-                // a max width and height of 2048 px. We apply ContentScale.Fit to handle this.
-                contentScale = ContentScale.Fit,
-            )
-            LocationPin(variant = pinVariant, modifier = Modifier.centerBottomEdge(this))
+                if (mapTilerIcon != null) {
+                    val locationMarker = MTMarker(targetCoordinates, mapTilerIcon)
+                    controller.style?.addMarker(locationMarker)
+                }
+
+                try {
+                    controller.setCenter(targetCoordinates)
+                    controller.setZoom(zoom)
+                } catch (e: Exception) {
+                    //
+                }
+            }
+            override fun onEventTriggered(event: MTEvent, data: MTData?) {
+                // no-op
+            }
         }
-        else -> {
-            StaticMapPlaceholder(
-                painter = painterResource(R.drawable.blurred_map),
-                canReload = builder.isServiceAvailable() && state is AsyncImagePainter.State.Error,
-                contentDescription = contentDescription,
-                width = maxWidth,
-                height = maxHeight,
-                onLoadMapClick = { retryHash++ }
-            )
-        }
+    }
+
+    DisposableEffect(controller) {
+        onDispose { controller.delegate = null }
+    }
+
+    val mapOptions = remember { MTMapOptions() }
+
+    Box(modifier = Modifier.clickable{
+        onContentClick
+    }) {
+        MTMapView(
+            referenceStyle = MTMapReferenceStyle.DATAVIZ,
+            options = mapOptions,
+            controller = controller,
+            modifier = Modifier.fillMaxSize(),
+            styleVariant = if (darkMode) MTMapStyleVariant.DARK else MTMapStyleVariant.DEFAULT_VARIANT,
+        )
+
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(Color.Transparent)
+                .clickable(enabled = false){
+
+                }
+                .pointerInteropFilter { motionEvent ->
+//                    if (motionEvent.action == MotionEvent.ACTION_UP) {
+//                        onMapClick()
+//                    }
+                    true
+                }
+        )
     }
 }
 
@@ -188,5 +203,6 @@ internal fun StaticMapViewPreview() = ElementPreview {
         contentDescription = null,
         pinVariant = PinVariant.PinnedLocation,
         modifier = Modifier.size(400.dp),
+        onContentClick = {}
     )
 }
