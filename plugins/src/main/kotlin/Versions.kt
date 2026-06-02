@@ -28,28 +28,6 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
  * - the version name: 25.01.0
  * - the version code: 20250100a (202_501_00a) where `a` stands for the architecture code
  */
-
-/**
- * Year of the version on 2 digits.
- * Do not update this value. it is updated by the release script.
- */
-//private const val versionYear = 26
-private const val versionYear = 2
-
-/**
- * Month of the version on 2 digits. Value must be in [1,12].
- * Do not update this value. it is updated by the release script.
- */
-//private const val versionMonth = 3
-private const val versionMonth = 5
-
-/**
- * Release number in the month. Value must be in [0,99].
- * Do not update this value. it is updated by the release script.
- */
-//private const val versionReleaseNumber = 3
-private const val versionReleaseNumber = 0
-
 object Versions {
     /**
      * Base version code that will be set in the Android Manifest.
@@ -57,10 +35,8 @@ object Versions {
      * AAB will have a ABI code of 0.
      * See comment above for the calculation method.
      */
-//    const val VERSION_CODE = (2000 + versionYear) * 10_000 + versionMonth * 100 + versionReleaseNumber
-    const val VERSION_CODE = 3557
+    const val VERSION_CODE = 3559
 
-    //    val VERSION_NAME = "$versionYear.${versionMonth}.$versionReleaseNumber"
     const val VERSION_NAME = "2.3.0"
 
     /**
@@ -107,8 +83,6 @@ object Versions {
 
     // Perform some checks on the values to avoid releasing with bad values
     init {
-        require(versionMonth in 1..12) { "versionMonth must be in [1,12]" }
-        require(versionReleaseNumber in 0..99) { "versionReleaseNumber must be in [0,99]" }
         require(BUILD_TOOLS_VERSION.startsWith(COMPILE_SDK.toString())) { "When updating COMPILE_SDK, please also update BUILD_TOOLS_VERSION" }
     }
 }

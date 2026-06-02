@@ -120,7 +120,7 @@ enum class FeatureFlags(
         title = "Live location sharing",
         description = "Allow sharing live location in rooms.",
         defaultValue = { true },
-        isFinished = false,
+        isFinished = true,
     ),
     ValidateNetworkWhenSchedulingNotificationFetching(
         key = "feature.validate_network_when_scheduling_notification_fetching",

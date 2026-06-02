@@ -76,6 +76,10 @@ fun ChangeRoomPermissionsView(
                             options = state.selectableRoles,
                             enabled = state.canChangePermission(permissionType),
                             onSelectOption = { role ->
+println("!!!!!!!!screen:role")
+println("${role}")
+println("${permissionType}")
+println("!!!!!!!!screen:role")
                                 state.eventSink(
                                     ChangeRoomPermissionsEvent.ChangeMinimumRoleForAction(
                                         action = permissionType,
@@ -127,6 +131,7 @@ private fun titleForType(type: RoomPermissionType): String = when (type) {
     RoomPermissionType.ROOM_AVATAR -> stringResource(R.string.screen_room_change_permissions_room_avatar)
     RoomPermissionType.ROOM_TOPIC -> stringResource(R.string.screen_room_change_permissions_room_topic)
     RoomPermissionType.SPACE_MANAGE_ROOMS -> stringResource(R.string.screen_room_change_permissions_manage_space_rooms)
+    RoomPermissionType.BEACON -> stringResource(R.string.screen_room_change_permissions_live_location)
 }
 
 @PreviewsDayNight

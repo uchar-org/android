@@ -132,6 +132,8 @@ android {
             optimization {
                 enable = true
                 keepRules {
+                    isMinifyEnabled = false
+                    isShrinkResources = false
                     files.add(File(projectDir, "common-proguard-rules.pro"))
                     files.add(getDefaultProguardFile("proguard-android-optimize.txt"))
 

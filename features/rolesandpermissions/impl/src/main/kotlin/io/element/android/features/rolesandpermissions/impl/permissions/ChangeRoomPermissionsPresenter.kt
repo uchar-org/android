@@ -47,6 +47,7 @@ class ChangeRoomPermissionsPresenter(
             RoomPermissionsSection.MessagesAndContent -> persistentListOf(
                 RoomPermissionType.SEND_EVENTS,
                 RoomPermissionType.REDACT_EVENTS,
+                RoomPermissionType.BEACON,
             )
             RoomPermissionsSection.ManageMembers -> persistentListOf(
                 RoomPermissionType.INVITE,
@@ -104,6 +105,9 @@ class ChangeRoomPermissionsPresenter(
                         SelectableRole.Moderator -> RoomMember.Role.Moderator.powerLevel
                         SelectableRole.Everyone -> RoomMember.Role.User.powerLevel
                     }
+                    println("=============role")
+                    println("${event.role}")
+                    println("=============role")
                     currentPermissions = when (event.action) {
                         RoomPermissionType.BAN -> currentPermissions?.copy(ban = powerLevel)
                         RoomPermissionType.INVITE -> currentPermissions?.copy(invite = powerLevel)
@@ -114,7 +118,12 @@ class ChangeRoomPermissionsPresenter(
                         RoomPermissionType.ROOM_AVATAR -> currentPermissions?.copy(roomAvatar = powerLevel)
                         RoomPermissionType.ROOM_TOPIC -> currentPermissions?.copy(roomTopic = powerLevel)
                         RoomPermissionType.SPACE_MANAGE_ROOMS -> currentPermissions?.copy(spaceChild = powerLevel)
+                        RoomPermissionType.BEACON -> currentPermissions?.copy(beacon = powerLevel, beaconInfo = powerLevel)
                     }
+
+                    println("========action")
+                    println("${event.action}")
+                    println("========action")
                 }
                 is ChangeRoomPermissionsEvent.Save -> coroutineScope.save()
                 is ChangeRoomPermissionsEvent.Exit -> {
@@ -143,6 +152,10 @@ class ChangeRoomPermissionsPresenter(
         val powerLevels = room.powerLevels().getOrNull() ?: return
         initialPermissions = powerLevels
         currentPermissions = initialPermissions
+
+        println("initial permissions")
+        println("${initialPermissions}")
+        println("initial permissions")
     }
 
     private fun CoroutineScope.save() = launch {
@@ -151,6 +164,9 @@ class ChangeRoomPermissionsPresenter(
             saveAction = AsyncAction.Failure(IllegalStateException("Failed to set room power levels"))
             return@launch
         }
+        println("---------------")
+        println("$updatedRoomPowerLevels")
+        println("---------------")
         room.updatePowerLevels(updatedRoomPowerLevels)
             .onSuccess {
                 analyticsService.trackPermissionChangeAnalytics(initialPermissions, updatedRoomPowerLevels)
