@@ -14,6 +14,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -48,11 +49,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.compound.tokens.generated.CompoundIcons
+import io.element.android.features.messages.impl.R
 import io.element.android.features.messages.impl.crypto.sendfailure.resolve.ResolveVerifiedUserSendFailureView
 import io.element.android.features.messages.impl.timeline.components.FloatingDateBadgeOverlay
 import io.element.android.features.messages.impl.timeline.components.TimelineItemRow
@@ -156,16 +159,7 @@ fun TimelineView(
     // Animate alpha when timeline is first displayed, to avoid flashes or glitching when viewing rooms
     AnimatedVisibility(visible = true, enter = fadeIn()) {
         Box(modifier) {
-            if (state.timelineItems.isEmpty()) {
-                Column(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .wrapContentHeight() // Forces the Column to only take the space of its children
-                ) {
-                    Text("Kechirasiz bu bizning xatoligimiz ekranni 2marta pastga va tepega suring")
-                    CircularProgressIndicator()
-                }
-            }
+
 
             LazyColumn(
                 modifier = Modifier
@@ -203,6 +197,18 @@ fun TimelineView(
                         onSwipeToReply = onSwipeToReply,
                         eventSink = state.eventSink,
                     )
+                }
+            }
+            if (state.timelineItems.isEmpty()) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .padding(16.dp).align(alignment = Alignment.Center)
+                        .wrapContentHeight()
+                ) {
+                    Text(stringResource(R.string.bug_sdk_text), textAlign = TextAlign.Center)
+                    CircularProgressIndicator()
                 }
             }
 
