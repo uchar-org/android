@@ -30,10 +30,6 @@
         tools:targetApi="33">
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
-        <meta-data
-            android:name="com.google.android.gms.car.application"
-            android:resource="@xml/automotive_app_desc" />
-
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"

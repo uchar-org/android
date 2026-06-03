@@ -35,7 +35,7 @@ object Versions {
      * AAB will have a ABI code of 0.
      * See comment above for the calculation method.
      */
-    const val VERSION_CODE = 3559
+    const val VERSION_CODE = 3560
 
     const val VERSION_NAME = "2.3.0"
 
